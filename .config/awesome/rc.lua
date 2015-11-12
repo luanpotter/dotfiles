@@ -200,7 +200,7 @@ for s = 1, screen.count() do
             icon = "▴"
         end
 
-        remain = string.match(text, ", (%d+)%%,")
+        remain = string.match(text, ", (%d+)%%")
     
         return { remain, icon }
     end
