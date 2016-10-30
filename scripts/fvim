@@ -1,0 +1,30 @@
+#!/bin/bash
+
+q=$1
+path=0
+if [[ $q == '-p' ]]; then
+  q=$2
+  path=1
+elif [[ $q == '-f' ]]; then
+  q=$2
+  path=2
+fi
+
+IFS=':' read -ra p <<< "$q"
+file=`find . -name "${p[0]}" | grep -vwE target`
+if [ -z "$file" ]; then
+ IFS='.' read -ra s <<< "${p[0]}"
+ file=`find . -name "${s[-1]}.*" | grep -vwE target`
+fi
+
+if [ -z "$file" ]; then
+  echo 'No matches found!'
+else
+  if [[ $path == 2 ]]; then
+    echo $file | fpp
+  elif [[ $path == 1 ]]; then
+    echo $file
+  else
+    vim +"${p[1]}" $file
+  fi
+fi
