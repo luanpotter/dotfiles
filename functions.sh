@@ -17,5 +17,6 @@ alias lll='watch -n 1 ls -lrt'
 alias xc='xclip -selection c'
 alias gcm='git commit -m '
 alias vbash='vim ~/.bashrc'
+alias sbash='src ~/.bashrc'
 alias mci='mvn clean install'
 
