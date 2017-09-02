@@ -13,6 +13,7 @@ alias google-chrome='google-chrome-beta'
 alias lock='xscreensaver-command -l'
 alias lockexit='pma exit && lock'
 
+alias ll='ls -lA --color=auto'
 alias lll='watch -n 1 ls -lrt'
 alias xc='xclip -selection c'
 alias gcm='git commit -m '
@@ -20,3 +21,4 @@ alias vbash='vim ~/.bashrc'
 alias sbash='src ~/.bashrc'
 alias mci='mvn clean install'
 
+export PATH="/home/luan/softwares:$PATH"
