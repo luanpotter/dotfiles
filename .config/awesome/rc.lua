@@ -135,6 +135,9 @@ mytextclock = wibox.widget.textclock()
         end
 
         remain = string.match(text, ", (%d+)%%")
+	if not remain then
+	    return ':battery error:'
+	end
     
         return remain .. "% <b>" .. icon .. "</b> "
     end
