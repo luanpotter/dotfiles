@@ -17,8 +17,14 @@ alias ll='ls -lA --color=auto'
 alias lll='watch -n 1 ls -lrt'
 alias xc='xclip -selection c'
 alias gcm='git commit -m '
+alias gall='git add -A'
 alias vbash='vim ~/.bashrc'
 alias sbash='src ~/.bashrc'
 alias mci='mvn clean install'
 
 export PATH="/home/luan/softwares:$PATH"
+
+#locale
+export KEYMAP="br-abnt2.map.gz"
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
