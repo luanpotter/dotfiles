@@ -21,6 +21,7 @@ alias gall='git add -A'
 alias vbash='vim ~/.bashrc'
 alias sbash='src ~/.bashrc'
 alias mci='mvn clean install'
+alias mcint='mci -Dmaven.test.skip'
 
 export PATH="/home/luan/softwares:$PATH"
 
