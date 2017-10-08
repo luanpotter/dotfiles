@@ -23,6 +23,14 @@ alias sbash='src ~/.bashrc'
 alias mci='mvn clean install'
 alias mcint='mci -Dmaven.test.skip'
 
+alias c='cd'
+alias b='cd ..'
+alias l='ll'
+alias t='tree'
+alias v='vim'
+alias s='git st'
+alias d='git diff'
+
 export PATH="/home/luan/softwares:$PATH"
 
 #locale
