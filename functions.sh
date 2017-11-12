@@ -68,4 +68,6 @@ fi
 export KEYMAP="br-abnt2.map.gz"
 export LANG=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
+# fix
+setxkbmap -model abtn2 -layout br -variant abnt2
 # --
