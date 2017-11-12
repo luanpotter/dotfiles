@@ -26,6 +26,7 @@ alias lockexit='pma exit && lock'
 alias git='hub'
 alias gcm='git commit -m '
 alias gall='git add -A'
+alias gpr='git pull --rebase'
 
 alias src='source'
 alias vbash='vim ~/.bashrc'
