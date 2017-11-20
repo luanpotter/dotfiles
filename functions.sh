@@ -35,6 +35,9 @@ alias sbash='src ~/.bashrc'
 alias mci='mvn clean install'
 alias mcint='mci -Dmaven.test.skip'
 
+alias g='./gradlew build'
+alias grun='./gradlew bootRun'
+
 alias chrome='google-chrome-beta'
 alias google-chrome='google-chrome-beta'
 
