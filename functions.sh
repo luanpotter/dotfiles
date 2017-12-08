@@ -75,3 +75,6 @@ export LC_CTYPE=en_US.UTF-8
 # fix
 setxkbmap -model abtn2 -layout br -variant abnt2
 # --
+
+
+src "$(dirname "${BASH_SOURCE[0]}")/net.sh"
