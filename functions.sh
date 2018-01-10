@@ -19,6 +19,7 @@ house_monitor() {
 alias ls='ls --color=auto'
 alias ll='ls -lA'
 alias lll='watch -n 1 ls -lrt'
+alias ttt='watch -n 1 tree'
 
 alias lock='xscreensaver-command -l'
 alias lockexit='pma exit && lock'
