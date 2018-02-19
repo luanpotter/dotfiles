@@ -42,7 +42,13 @@ Setup is really easy:
     # ...
  ```
 
- Finally, link the .vimrc file:
+ * Use the script to install the custom fonts:
+
+```bash
+    ./fonts/install.sh
+```
+
+ * Finally, link the .vimrc file:
 
  ```bash
      ln -s $HOME/projects/dotfiles/.vimrc ~/.vimrc
