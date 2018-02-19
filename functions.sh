@@ -13,6 +13,10 @@ fix_res() {
 house_monitor() {
   xrandr --output HDMI1 --mode 1920x1080 --right-of LVDS1
 }
+
+present() {
+  xrandr --output HDMI1 --mode 800x600 --right-of LVDS1
+}
 # --
 
 # -- basic aliases
