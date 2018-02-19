@@ -35,9 +35,15 @@ Setup is really easy:
  ```bash
     # If not running interactively, don't do anything
     [[ $- != *i* ]] && return
-    
+
     source "$HOME/projects/dotfiles/functions.sh"
 
     # Env specific custom stuff
     # ...
  ```
+
+ Finally, link the .vimrc file:
+
+ ```bash
+     ln -s $HOME/projects/dotfiles/.vimrc ~/.vimrc
+```
