@@ -21,7 +21,7 @@ present() {
 
 # -- basic aliases
 alias ls='ls --color=auto'
-alias ll='ls -lA'
+alias ll='ls -lAh'
 alias lll='watch -n 1 ls -lrt'
 alias ttt='watch -n 1 tree'
 
