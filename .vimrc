@@ -208,3 +208,11 @@ let g:SuperTabDefaultCompletionType = "<c-n>"
 
 " Rooter
 let g:rooter_patterns = ["Rakefile", "pom.xml", "build.gradle", "package.json"]
+
+" workaround for https://github.com/vim/vim/issues/1start671
+if has("unix")
+  let s:uname = system("echo -n \"$(uname)\"")
+  if !v:shell_error && s:uname == "Linux"
+    set t_BE=
+  endif
+endif
