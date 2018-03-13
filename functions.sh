@@ -24,6 +24,7 @@ alias ls='ls --color=auto'
 alias ll='ls -lAh'
 alias lll='watch -n 1 ls -lrt'
 alias ttt='watch -n 1 tree'
+alias nc='ncat'
 
 alias lock='xscreensaver-command -l'
 alias lockexit='pma exit && lock'
@@ -35,6 +36,7 @@ alias gpr='git pull --rebase'
 
 alias src='source'
 alias vbash='vim ~/.bashrc'
+alias vfunc='vim ~/projects/dotfiles/functions.sh'
 alias sbash='src ~/.bashrc'
 
 alias mci='mvn clean install'
