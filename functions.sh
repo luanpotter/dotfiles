@@ -45,9 +45,6 @@ alias mcint='mci -Dmaven.test.skip'
 alias g='./gradlew build'
 alias grun='./gradlew bootRun'
 
-alias chrome='google-chrome-beta'
-alias google-chrome='google-chrome-beta'
-
 alias xc='xclip -selection c'
 alias crop='echo "Use imagemagick to crop images; e.g.:"; echo "convert print.png -crop WxH+DX+DY printo.png"'
 # --
