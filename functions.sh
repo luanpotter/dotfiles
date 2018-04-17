@@ -25,6 +25,9 @@ alias ll='ls -lAh'
 alias lll='watch -n 1 ls -lrt'
 alias ttt='watch -n 1 tree'
 alias nc='ncat'
+alias tailf='tail -f'
+
+alias path='realpath'
 
 alias lock='xscreensaver-command -l'
 alias lockexit='pma exit && lock'
@@ -65,6 +68,10 @@ export PATH="$HOME/softwares/scripts:$HOME/softwares:$PATH"
 flutter="$HOME/softwares/flutter/flutter/bin"
 if [ -d "$flutter" ]; then
   export PATH="$flutter:$PATH"
+fi
+gcloud="$HOME/softwares/google-cloud-sdk/bin"
+if [ -d "$gcloud" ]; then
+  export PATH="$gcloud:$PATH"
 fi
 
 android="$HOME/softwares/android/Android"

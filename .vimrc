@@ -36,6 +36,8 @@ Plug 'maralla/completor.vim'
 
 call plug#end()
 
+set clipboard=unnamedplus
+
 " Search highlight and searching as you type
 set hlsearch
 set incsearch
