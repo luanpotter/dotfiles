@@ -50,6 +50,9 @@ alias grun='./gradlew bootRun'
 
 alias xc='xclip -selection c'
 alias crop='echo "Use imagemagick to crop images; e.g.:"; echo "convert print.png -crop WxH+DX+DY printo.png"'
+function myip {
+  ip addr | grep -a wlp2s0 | sed -n 2p | rex '^.*inet ([\d.]*).*$' '$1'
+}
 # --
 
 # -- advanced aliases
@@ -60,6 +63,7 @@ alias d='git diff -w'
 alias l='ll'
 alias t='tree'
 alias v='vim'
+alias vr='vim -u NONE'
 # --
 
 # -- path
