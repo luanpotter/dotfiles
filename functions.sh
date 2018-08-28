@@ -94,3 +94,5 @@ setxkbmap -model abtn2 -layout br -variant abnt2
 
 
 src "$(dirname "${BASH_SOURCE[0]}")/net.sh"
+
+alias curlj='curl -H "Content-Type: application/json"'
