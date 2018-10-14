@@ -3,6 +3,9 @@ shopt -s globstar
 PS1='[\u@\h \W]\$ '
 # --
 
+EDITOR=vim
+TERM=terminator
+
 # -- xrandr
 fix_res() {
   xrandr --newmode "1600x900_60.00" 118.25 1600 1696 1856 2112 900 903 908 934 -hsync +vsync
@@ -70,14 +73,20 @@ alias ch='chromium'
 # -- path
 export PATH="$HOME/softwares/scripts:$HOME/softwares:$PATH"
 
-flutter="$HOME/softwares/flutter/flutter/bin"
-if [ -d "$flutter" ]; then
-  export PATH="$flutter:$PATH"
-fi
-gcloud="$HOME/softwares/google-cloud-sdk/bin"
-if [ -d "$gcloud" ]; then
-  export PATH="$gcloud:$PATH"
-fi
+function add_path_if_exists {
+  if [ -d "$1" ]; then
+    export PATH="$1:$PATH"
+  fi
+}
+
+function software {
+  add_path_if_exists "$HOME/softwares/$1"
+}
+
+software 'flutter/flutter/bin'
+software 'google-cloud-sdk/bin'
+software 'dart-sdk/bin'
+software 'node-v10.12.0-linux-x64/bin'
 
 android="$HOME/softwares/android/Android"
 if [ -d "$android" ]; then
