@@ -58,12 +58,13 @@ function myip {
 # -- advanced aliases
 alias c='cd'
 alias b='cd ..'
-alias s='git st'
+alias s='git status'
 alias d='git diff -w'
 alias l='ll'
 alias t='tree'
 alias v='vim'
 alias vr='vim -u NONE'
+alias ch='chromium'
 # --
 
 # -- path

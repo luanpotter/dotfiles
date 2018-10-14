@@ -45,7 +45,15 @@ Setup is really easy:
  * Use the script to install the custom fonts:
 
 ```bash
-    ./fonts/install.sh
+    cd ./fonts
+    ./install.sh
+    # must be run from within fonts folder (TODO fix this!)
+```
+
+ * Setup git only once in your life (changes are persistent):
+
+```bash
+    ./git.sh # open this file first to change your email and name!
 ```
 
  * Finally, link the .vimrc file:
@@ -53,3 +61,5 @@ Setup is really easy:
  ```bash
      ln -s $HOME/projects/dotfiles/.vimrc ~/.vimrc
 ```
+
+After that, you must open vim once (`v`), and see a lot of erros; just run `:PlugInstall` once to do everything. Next run should give you no errors.
