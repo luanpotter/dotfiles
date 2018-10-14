@@ -8,7 +8,7 @@ theme = {}
 -- aurantium awesome theme --
 -----------------------------
 
-theme.font          = "terminus 8"
+theme.font          = "Monaco 8"
 
 theme.bg_normal     = "#000000"
 theme.bg_focus      = "#000000"

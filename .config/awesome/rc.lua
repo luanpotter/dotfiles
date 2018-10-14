@@ -119,12 +119,17 @@ mytextclock = wibox.widget.textclock()
 
 
     -- battery
+    function has_battery()
+      local result = os.execute("command -v acpi")
+      return not(result ~= true and result ~= 0)
+    end
+
     function battery()
         local remain = 0
         local icon = ""
         local fd = io.popen("acpi", "r")
         if not fd then
-            do return "no info" end
+            return "no info"
         end
         local text = fd:read("*a")
         io.close(fd)
@@ -135,23 +140,30 @@ mytextclock = wibox.widget.textclock()
         end
 
         remain = string.match(text, ", (%d+)%%")
-	if not remain then
-	    return ':battery error:'
-	end
-    
+        if not remain then
+            return ':battery error:'
+        end
+
         return remain .. "% <b>" .. icon .. "</b> "
     end
-    -- Initialize widget
-    mybattery = wibox.widget.textbox()
 
-    update_battery = function()
-        mybattery.markup = battery()
-        gears.timer.start_new(10, function()
-            update_battery()
-        end)
+    function init_battery()
+        mybattery = wibox.widget.textbox()
+
+        update_battery = function()
+            mybattery.markup = battery()
+            gears.timer.start_new(10, function()
+                update_battery()
+            end)
+        end
+        mybattery.markup = '::'
+        update_battery()
     end
-    mybattery.markup = '::'
-    update_battery()
+
+    if has_battery() then
+      init_battery()
+    end
+    -- end battery
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = awful.util.table.join(
