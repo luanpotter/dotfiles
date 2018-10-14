@@ -21,7 +21,7 @@ Setup is really easy:
  * Copy `.config` files to your config folder:
 
 ```bash
-    cp -R .config $HOME/.config
+    cp -R .config ~/
 ```
 
  * Link scripts folder inside your softwares folder:
