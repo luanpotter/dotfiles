@@ -279,8 +279,13 @@ root.buttons(awful.util.table.join(
 ))
 -- }}}
 
+toggle_systray = function ()
+    awful.screen.focused().mywibox.visible = not awful.screen.focused().mywibox.visible
+end
+
 -- {{{ Key bindings
 globalkeys = awful.util.table.join(
+
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description="show help", group="awesome"}),
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
@@ -377,7 +382,9 @@ globalkeys = awful.util.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
+              {description = "show the menubar", group = "launcher"}),
+
+    awful.key({ modkey }, "=", toggle_systray, { description = "Toggle systray", group = "awesome"})
 )
 
 clientkeys = awful.util.table.join(
