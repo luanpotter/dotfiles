@@ -190,6 +190,7 @@ command Vertical windo wincmd H
 " ALE config
 let g:ale_linters = {
 \   'javascript': ['eslint'],
+\   'python': [],
 \}
 
 " YouCompleteMe
