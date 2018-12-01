@@ -11,3 +11,6 @@ yay -S fpp-git
 
 # postman
 yay -S postman
+
+# images
+sudo pacman -S pinta scrot
