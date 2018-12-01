@@ -6,6 +6,9 @@ PS1='[\u@\h \W]\$ '
 EDITOR=vim
 TERM=terminator
 
+# xdg-settings set default-web-browser chromium.desktop
+BROWSER=chromium
+
 # -- xrandr
 fix_res() {
   xrandr --newmode "1600x900_60.00" 118.25 1600 1696 1856 2112 900 903 908 934 -hsync +vsync
@@ -14,11 +17,11 @@ fix_res() {
 }
 
 house_monitor() {
-  xrandr --output HDMI1 --mode 1920x1080 --right-of LVDS1
+  xrandr --output HDMI-1 --mode 1920x1080 --right-of eDP-1
 }
 
 present() {
-  xrandr --output HDMI1 --mode 800x600 --right-of LVDS1
+  xrandr --output HDMI-1 --mode 800x600 --right-of eDP-1
 }
 # --
 
