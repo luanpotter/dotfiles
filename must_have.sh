@@ -19,4 +19,4 @@ yay -S postman
 sudo pacman -S pinta scrot imagemagick
 
 # pdf, djvu
-sudo pacman -S xpdf poppler
+sudo pacman -S zathura zathura-djvu zathura-pdf-mupdf
