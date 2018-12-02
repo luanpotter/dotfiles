@@ -13,4 +13,4 @@ yay -S fpp-git
 yay -S postman
 
 # images
-sudo pacman -S pinta scrot
+sudo pacman -S pinta scrot imagemagick
