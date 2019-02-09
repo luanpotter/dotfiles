@@ -23,6 +23,15 @@ house_monitor() {
 present() {
   xrandr --output HDMI-1 --mode 800x600 --right-of eDP-1
 }
+
+removeFromPath() {
+   local p d
+   p=":$1:"
+   d=":$PATH:"
+   d=${d//$p/:}
+   d=${d/#:/}
+   PATH=${d/%:/}
+}
 # --
 
 # -- basic aliases
@@ -53,6 +62,8 @@ alias mcint='mci -Dmaven.test.skip'
 
 alias g='./gradlew build'
 alias grun='./gradlew bootRun'
+
+alias sus='sudo systemctl suspend'
 
 alias xc='xclip -selection c'
 alias crop='echo "Use imagemagick to crop images; e.g.:"; echo "convert print.png -crop WxH+DX+DY printo.png"'

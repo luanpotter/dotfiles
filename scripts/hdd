@@ -1,0 +1,5 @@
+#!/bin/bash -xe
+
+sudo umount /mnt/hdd/ || true
+sudo ntfsfix /dev/sda2
+sudo mount /dev/sda2 /mnt/hdd
