@@ -24,6 +24,15 @@ present() {
   xrandr --output HDMI-1 --mode 800x600 --right-of eDP-1
 }
 
+mirror() {
+  xrandr --output eDP-1 --mode 800x600
+  xrandr --output HDMI-1 --mode 800x600 --same-as eDP-1
+}
+
+clear_screen() {
+  xrandr --output eDP-1 --mode 1920x1080
+}
+
 removeFromPath() {
    local p d
    p=":$1:"
@@ -33,6 +42,12 @@ removeFromPath() {
    PATH=${d/%:/}
 }
 # --
+
+## -- mk projects aliases
+alias mkp-java8='to_java8 && m archetype:generate -DarchetypeGroupId=xyz.luan.generator -DarchetypeArtifactId=xyz-generator -DarchetypeVersion=0.3.0'
+alias mkp-java11='to_java11 && m archetype:generate -DarchetypeGroupId=xyz.luan.generator -DarchetypeArtifactId=xyz-generator -DarchetypeVersion=0.3.0 -Djava-version=11'
+alias mkp-js='n init'
+## --
 
 # -- basic aliases
 alias ls='ls --color=auto'
@@ -80,8 +95,11 @@ alias d='git diff -w'
 alias l='ll'
 alias t='tree'
 alias v='vim'
+alias n='npm'
+alias m='mvn'
 alias vr='vim -u NONE'
 alias ch='chromium'
+alias bb='cd ../..'
 # --
 
 # -- path
