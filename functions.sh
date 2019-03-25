@@ -57,6 +57,8 @@ alias ttt='watch -n 1 tree'
 alias nc='ncat'
 alias tailf='tail -f'
 
+alias dry-run='flutter packages pub publish --dry-run'
+alias flutter-publish='flutter packages pub publish'
 alias path='realpath'
 
 alias lock='xscreensaver-command -l'
