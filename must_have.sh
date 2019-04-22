@@ -1,22 +1,14 @@
 # install yay (or yaourt, packer, or equiv)
 # fix mirrorlist with reflector
 sudo pacman -S reflector
-reflector --verbose --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+sudo reflector --verbose --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
 
-# bare minimum
-sudo pacman -S vim git hub unzip tree wget openssh
+# bare minimum, ag and jq, images, pdf and djavu
+sudo pacman -S --noconfirm \
+  vim git hub unzip tree wget openssh \
+  the_silver_searcher jq \
+  pinta scrot imagemagick vlc \
+  zathura zathura-djvu zathura-pdf-mupdf
 
-# ag, jq
-sudo pacman -S the_silver_searcher jq
-
-# fpp
-yay -S fpp-git
-
-# postman
-yay -S postman
-
-# images
-sudo pacman -S pinta scrot imagemagick
-
-# pdf, djvu
-sudo pacman -S zathura zathura-djvu zathura-pdf-mupdf
+# yay : fpp and postman
+yay -S postman fpp-git

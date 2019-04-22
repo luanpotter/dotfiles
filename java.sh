@@ -1,7 +1,7 @@
 # java 8
 
-export JAVA_8=/home/luan/softwares/java/jdk1.8.0_191
-export JAVA_11=/home/luan/softwares/java/jdk-11.0.1
+export JAVA_8=/home/luan/softwares/java/jdk1.8.0_201
+export JAVA_11=/home/luan/softwares/java/jdk-11.0.2
 
 _clearPath() {
   removeFromPath $JAVA_8/bin

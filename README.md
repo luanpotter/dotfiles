@@ -27,6 +27,7 @@ Setup is really easy:
  * Link scripts folder inside your softwares folder:
 
  ```bash
+     mkdir $HOME/softwares
      ln -s $HOME/projects/dotfiles/scripts $HOME/softwares/scripts
  ```
 

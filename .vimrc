@@ -219,3 +219,6 @@ if has("unix")
     set t_BE=
   endif
 endif
+
+" work with x clipboard
+set clipboard=unnamedplus

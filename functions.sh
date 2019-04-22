@@ -16,6 +16,10 @@ fix_res() {
   xrandr --output VGA1 --mode "1600x900_60.00"
 }
 
+house_monitor_up() {
+  xrandr --output HDMI-1 --mode 1920x1080 --above eDP-1
+}
+
 house_monitor() {
   xrandr --output HDMI-1 --mode 1920x1080 --right-of eDP-1
 }
@@ -57,6 +61,11 @@ alias ttt='watch -n 1 tree'
 alias nc='ncat'
 alias tailf='tail -f'
 
+# pma
+alias pma-log='vim ~/projects/dextra/pma/dist/log.dat'
+alias pma='~/projects/dextra/pma/cmds/run.sh'
+#
+
 alias dry-run='flutter packages pub publish --dry-run'
 alias flutter-publish='flutter packages pub publish'
 alias path='realpath'
@@ -81,6 +90,7 @@ alias g='./gradlew build'
 alias grun='./gradlew bootRun'
 
 alias sus='sudo systemctl suspend'
+alias off='sudo halt -p'
 
 alias xc='xclip -selection c'
 alias crop='echo "Use imagemagick to crop images; e.g.:"; echo "convert print.png -crop WxH+DX+DY printo.png"'
@@ -98,6 +108,7 @@ alias l='ll'
 alias t='tree'
 alias v='vim'
 alias n='npm'
+alias nr='npm run'
 alias m='mvn'
 alias vr='vim -u NONE'
 alias ch='chromium'
@@ -138,5 +149,6 @@ setxkbmap -model abtn2 -layout br -variant abnt2
 
 
 src "$(dirname "${BASH_SOURCE[0]}")/net.sh"
+src "$(dirname "${BASH_SOURCE[0]}")/java.sh"
 
 alias curlj='curl -H "Content-Type: application/json"'
