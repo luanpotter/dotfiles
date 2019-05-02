@@ -92,6 +92,8 @@ alias grun='./gradlew bootRun'
 alias sus='sudo systemctl suspend'
 alias off='sudo halt -p'
 
+alias pintas='scrot -d 1 -u /tmp/temp.scrot.png && pinta /tmp/temp.scrot.png && rm /tmp/temp.scrot.png'
+
 alias xc='xclip -selection c'
 alias crop='echo "Use imagemagick to crop images; e.g.:"; echo "convert print.png -crop WxH+DX+DY printo.png"'
 function myip {
