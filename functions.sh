@@ -16,25 +16,36 @@ fix_res() {
   xrandr --output VGA1 --mode "1600x900_60.00"
 }
 
-house_monitor_up() {
-  xrandr --output HDMI-1 --mode 1920x1080 --above eDP-1
-}
+EXT_MONITOR=HDMI-1-1
+INTERNAL_MONITOR=eDP-1-1
 
 house_monitor() {
-  xrandr --output HDMI-1 --mode 1920x1080 --right-of eDP-1
+  house_monitor_right
+}
+
+house_monitor_up() {
+  xrandr --output $EXT_MONITOR --mode 1920x1080 --above $INTERNAL_MONITOR
+}
+
+house_monitor_left() {
+  xrandr --output $EXT_MONITOR --mode 1920x1080 --left-of $INTERNAL_MONITOR
+}
+
+house_monitor_right() {
+  xrandr --output $EXT_MONITOR --mode 1920x1080 --right-of $INTERNAL_MONITOR
 }
 
 present() {
-  xrandr --output HDMI-1 --mode 800x600 --right-of eDP-1
+  xrandr --output $EXT_MONITOR --mode 800x600 --right-of $INTERNAL_MONITOR
 }
 
 mirror() {
-  xrandr --output eDP-1 --mode 800x600
-  xrandr --output HDMI-1 --mode 800x600 --same-as eDP-1
+  xrandr --output $INTERNAL_MONITOR --mode 800x600
+  xrandr --output $EXT_MONITOR --mode 800x600 --same-as $INTERNAL_MONITOR
 }
 
 clear_screen() {
-  xrandr --output eDP-1 --mode 1920x1080
+  xrandr --output $INTERNAL_MONITOR --mode 1920x1080
 }
 
 removeFromPath() {
