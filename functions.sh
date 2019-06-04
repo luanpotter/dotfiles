@@ -126,7 +126,11 @@ alias m='mvn'
 alias vr='vim -u NONE'
 alias ch='chromium'
 alias bb='cd ../..'
+alias f='flutter'
+alias fpg='f pub get'
 # --
+
+alias xxx="gall && gcm '.' && git push"
 
 # -- path
 export PATH="$HOME/softwares/scripts:$HOME/softwares:$PATH"
