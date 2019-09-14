@@ -220,5 +220,8 @@ if has("unix")
   endif
 endif
 
+nnoremap d "_d
+xnoremap d "_d
+
 " work with x clipboard
 set clipboard=unnamed
