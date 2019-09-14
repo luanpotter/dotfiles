@@ -221,4 +221,4 @@ if has("unix")
 endif
 
 " work with x clipboard
-set clipboard=unnamedplus
+set clipboard=unnamed

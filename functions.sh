@@ -1,11 +1,16 @@
 # -- basics
-shopt -s globstar
+shopt -s globstar 2> /dev/null
 PS1='[\u@\h \W]\$ '
 # --
 
-EDITOR=vim
-TERM=terminator
+# variables
+ENABLE_LOCALE=false
+EXT_MONITOR=HDMI-1-1
+INTERNAL_MONITOR=eDP-1-1
+#
 
+EDITOR=vim
+# TERM=terminator
 # xdg-settings set default-web-browser chromium.desktop
 BROWSER=chromium
 
@@ -15,9 +20,6 @@ fix_res() {
   xrandr --addmode VGA1 "1600x900_60.00"
   xrandr --output VGA1 --mode "1600x900_60.00"
 }
-
-EXT_MONITOR=HDMI-1-1
-INTERNAL_MONITOR=eDP-1-1
 
 house_monitor() {
   house_monitor_right
@@ -64,17 +66,21 @@ alias mkp-java11='to_java11 && m archetype:generate -DarchetypeGroupId=xyz.luan.
 alias mkp-js='n init'
 ## --
 
+# colored ls on all systems
+export CLICOLOR=1
+ls --color=auto &> /dev/null && alias ls='ls --color=auto'
+#
+
 # -- basic aliases
-alias ls='ls --color=auto'
 alias ll='ls -lAh'
 alias lll='watch -n 1 ls -lrt'
 alias ttt='watch -n 1 tree'
 alias nc='ncat'
 alias tailf='tail -f'
 
-# pma
-alias pma-log='vim ~/projects/dextra/pma/dist/log.dat'
-alias pma='~/projects/dextra/pma/cmds/run.sh'
+# pma - old pma stuff
+# alias pma-log='vim ~/projects/dextra/pma/dist/log.dat'
+# alias pma='~/projects/dextra/pma/cmds/run.sh'
 #
 
 alias dry-run='flutter packages pub publish --dry-run'
@@ -92,6 +98,7 @@ alias gpr='git pull --rebase'
 alias src='source'
 alias vbash='vim ~/.bashrc'
 alias vfunc='vim ~/projects/dotfiles/functions.sh'
+alias vvim='vim ~/.vimrc'
 alias sbash='src ~/.bashrc'
 
 alias mci='mvn clean install'
@@ -157,13 +164,14 @@ fi
 # --
 
 # -- locale
-export KEYMAP="br-abnt2.map.gz"
-export LANG=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-# fix
-setxkbmap -model abtn2 -layout br -variant abnt2
+if [ "$ENABLE_LOCALE" = "true" ]; then
+  export KEYMAP="br-abnt2.map.gz"
+  export LANG=en_US.UTF-8
+  export LC_CTYPE=en_US.UTF-8
+  # fix
+  setxkbmap -model abtn2 -layout br -variant abnt2
+fi
 # --
-
 
 src "$(dirname "${BASH_SOURCE[0]}")/net.sh"
 src "$(dirname "${BASH_SOURCE[0]}")/java.sh"
