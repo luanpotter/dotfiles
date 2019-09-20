@@ -104,8 +104,10 @@ alias sbash='src ~/.bashrc'
 alias mci='mvn clean install'
 alias mcint='mci -Dmaven.test.skip'
 
-alias g='./gradlew build'
-alias grun='./gradlew bootRun'
+alias g='./gradlew'
+alias gbuild='g build'
+alias grun='g bootRun'
+alias glint='g detekt -x build'
 
 alias sus='sudo systemctl suspend'
 alias off='sudo halt -p'
