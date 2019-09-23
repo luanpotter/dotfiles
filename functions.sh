@@ -108,6 +108,7 @@ alias g='./gradlew'
 alias gbuild='g build'
 alias grun='g bootRun'
 alias glint='g detekt -x build'
+alias gproto='g buildProtos'
 
 alias sus='sudo systemctl suspend'
 alias off='sudo halt -p'
