@@ -1,6 +1,9 @@
 # -- basics
 shopt -s globstar 2> /dev/null
 PS1='[\u@\h \W]\$ '
+setopt PROMPT_SUBST
+autoload -U colors && colors
+PROMPT='[%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}:%~]%(!.#.$) '
 # --
 
 # variables
@@ -92,8 +95,16 @@ alias lockexit='pma exit && lock'
 
 alias git='hub'
 alias gcm='git commit -m '
+alias grc='git rebase --continue'
 alias gall='git add -A'
 alias gpr='git pull --rebase'
+
+
+if [ -n "$ZSH_VERSION" ]; then
+  # test -f ~/softwares/scripts/.git-completion.zsh && . $_
+else
+  test -f ~/softwares/scripts/.git-completion.bash && . $_
+fi
 
 alias src='source'
 alias vbash='vim ~/.bashrc'
@@ -138,6 +149,7 @@ alias ch='chromium'
 alias bb='cd ../..'
 alias f='flutter'
 alias fpg='f pub get'
+alias k='kubectl'
 # --
 
 alias xxx="gall && gcm '.' && git push"
@@ -176,7 +188,7 @@ if [ "$ENABLE_LOCALE" = "true" ]; then
 fi
 # --
 
-src "$(dirname "${BASH_SOURCE[0]}")/net.sh"
-src "$(dirname "${BASH_SOURCE[0]}")/java.sh"
+src ~/projects/dotfiles/net.sh
+src ~/projects/dotfiles/java.sh
 
 alias curlj='curl -H "Content-Type: application/json"'
