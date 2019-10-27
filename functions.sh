@@ -24,6 +24,22 @@ fix_res() {
   xrandr --output VGA1 --mode "1600x900_60.00"
 }
 
+switch_keys() {
+  file='/tmp/_key.config'
+  current_key=`cat $file`
+  next_key=`if [ "$current_key" == "us" ]; then echo "br"; else echo "us"; fi`
+  switch_keys_to $next_key
+}
+
+switch_keys_to() {
+  file='/tmp/_key.config'
+  next_key=$1
+  setxkbmap $next_key
+  echo $next_key > $file
+}
+
+switch_keys_to 'br'
+
 house_monitor() {
   house_monitor_right
 }

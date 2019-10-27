@@ -32,7 +32,11 @@ Plug 'posva/vim-vue'
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'airblade/vim-rooter'
 Plug 'ervandew/supertab'
-Plug 'maralla/completor.vim'
+"Plug 'maralla/completor.vim'
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc-java'
+Plug 'neoclide/coc-json'
 
 call plug#end()
 
@@ -200,11 +204,18 @@ set completeopt-=preview
 hi IndentGuidesOdd  ctermbg=black
 hi IndentGuidesEven ctermbg=darkgrey
 
-" Deoplete
-let g:deoplete#enable_at_startup = 1
-
-" Using relative path for paths autocomplete
-let g:deoplete#file#enable_buffer_path = 1
+" " Deoplete
+" let g:deoplete#enable_at_startup = 1
+" 
+" " Using relative path for paths autocomplete
+" let g:deoplete#file#enable_buffer_path = 1
+" 
+" " Disable deoplete for certain files
+" autocmd FileType javascript
+" \ call deoplete#custom#buffer_option('auto_complete', v:false)
+" 
+" autocmd FileType java
+" \ call deoplete#custom#buffer_option('auto_complete', v:false)
 
 " Adjusting Deoplete tab order
 let g:SuperTabDefaultCompletionType = "<c-n>"
@@ -223,5 +234,6 @@ endif
 nnoremap d "_d
 xnoremap d "_d
 
-" work with x clipboard
 set clipboard=unnamed
+set modelines=0
+set nomodeline
