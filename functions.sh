@@ -1,8 +1,8 @@
 # -- basics
 shopt -s globstar 2> /dev/null
 PS1='[\u@\h \W]\$ '
-setopt PROMPT_SUBST
-autoload -U colors && colors
+setopt PROMPT_SUBST 2> /dev/null
+(autoload -U colors && colors) 2> /dev/null
 PROMPT='[%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}:%~]%(!.#.$) '
 # --
 
@@ -118,6 +118,7 @@ alias gpr='git pull --rebase'
 
 if [ -n "$ZSH_VERSION" ]; then
   # test -f ~/softwares/scripts/.git-completion.zsh && . $_
+  true
 else
   test -f ~/softwares/scripts/.git-completion.bash && . $_
 fi
