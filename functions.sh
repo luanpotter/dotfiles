@@ -16,6 +16,7 @@ EDITOR=vim
 # TERM=terminator
 # xdg-settings set default-web-browser chromium.desktop
 BROWSER=chromium
+export CHROME_EXECUTABLE=chromium
 
 # -- xrandr
 fix_res() {
@@ -27,7 +28,7 @@ fix_res() {
 switch_keys() {
   file='/tmp/_key.config'
   current_key=`cat $file`
-  next_key=`if [ "$current_key" == "us" ]; then echo "br"; else echo "us"; fi`
+  next_key=us #`if [ "$current_key" == "us" ]; then echo "br"; else echo "us"; fi`
   switch_keys_to $next_key
 }
 
@@ -104,6 +105,7 @@ alias tailf='tail -f'
 
 alias dry-run='flutter packages pub publish --dry-run'
 alias flutter-publish='flutter packages pub publish'
+alias fweb='flutter run -d chrome'
 alias path='realpath'
 
 alias lock='xscreensaver-command -l'
@@ -207,5 +209,7 @@ fi
 
 src ~/projects/dotfiles/net.sh
 src ~/projects/dotfiles/java.sh
+
+alias mount_hhd='sudo mount -o gid=users,uid=1000,umask=0000 /dev/sda2 /mnt/hdd'
 
 alias curlj='curl -H "Content-Type: application/json"'
