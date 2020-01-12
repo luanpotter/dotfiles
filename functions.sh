@@ -6,6 +6,11 @@ setopt PROMPT_SUBST 2> /dev/null
 PROMPT='[%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}:%~]%(!.#.$) '
 # --
 
+# changes zsh autocomplete to work like bash's
+setopt noautomenu
+setopt nomenucomplete
+###
+
 # variables
 ENABLE_LOCALE=false
 EXT_MONITOR=HDMI-1-1
@@ -114,8 +119,28 @@ alias lockexit='pma exit && lock'
 alias git='hub'
 alias gcm='git commit -m '
 alias grc='git rebase --continue'
+alias gcb='git co -b'
+alias gca='git commit --amend'
 alias gall='git add -A'
 alias gpr='git pull --rebase'
+
+
+alias gitb='git --no-pager branch --sort=-committerdate'
+function gb() {
+  gbb 15 $1
+}
+
+function gbb() {
+  param=$2
+  n=$1
+  if [ -z "$param" ]; then
+    result=`gitb | head -n$n | awk '{ print "(" NR  ") " $0 }'`
+    echo "$result"
+  else
+    branch=`gitb | awk "NR==$param" | sed 's/[ *]*//g'`
+    git checkout "$branch"
+  fi
+}
 
 
 if [ -n "$ZSH_VERSION" ]; then
@@ -195,6 +220,9 @@ android="$HOME/softwares/android/Android"
 if [ -d "$android" ]; then
   export ANDROID_HOME="$android"
 fi
+if [ -d "$HOME/softwares/java" ]; then
+  src ~/projects/dotfiles/java.sh
+fi
 # --
 
 # -- locale
@@ -208,7 +236,6 @@ fi
 # --
 
 src ~/projects/dotfiles/net.sh
-src ~/projects/dotfiles/java.sh
 
 alias mount_hhd='sudo mount -o gid=users,uid=1000,umask=0000 /dev/sda2 /mnt/hdd'
 
