@@ -40,7 +40,7 @@ switch_keys() {
 switch_keys_to() {
   file='/tmp/_key.config'
   next_key=$1
-  setxkbmap $next_key
+  setxkbmap $next_key 2> /dev/null
   echo $next_key > $file
 }
 
