@@ -1,20 +1,20 @@
 # -- basics
 shopt -s globstar 2> /dev/null
-PS1='[\u@\h \W]\$ '
+PS1='[\u@\h \W]\$ ' 2> /dev/null
 setopt PROMPT_SUBST 2> /dev/null
 (autoload -U colors && colors) 2> /dev/null
 PROMPT='[%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}:%~]%(!.#.$) '
 # --
 
 # changes zsh autocomplete to work like bash's
-setopt noautomenu
-setopt nomenucomplete
+setopt noautomenu 2> /dev/null
+setopt nomenucomplete 2> /dev/null
 ###
 
 # variables
 ENABLE_LOCALE=false
-EXT_MONITOR=HDMI-1-1
-INTERNAL_MONITOR=eDP-1-1
+EXT_MONITOR=HDMI-1
+INTERNAL_MONITOR=eDP-1
 #
 
 EDITOR=vim
@@ -121,6 +121,7 @@ alias gcm='git commit -m '
 alias grc='git rebase --continue'
 alias gcb='git co -b'
 alias gca='git commit --amend'
+alias gpu='git push -u origin HEAD'
 alias gall='git add -A'
 alias gpr='git pull --rebase'
 
