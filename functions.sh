@@ -83,6 +83,13 @@ removeFromPath() {
    d=${d/#:/}
    PATH=${d/%:/}
 }
+
+function most_used {
+  history 1 | cat | awk '{CMD[$2]++;count++;} END { for (a in CMD) \
+    print CMD[a] " " CMD[a]/count*100 "% " a; }' | grep -v "./" \
+    | column -c3 -s " " -t | sort -nr | nl | head -n$1
+}
+
 # --
 
 ## -- mk projects aliases
@@ -203,8 +210,6 @@ alias k='kubectl'
 alias xxx="gall && gcm '.' && git push"
 
 # -- path
-export PATH="$HOME/softwares/scripts:$HOME/softwares:$PATH"
-
 function add_path_if_exists {
   if [ -d "$1" ]; then
     export PATH="$1:$PATH"
@@ -215,11 +220,8 @@ function software {
   add_path_if_exists "$HOME/softwares/$1"
 }
 
-function most_used {
-  history 1 | cat | awk '{CMD[$2]++;count++;} END { for (a in CMD) \
-    print CMD[a] " " CMD[a]/count*100 "% " a; }' | grep -v "./" \
-    | column -c3 -s " " -t | sort -nr | nl | head -n$1
-}
+software ""
+software "scripts"
 
 software 'flutter/flutter/bin'
 software 'google-cloud-sdk/bin'
