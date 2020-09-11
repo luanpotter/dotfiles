@@ -118,12 +118,14 @@ alias lockexit='pma exit && lock'
 
 alias git='hub'
 alias gcm='git commit -m '
+alias gm='git co master'
 alias grc='git rebase --continue'
 alias gcb='git co -b'
-alias gca='git commit --amend'
+alias gca='git commit --amend --no-edit'
 alias gpu='git push -u origin HEAD'
 alias gall='git add -A'
 alias gpr='git pull --rebase'
+alias gpf='git pushf' # pushf is aliased to force with lease
 
 
 alias gitb='git --no-pager branch --sort=-committerdate'
