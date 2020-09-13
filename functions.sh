@@ -46,20 +46,22 @@ switch_keys_to() {
 
 switch_keys_to 'br'
 
+res=2560x1440
+
 house_monitor() {
   house_monitor_right
 }
 
 house_monitor_up() {
-  xrandr --output $EXT_MONITOR --mode 1920x1080 --above $INTERNAL_MONITOR
+  xrandr --output $EXT_MONITOR --mode $res --above $INTERNAL_MONITOR
 }
 
 house_monitor_left() {
-  xrandr --output $EXT_MONITOR --mode 1920x1080 --left-of $INTERNAL_MONITOR
+  xrandr --output $EXT_MONITOR --mode $res --left-of $INTERNAL_MONITOR
 }
 
 house_monitor_right() {
-  xrandr --output $EXT_MONITOR --mode 1920x1080 --right-of $INTERNAL_MONITOR
+  xrandr --output $EXT_MONITOR --mode $res --right-of $INTERNAL_MONITOR
 }
 
 present() {
