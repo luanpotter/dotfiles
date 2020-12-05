@@ -258,8 +258,4 @@ src ~/projects/dotfiles/net.sh
 alias mount_hhd='sudo mount -o gid=users,uid=1000,umask=0000 /dev/sda2 /mnt/hdd'
 
 alias curlj='curl -H "Content-Type: application/json"'
-
-function hask {
-  name="${1%%.*}"
-  ghc -dynamic $1 -o output && ./output && rm output $name.hi $name.o
-}
+alias hask=runhaskell
