@@ -180,6 +180,10 @@ alias gproto='g buildProtos'
 alias sus='sudo systemctl suspend'
 alias off='sudo halt -p'
 
+alias pac='sudo pacman'
+alias up='pac -Syyu'
+alias up-aur='yay -Syyu'
+
 alias pintas='scrot -d 1 -u /tmp/temp.scrot.png && pinta /tmp/temp.scrot.png && rm /tmp/temp.scrot.png'
 
 alias xc='xclip -selection c'
@@ -254,3 +258,7 @@ src ~/projects/dotfiles/net.sh
 alias mount_hhd='sudo mount -o gid=users,uid=1000,umask=0000 /dev/sda2 /mnt/hdd'
 
 alias curlj='curl -H "Content-Type: application/json"'
+
+function hask {
+  ghc -dynamic $1 -o output && ./output && rm output
+}
