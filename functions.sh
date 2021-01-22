@@ -135,6 +135,9 @@ alias gpu='git push -u origin HEAD'
 alias gall='git add -A'
 alias gpr='git pull --rebase'
 alias gpf='git pushf' # pushf is aliased to force with lease
+alias gg='git co green && gpr'
+alias grg='git rebase green'
+alias gsf='git stash push '
 
 
 alias gitb='git --no-pager branch --sort=-committerdate'
@@ -174,8 +177,11 @@ alias mcint='mci -Dmaven.test.skip'
 alias g='./gradlew'
 alias gbuild='g build'
 alias grun='g bootRun'
-alias glint='g detekt -x build'
+alias glint='./tools/hooks/detekt-push-or-commit.sh push'
+alias glint-full='g detekt -x build'
 alias gproto='g buildProtos'
+alias gios='g buildIosProtos && (c protos ; zip -r ios-protos.zip ios-protos/*)'
+alias gios-cleanup='(c protos ; rm -rf ios-protos*)'
 
 alias sus='sudo systemctl suspend'
 alias off='sudo halt -p'
