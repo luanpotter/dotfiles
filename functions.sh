@@ -262,6 +262,7 @@ fi
 src ~/projects/dotfiles/net.sh
 
 alias mount_hhd='sudo mount -o gid=users,uid=1000,umask=0000 /dev/sda2 /mnt/hdd'
+alias mount_usb='sudo mount /dev/sdc1 /mnt/pendrive'
 
 alias curlj='curl -H "Content-Type: application/json"'
 alias hask=runhaskell
