@@ -7,3 +7,4 @@ brew install hub wget tree ag jq fpp
 # install:
 # https://karabiner-elements.pqrs.org/
 # https://ianyh.com/amethyst/
+# vscode, intellij
