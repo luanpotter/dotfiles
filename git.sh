@@ -8,5 +8,6 @@ git config --global user.name "Luan Nico"
 
 git config --global alias.st status
 git config --global alias.co checkout
+git config --global alias.pushf "push --force-with-lease"
 
 git config --global push.default current
