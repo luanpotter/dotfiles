@@ -43,6 +43,12 @@ Setup is really easy:
     # ...
  ```
 
+ Note: if you are using zsh, don't forget to make sure your `~/.zshrc` is sourcing your bashrc:
+
+ ```bash
+   source ~/.bashrc
+ ```
+
  * Use the script to install the custom fonts:
 
 ```bash
