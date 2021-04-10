@@ -33,7 +33,7 @@ fix_res() {
 switch_keys() {
   file='/tmp/_key.config'
   current_key=`cat $file`
-  next_key=us #`if [ "$current_key" == "us" ]; then echo "br"; else echo "us"; fi`
+  next_key=`if [ "$current_key" == "us" ]; then echo "br"; else echo "us"; fi`
   switch_keys_to $next_key
 }
 
@@ -44,7 +44,10 @@ switch_keys_to() {
   echo $next_key > $file
 }
 
-switch_keys_to 'br'
+function sk() {
+  switch_keys_to 'us'
+}
+sk
 
 res=2560x1440
 
@@ -119,7 +122,7 @@ alias tailf='tail -f'
 
 alias dry-run='flutter packages pub publish --dry-run'
 alias flutter-publish='flutter packages pub publish'
-alias fweb='flutter run -d chrome'
+alias fweb='flutter run -d chrome --dart-define=FLUTTER_WEB_USE_SKIA=true'
 alias path='realpath'
 
 alias lock='xscreensaver-command -l'
@@ -132,6 +135,7 @@ alias grc='git rebase --continue'
 alias gcb='git co -b'
 alias gca='git commit --amend --no-edit'
 alias gpu='git push -u origin HEAD'
+alias ga='git add'
 alias gall='git add -A'
 alias gpr='git pull --rebase'
 alias gpf='git pushf' # pushf is aliased to force with lease
@@ -190,7 +194,10 @@ alias pac='sudo pacman'
 alias up='pac -Syyu'
 alias up-aur='yay -Syyu'
 
-alias pintas='scrot -d 1 -u /tmp/temp.scrot.png && pinta /tmp/temp.scrot.png && rm /tmp/temp.scrot.png'
+function pintas() {
+  d=${1:-1}
+  scrot -d $d -u /tmp/temp.scrot.png && pinta /tmp/temp.scrot.png && rm /tmp/temp.scrot.png
+}
 
 alias xc='xclip -selection c'
 alias crop='echo "Use imagemagick to crop images; e.g.:"; echo "convert print.png -crop WxH+DX+DY printo.png"'
