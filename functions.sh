@@ -131,13 +131,13 @@ alias lockexit='pma exit && lock'
 alias git='hub'
 alias gcm='git commit -m '
 alias gcma='git commit -m "Address comments"'
+alias gac='gall && gcma && git push'
 alias gm='git co master'
 alias grc='git rebase --continue'
 alias grs='git rebase --skip'
 alias gra='git rebase --abort'
 alias gcb='git co -b'
 alias gca='git commit --amend --no-edit'
-alias gpu='git push -u origin HEAD'
 alias ga='git add'
 alias gall='git add -A'
 alias gpr='git pull --rebase'
@@ -146,6 +146,11 @@ alias gg='git co green && gpr'
 alias grg='git rebase green'
 alias gsf='git stash push '
 
+alias branch='git rev-parse --abbrev-ref HEAD'
+function gpu() {
+  b=`branch`
+  git pull --rebase origin "$b"
+}
 
 alias gitb='git --no-pager branch --sort=-committerdate'
 function gb() {
@@ -246,6 +251,7 @@ software ""
 software "scripts"
 
 software 'flutter/flutter/bin'
+add_path_if_exists "$HOME/.pub-cache/bin"
 software 'google-cloud-sdk/bin'
 software 'dart-sdk/bin'
 software 'node-v10.12.0-linux-x64/bin'
