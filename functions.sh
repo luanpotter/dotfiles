@@ -123,6 +123,8 @@ alias tailf='tail -f'
 alias dry-run='flutter packages pub publish --dry-run'
 alias flutter-publish='flutter packages pub publish'
 alias fweb='flutter run -d chrome --dart-define=FLUTTER_WEB_USE_SKIA=true'
+alias fl='flutter run -d linux'
+alias fb='flutter pub run build_runner build'
 alias path='realpath'
 
 alias lock='xscreensaver-command -l'
@@ -233,6 +235,8 @@ alias bb='cd ../..'
 alias f='flutter'
 alias fpg='f pub get'
 alias k='kubectl'
+alias pg='ps aux | grep'
+
 # --
 
 alias xxx="gall && gcm '.' && git push"
