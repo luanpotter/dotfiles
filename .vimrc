@@ -28,15 +28,18 @@ Plug 'mxw/vim-jsx'
 Plug 'flowtype/vim-flow'
 Plug 'w0rp/ale'
 Plug 'moll/vim-node'
-Plug 'posva/vim-vue'
-Plug 'dart-lang/dart-vim-plugin'
 Plug 'airblade/vim-rooter'
 Plug 'ervandew/supertab'
-"Plug 'maralla/completor.vim'
+
+" dart support
+Plug 'dart-lang/dart-vim-plugin'
+Plug 'natebosch/vim-lsc'
+Plug 'natebosch/vim-lsc-dart'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'neoclide/coc-java'
 Plug 'neoclide/coc-json'
+Plug 'iamcco/coc-flutter'
 
 call plug#end()
 
@@ -231,9 +234,20 @@ if has("unix")
   endif
 endif
 
-nnoremap d "_d
-xnoremap d "_d
+nnoremap p "0p
+xnoremap p "0p
+
+nnoremap = "1p
+xnoremap = "1p
 
 set clipboard=unnamed
 set modelines=0
 set nomodeline
+
+let g:lsc_server_commands = {'dart': 'dart_language_server'}
+" We use coc for autocomplete
+let g:lsc_enable_autocomplete = v:false
+
+" Flutter helpers
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
