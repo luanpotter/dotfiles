@@ -145,7 +145,9 @@ alias gall='git add -A'
 alias gpr='git pull --rebase'
 alias gpf='git pushf' # pushf is aliased to force with lease
 alias gg='git co green && gpr'
+alias gm='git co main && gpr'
 alias grg='git rebase green'
+alias grm='git rebase main'
 alias gsf='git stash push '
 
 alias branch='git rev-parse --abbrev-ref HEAD'
