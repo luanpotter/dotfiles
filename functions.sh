@@ -49,7 +49,8 @@ function sk() {
 }
 sk
 
-res=2560x1440
+# res=2560x1440
+res=1920x1080
 
 house_monitor() {
   house_monitor_right
@@ -122,7 +123,8 @@ alias tailf='tail -f'
 
 alias dry-run='flutter packages pub publish --dry-run'
 alias flutter-publish='flutter packages pub publish'
-alias fweb='flutter run -d chrome --dart-define=FLUTTER_WEB_USE_SKIA=true'
+alias fweb='flutter run -d chrome --dart-define=FLUTTER_WEB_USE_SKIA=true --web-port 5000'
+alias fa='flutter run -d emulator-5554'
 alias fl='flutter run -d linux'
 alias fb='flutter pub run build_runner build'
 alias path='realpath'
@@ -209,7 +211,7 @@ alias up-aur='yay -Syyu'
 
 function pintas() {
   d=${1:-1}
-  scrot -d $d -u /tmp/temp.scrot.png && pinta /tmp/temp.scrot.png && rm /tmp/temp.scrot.png
+  scrot -d $d /tmp/temp.scrot.png && pinta /tmp/temp.scrot.png && rm /tmp/temp.scrot.png
 }
 
 alias xc='xclip -selection c'
@@ -261,7 +263,7 @@ software "scripts"
 software 'flutter/flutter/bin'
 add_path_if_exists "$HOME/.pub-cache/bin"
 software 'google-cloud-sdk/bin'
-software 'dart-sdk/bin'
+# software 'dart-sdk/bin'
 software 'node-v10.12.0-linux-x64/bin'
 
 android="$HOME/softwares/android/Android"

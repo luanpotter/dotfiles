@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# enable bluetooth
+# sudo systemctl start bluetooth
+
+# sleep 1
+
+# run the program bluez
+
+add="AC:12:2F:C7:D3:14"
+echo -e "power on\nconnect $add\nquit" | bluetoothctl
