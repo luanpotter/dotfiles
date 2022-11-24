@@ -60,7 +60,7 @@ Setup is really easy:
  * Setup git only once in your life (changes are persistent):
 
 ```bash
-    ./git.sh # open this file first to change your email and name!
+    ./git-setup.sh # open this file first to change your email and name!
 ```
 
  * Finally, link the .vimrc file:

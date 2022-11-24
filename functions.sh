@@ -132,49 +132,7 @@ alias path='realpath'
 alias lock='xscreensaver-command -l'
 alias lockexit='pma exit && lock'
 
-alias git='hub'
-alias gcm='git commit -m '
-alias gcma='git commit -m "Address comments"'
-alias gac='gall && gcma && git push'
-alias gm='git co master'
-alias grc='git rebase --continue'
-alias grs='git rebase --skip'
-alias gra='git rebase --abort'
-alias gcb='git co -b'
-alias gca='git commit --amend --no-edit'
-alias ga='git add'
-alias gall='git add -A'
-alias gpr='git pull --rebase'
-alias gpf='git pushf' # pushf is aliased to force with lease
-alias gg='git co green && gpr'
-alias gm='git co main && gpr'
-alias grg='git rebase green'
-alias grm='git rebase main'
-alias gsf='git stash push '
-
-alias branch='git rev-parse --abbrev-ref HEAD'
-function gpu() {
-  b=`branch`
-  git pull --rebase origin "$b"
-}
-
-alias gitb='git --no-pager branch --sort=-committerdate'
-function gb() {
-  gbb 15 $1
-}
-
-function gbb() {
-  param=$2
-  n=$1
-  if [ -z "$param" ]; then
-    result=`gitb | head -n$n | awk '{ print "(" NR  ") " $0 }'`
-    echo "$result"
-  else
-    branch=`gitb | awk "NR==$param" | sed 's/[ *]*//g'`
-    git checkout "$branch"
-  fi
-}
-
+source fn-git.sh
 
 if [ -n "$ZSH_VERSION" ]; then
   # test -f ~/softwares/scripts/.git-completion.zsh && . $_
@@ -196,8 +154,8 @@ alias g='./gradlew'
 alias gbuild='g build'
 alias grun='g bootRun'
 alias glint='./tools/hooks/detekt-push-or-commit.sh push'
-alias glint2='g detektMainWithTypeResolution detektTestWithTypeResolution'
-alias glint-full='g detekt -x build'
+alias glint-type-resolution='g detektMainWithTypeResolution detektTestWithTypeResolution --max-workers=6'
+alias glint-from-scratch='g detekt -x build'
 alias gproto='g buildProtos'
 alias gios='g buildIosProtos && (c protos ; zip -r ios-protos.zip ios-protos/*)'
 alias gios-cleanup='(c protos ; rm -rf ios-protos*)'
@@ -224,8 +182,6 @@ function myip {
 # -- advanced aliases
 alias c='cd'
 alias b='cd ..'
-alias s='git status'
-alias d='git diff -w'
 alias l='ll'
 alias t='tree'
 alias v='vim'
@@ -237,14 +193,12 @@ alias vr='vim -u NONE'
 alias ch='chromium'
 alias ff='firefox'
 alias bb='cd ../..'
+alias bbb='cd ../../..'
 alias f='flutter'
 alias fpg='f pub get'
 alias k='kubectl'
 alias pg='ps aux | grep'
-
 # --
-
-alias xxx="gall && gcm '.' && git push"
 
 # -- path
 function add_path_if_exists {
