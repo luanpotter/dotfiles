@@ -132,7 +132,7 @@ alias path='realpath'
 alias lock='xscreensaver-command -l'
 alias lockexit='pma exit && lock'
 
-source fn-git.sh
+source ~/projects/dotfiles/fn-git.sh
 
 if [ -n "$ZSH_VERSION" ]; then
   # test -f ~/softwares/scripts/.git-completion.zsh && . $_
