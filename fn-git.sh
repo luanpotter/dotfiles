@@ -1,3 +1,5 @@
+# note: this require some aliases defined on the git-setup.sh file
+
 alias git='hub'
 alias gcm='git commit -m '
 alias gcma='git commit -m "Address comments"'
