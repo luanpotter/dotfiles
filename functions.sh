@@ -168,11 +168,6 @@ alias pac='sudo pacman'
 alias up='pac -Syyu'
 alias up-aur='yay -Syyu'
 
-function pintas() {
-  d=${1:-1}
-  scrot -d $d /tmp/temp.scrot.png && pinta /tmp/temp.scrot.png && rm /tmp/temp.scrot.png
-}
-
 alias xc='xclip -selection c'
 alias crop='echo "Use imagemagick to crop images; e.g.:"; echo "convert print.png -crop WxH+DX+DY printo.png"'
 function myip {

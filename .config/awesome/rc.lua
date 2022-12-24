@@ -416,7 +416,9 @@ clientkeys = awful.util.table.join(
             c.maximized = not c.maximized
             c:raise()
         end ,
-        {description = "maximize", group = "client"})
+        {description = "maximize", group = "client"}),
+    awful.key({ "Ctrl", "Shift" }, "x", function () awful.util.spawn("flameshot gui") end)
+
 )
 
 -- Bind all key numbers to tags.

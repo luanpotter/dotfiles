@@ -8,7 +8,8 @@ sudo pacman -S --noconfirm \
   vim git hub zip unzip tree wget openssh \
   the_silver_searcher jq \
   pinta scrot imagemagick vlc \
-  zathura zathura-djvu zathura-pdf-mupdf
+  zathura zathura-djvu zathura-pdf-mupdf \
+  flameshot
 
 # yay : fpp and postman
 yay -S postman fpp-git
