@@ -13,12 +13,12 @@ setopt nomenucomplete 2> /dev/null
 
 # variables
 ENABLE_LOCALE=false
-EXT_MONITOR=HDMI-1
-INTERNAL_MONITOR=eDP-1
+EXT_MONITOR=HDMI1
+INTERNAL_MONITOR=DP1
 #
 
 EDITOR=vim
-# TERM=terminator
+TERM=alacritty
 # xdg-settings set default-web-browser chromium.desktop
 BROWSER=chromium
 export CHROME_EXECUTABLE=chromium
@@ -143,9 +143,11 @@ else
 fi
 
 alias src='source'
-alias vbash='vim ~/.bashrc'
-alias vfunc='vim ~/projects/dotfiles/functions.sh'
-alias vvim='vim ~/.vimrc'
+alias vbash='v ~/.bashrc'
+alias vfunc='v ~/projects/dotfiles/functions.sh'
+alias vgit='v ~/projects/dotfiles/fn-git.sh'
+alias vvim='v ~/.vimrc'
+alias vrc='v ~/.config/awesome/rc.lua'
 alias sbash='src ~/.bashrc'
 
 alias mci='mvn clean install'
@@ -210,7 +212,7 @@ function software {
 software ""
 software "scripts"
 
-software 'flutter/flutter/bin'
+software 'flutter/bin'
 add_path_if_exists "$HOME/.pub-cache/bin"
 software 'google-cloud-sdk/bin'
 # software 'dart-sdk/bin'
