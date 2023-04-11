@@ -18,10 +18,10 @@ All machines are structured as follows, inside your home dir:
 
 Setup is really easy:
 
- * Copy `.config` files to your config folder:
+ * Symlink configuration files for each of the managed configs:
 
 ```bash
-    cp -R .config ~/
+    ./config/setup.sh
 ```
 
  * Link scripts folder inside your softwares folder:
