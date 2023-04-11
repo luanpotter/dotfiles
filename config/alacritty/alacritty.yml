@@ -196,45 +196,34 @@
 # If `true`, bold text is drawn using the bright color variants.
 #draw_bold_text_with_bright_colors: false
 
-# Colors (Remedy - Dark)
+# Colors (Everforest Dark)
 colors:
   # Default colors
   primary:
-    background: '0x2c2b2a'
-    foreground: '0xf9e7c4'
-
-    dim_foreground:    '0x685E4A'
-    bright_foreground: '0x1C1508'
-    dim_background:    '0x202322'
-    bright_background: '0x353433'
-
-  # Cursor colors
-  cursor:
-    text:   '0xf9e7c4'
-    cursor: '0xf9e7c4'
+    background: '0x2d353b'
+    foreground: '0xd3c6aa'
 
   # Normal colors
   normal:
-    black:   '0x282a2e'
-    blue:    '0x5f819d'
-    cyan:    '0x5e8d87'
-    green:   '0x8c9440'
-    magenta: '0x85678f'
-    orange:  '0xcc6953'
-    red:     '0xa54242'
-    white:   '0x707880'
-    yellow:  '0xde935f'
+    black:   '0x475258'
+    red:     '0xe67e80'
+    green:   '0xa7c080'
+    yellow:  '0xdbbc7f'
+    blue:    '0x7fbbb3'
+    magenta: '0xd699b6'
+    cyan:    '0x83c092'
+    white:   '0xd3c6aa'
 
   # Bright colors
   bright:
-    black:   '0x373b41'
-    blue:    '0x81a2be'
-    cyan:    '0x8abeb7'
-    green:   '0xb5bd68'
-    magenta: '0xb294bb'
-    red:     '0xcc6666'
-    white:   '0xc5c8c6'
-    yellow:  '0xf0c674'
+    black:   '0x475258'
+    red:     '0xe67e80'
+    green:   '0xa7c080'
+    yellow:  '0xdbbc7f'
+    blue:    '0x7fbbb3'
+    magenta: '0xd699b6'
+    cyan:    '0x83c092'
+    white:   '0xd3c6aa'
 
 # Bell
 #
