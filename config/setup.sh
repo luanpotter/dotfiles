@@ -11,4 +11,4 @@ function setup() {
 
 setup awesome
 setup karabiner
-setup terminator
+setup alacritty
