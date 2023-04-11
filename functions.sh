@@ -13,22 +13,9 @@ setopt nomenucomplete 2> /dev/null
 
 # variables
 ENABLE_LOCALE=false
-EXT_MONITOR=HDMI1
-INTERNAL_MONITOR=DP1
-#
-
 EDITOR=vim
 TERM=alacritty
-# xdg-settings set default-web-browser chromium.desktop
-BROWSER=chromium
-export CHROME_EXECUTABLE=chromium
-
-# -- xrandr
-fix_res() {
-  xrandr --newmode "1600x900_60.00" 118.25 1600 1696 1856 2112 900 903 908 934 -hsync +vsync
-  xrandr --addmode VGA1 "1600x900_60.00"
-  xrandr --output VGA1 --mode "1600x900_60.00"
-}
+#
 
 switch_keys() {
   file='/tmp/_key.config'
@@ -49,37 +36,6 @@ function sk() {
 }
 sk
 
-# res=2560x1440
-res=1920x1080
-
-house_monitor() {
-  house_monitor_right
-}
-
-house_monitor_up() {
-  xrandr --output $EXT_MONITOR --mode $res --above $INTERNAL_MONITOR
-}
-
-house_monitor_left() {
-  xrandr --output $EXT_MONITOR --mode $res --left-of $INTERNAL_MONITOR
-}
-
-house_monitor_right() {
-  xrandr --output $EXT_MONITOR --mode $res --right-of $INTERNAL_MONITOR
-}
-
-present() {
-  xrandr --output $EXT_MONITOR --mode 800x600 --right-of $INTERNAL_MONITOR
-}
-
-mirror() {
-  xrandr --output $INTERNAL_MONITOR --mode 800x600
-  xrandr --output $EXT_MONITOR --mode 800x600 --same-as $INTERNAL_MONITOR
-}
-
-clear_screen() {
-  xrandr --output $INTERNAL_MONITOR --mode 1920x1080
-}
 
 removeFromPath() {
    local p d
@@ -117,11 +73,6 @@ alias ttt='watch -n 1 tree'
 alias nc='ncat'
 alias tailf='tail -f'
 
-# pma - old pma stuff
-# alias pma-log='vim ~/projects/dextra/pma/dist/log.dat'
-# alias pma='~/projects/dextra/pma/cmds/run.sh'
-#
-
 alias dry-run='flutter packages pub publish --dry-run'
 alias flutter-publish='flutter packages pub publish'
 alias fweb='flutter run -d chrome --dart-define=FLUTTER_WEB_USE_SKIA=true --web-port 5000'
@@ -134,6 +85,7 @@ alias lock='xscreensaver-command -l'
 alias lockexit='pma exit && lock'
 
 source ~/projects/dotfiles/fn-git.sh
+source ~/projects/dotfiles/monitors.sh
 
 if [ -n "$ZSH_VERSION" ]; then
   # test -f ~/softwares/scripts/.git-completion.zsh && . $_
@@ -146,9 +98,10 @@ alias src='source'
 alias vbash='v ~/.bashrc'
 alias vfunc='v ~/projects/dotfiles/functions.sh'
 alias vgit='v ~/projects/dotfiles/fn-git.sh'
+alias vmonitors='v ~/projects/dotfiles/monitors.sh'
 alias vvim='v ~/.vimrc'
 alias vrc='v ~/.config/awesome/rc.lua'
-alias sbash='src ~/.bashrc'
+alias sb='src ~/.bashrc'
 
 alias mci='mvn clean install'
 alias mcint='mci -Dmaven.test.skip'
@@ -172,7 +125,8 @@ alias up-aur='yay -Syyu'
 
 alias xc='xclip -selection c'
 alias crop='echo "Use imagemagick to crop images; e.g.:"; echo "convert print.png -crop WxH+DX+DY printo.png"'
-function myip {
+
+function my_ip {
   ip addr | grep -a wlp2s0 | sed -n 2p | rex '^.*inet ([\d.]*).*$' '$1'
 }
 # --
@@ -215,7 +169,6 @@ software "scripts"
 software 'flutter/bin'
 add_path_if_exists "$HOME/.pub-cache/bin"
 software 'google-cloud-sdk/bin'
-# software 'dart-sdk/bin'
 software 'node-v10.12.0-linux-x64/bin'
 
 android="$HOME/softwares/android/Android"
