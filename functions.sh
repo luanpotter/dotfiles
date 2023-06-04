@@ -11,31 +11,14 @@ setopt noautomenu 2> /dev/null
 setopt nomenucomplete 2> /dev/null
 ###
 
-# variables
-ENABLE_LOCALE=false
+# default softwares
 EDITOR=vim
 TERM=alacritty
+BROWSER=firefox
+xdg-settings set default-web-browser firefox.desktop
 #
 
-switch_keys() {
-  file='/tmp/_key.config'
-  current_key=`cat $file`
-  next_key=`if [ "$current_key" == "us" ]; then echo "br"; else echo "us"; fi`
-  switch_keys_to $next_key
-}
-
-switch_keys_to() {
-  file='/tmp/_key.config'
-  next_key=$1
-  setxkbmap $next_key 2> /dev/null
-  echo $next_key > $file
-}
-
-function sk() {
-  switch_keys_to 'us'
-}
-sk
-
+setxkbmap -option compose:ralt
 
 removeFromPath() {
    local p d
@@ -80,6 +63,7 @@ alias fa='flutter run -d emulator-5554'
 alias fl='flutter run -d linux'
 alias fb='flutter pub run build_runner build'
 alias path='realpath'
+alias kts='kotlinc -script'
 
 alias lock='xscreensaver-command -l'
 alias lockexit='pma exit && lock'
@@ -178,16 +162,6 @@ if [ -d "$android" ]; then
 fi
 if [ -d "$HOME/softwares/java" ]; then
   src ~/projects/dotfiles/java.sh
-fi
-# --
-
-# -- locale
-if [ "$ENABLE_LOCALE" = "true" ]; then
-  export KEYMAP="br-abnt2.map.gz"
-  export LANG=en_US.UTF-8
-  export LC_CTYPE=en_US.UTF-8
-  # fix
-  setxkbmap -model abtn2 -layout br -variant abnt2
 fi
 # --
 
