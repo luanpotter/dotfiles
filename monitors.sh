@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # variables
-EXT_MONITOR=HDMI1
-INTERNAL_MONITOR=eDP1
+EXT_MONITOR=DisplayPort-2
+INTERNAL_MONITOR=eDP
 MONITOR_RES=2560x1440
-# MONITOR_RES=1920x1080
 #
 
 fix_res() {
@@ -14,7 +13,7 @@ fix_res() {
 }
 
 monitor() {
-  house_monitor_right
+  monitor_right
 }
 
 monitor_up() {
@@ -39,5 +38,6 @@ monitor_mirror() {
 }
 
 monitor_clear() {
-  xrandr --output $INTERNAL_MONITOR --mode 1920x1080
+  xrandr --output $INTERNAL_MONITOR --mode 2256x1504
+  xrandr --output $EXT_MONITOR --off
 }
