@@ -111,7 +111,7 @@ mytextclock = wibox.widget.textclock()
     function battery()
         local remain = 0
         local icon = ""
-        local fd = io.popen("acpi", "r")
+        local fd = io.popen("acpi | grep \"Battery 1\"", "r")
         if not fd then
             return "no info"
         end
