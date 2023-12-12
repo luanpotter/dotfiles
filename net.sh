@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# note: using nmtui instead now-a-days
 
 alias wired='sudo netctl start ethernet-dhcp'
 alias casa="sudo netctl start wlp3s0-Luan5G"
