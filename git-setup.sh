@@ -3,6 +3,13 @@
 # dont forget to add your ssh key too; check:
 # https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 
+git config --global rerere.enabled true
+git config --global pull.rebase true
+git config --global advice.skippedCherryPicks false
+git config --global branch.main.pushRemote NOPE
+git config --global pile.cleanupRemoteOnSubmitFailure true
+git config --global push.autoSetupRemote true
+
 git config --global user.email "luanpotter27@gmail.com"
 git config --global user.name "Luan Nico"
 

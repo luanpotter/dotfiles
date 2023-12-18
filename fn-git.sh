@@ -1,5 +1,13 @@
 # note: this require some aliases defined on the git-setup.sh file
 
+export GIT_PILE_PREFIX="luan."
+export GIT_PILE_USE_PR_TEMPLATE=true
+
+# new git pile aliases
+alias u='git fetch origin main && git rebase origin/main'
+alias spr='git submitpr'
+alias upr='git updatepr'
+
 alias gcm='git commit -m '
 alias gcma='git commit -m "Address comments"'
 alias gac='gall && gcma && git push'
