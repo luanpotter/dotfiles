@@ -172,3 +172,13 @@ alias mount_usb='sudo mount /dev/sdc1 /mnt/pendrive'
 
 alias curlj='curl -H "Content-Type: application/json"'
 alias hask=runhaskell
+
+function to_mp3 {
+  ffmpeg -i "$1" -vn -ab 128k -ar 44100 -y "$2"
+}
+
+function download_mp3 {
+  yt-dlp "$1" -o "video.webm"
+  to_mp3 "video.webm" "$2"
+  rm "video.webm"
+}
