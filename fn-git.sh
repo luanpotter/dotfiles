@@ -52,3 +52,8 @@ function gbb() {
     git checkout "$branch"
   fi
 }
+
+# graphite
+alias gts='gt co `gt trunk` && gt sync'
+alias gms='gall && gt modify && gt s'
+alias gmss='gall && gt modify && gt ss'
