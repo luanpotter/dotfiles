@@ -57,3 +57,5 @@ function gbb() {
 alias gts='gt co `gt trunk` && gt sync'
 alias gms='gall && gt modify && gt s'
 alias gmss='gall && gt modify && gt ss'
+alias gs='gt s -p --cli'
+alias gsd='gs && gh pr edit --add-label "do-not-request-reviewers"'
