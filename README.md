@@ -49,7 +49,7 @@ Setup is really easy:
    source ~/.bashrc
  ```
 
- * Use the script to install the custom fonts:
+ * Use the script to install the custom fonts (note: Linux only!)
 
 ```bash
     cd ./fonts
