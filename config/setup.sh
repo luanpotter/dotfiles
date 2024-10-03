@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -x
 
 mkdir -p ~/.config
 cd ~/.config/
