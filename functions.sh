@@ -1,24 +1,35 @@
+# -- determine OS
+platform=linux
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  platform=macos
+fi
+# --
+
 # -- basics
 shopt -s globstar 2> /dev/null
 PS1='[\u@\h \W]\$ ' 2> /dev/null
 setopt PROMPT_SUBST 2> /dev/null
 (autoload -U colors && colors) 2> /dev/null
 PROMPT='[%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}:%~]%(!.#.$) '
-# --
 
 # changes zsh autocomplete to work like bash's
 setopt noautomenu 2> /dev/null
 setopt nomenucomplete 2> /dev/null
-###
+# --
 
-# default softwares
+# -- default softwares
 EDITOR=vim
-TERM=alacritty
+if [[ "$platform" == "linux" ]]; then
+  TERM=alacritty
+fi
 BROWSER=firefox
-xdg-settings set default-web-browser firefox.desktop
-#
+if [[ "$platform" == "linux" ]]; then
+  xdg-settings set default-web-browser firefox.desktop
+fi
+# --
 
-setxkbmap -option compose:ralt
+# TODO(luan): re-consider this option
+# setxkbmap -option compose:ralt
 
 removeFromPath() {
    local p d
