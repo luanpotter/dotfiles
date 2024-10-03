@@ -54,8 +54,25 @@ function gbb() {
 }
 
 # graphite
-alias gts='gt co `gt trunk` && gt sync'
+function og_gt() {
+  command gt "$@"
+}
+
+function gt() {
+  if [[ "$1" == "s" ]]; then
+    echo "USE gs or gsd my dude"
+    return 2
+  elif [[ "$1" == "ms" ]]; then
+    shift
+    command gt s "$@"
+  else
+    command gt "$@"
+  fi
+}
+
+alias gtt='gt co `gt trunk`'
+alias gts='gtt && gt sync'
 alias gms='gall && gt modify && gt s'
 alias gmss='gall && gt modify && gt ss'
-alias gs='gt s -p --cli'
+alias gs='og_gt s -p --cli'
 alias gsd='gs && gh pr edit --add-label "do-not-request-reviewers"'
