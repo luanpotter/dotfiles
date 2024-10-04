@@ -22,6 +22,7 @@ EDITOR=vim
 if [[ "$platform" == "linux" ]]; then
   TERM=alacritty
 fi
+export XDG_CONFIG_HOME="$HOME/.config"
 BROWSER=firefox
 if [[ "$platform" == "linux" ]]; then
   xdg-settings set default-web-browser firefox.desktop
