@@ -1,4 +1,11 @@
 #!/bin/bash -x
+#
+## -- determine OS
+platform=linux
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  platform=macos
+fi
+# --
 
 mkdir -p ~/.config
 cd ~/.config/
@@ -9,7 +16,13 @@ function setup() {
   ln -s ~/projects/dotfiles/config/$dir $dir
 }
 
-setup awesome
-setup karabiner
-setup alacritty
-setup rofi
+# check if linux
+if [[ $platform == "linux" ]]; then
+  setup awesome
+  setup alacritty
+  setup rofi
+fi
+if [[ $platform == "macos" ]]; then
+  setup karabiner
+  setup aerospace
+fi
