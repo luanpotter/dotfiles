@@ -43,7 +43,23 @@ Plug 'iamcco/coc-flutter'
 
 call plug#end()
 
-set clipboard=unnamedplus
+"" clipboard config
+set clipboard+=unnamed
+
+"" x will never copy
+nnoremap x "_x
+xnoremap x "_x
+vnoremap x "_x
+
+"" d deletes into special register
+nnoremap d "1d
+xnoremap d "1d
+vnoremap d "1d
+
+"" = pastes from special register
+nnoremap = "1p
+xnoremap = "1p
+vnoremap = "1p
 
 " Search highlight and searching as you type
 set hlsearch
@@ -234,13 +250,6 @@ if has("unix")
   endif
 endif
 
-nnoremap p "0p
-xnoremap p "0p
-
-nnoremap = "1p
-xnoremap = "1p
-
-set clipboard=unnamed
 set modelines=0
 set nomodeline
 
