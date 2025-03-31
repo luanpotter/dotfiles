@@ -192,6 +192,7 @@ function to_mp3 {
 
 function download_mp3 {
   yt-dlp "$1" -o "video.webm"
+  mv "video.webm.mp4" "video.webm"
   to_mp3 "video.webm" "$2"
   rm "video.webm"
 }
