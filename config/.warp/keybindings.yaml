@@ -1,0 +1,17 @@
+---
+"editor_view:cut_all_left": cmd-u
+"notebookview:focus_terminal_input": none
+"terminal:clear_blocks": none
+"ai_assistant_panel:focus_terminal_input": none
+"editor_view:cut_all_right": cmd-k
+"editor_view:clear_and_copy_lines": none
+"terminal:copy_commands": none
+"editor_view:clear_buffer": cmd-c
+"workspace:show_command_search": cmd-r
+"editor_view:underline": none
+"terminal:focus_input": none
+"terminal:paste": shift-cmd-V
+"terminal:copy": shift-cmd-C
+"input:clear_screen": cmd-l
+"ai_assistant_panel:reset_context": none
+"editor:edit_link": none

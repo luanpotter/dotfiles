@@ -7,22 +7,31 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 # --
 
-mkdir -p ~/.config
-cd ~/.config/
+mkdir -p $HOME/bin
+SCRIPTS="$HOME/bin/scripts"
+if [ ! -f $SCRIPTS ]; then
+  ln -s $HOME/projects/dotfiles/scripts $SCRIPTS
+fi
+
+CONFIG="$HOME/.config"
+
+mkdir -p $CONFIG
+cd $CONFIG
 
 function setup() {
-  dir=$1
-  rm -r $dir 2> /dev/null
-  ln -s ~/projects/dotfiles/config/$dir $dir
+  path=$1
+  dir=$2
+  rm -r "$path/$dir" 2> /dev/null
+  ln -s ~/projects/dotfiles/config/$dir "$path/$dir"
 }
 
-# check if linux
+setup $HOME ".warp"
 if [[ $platform == "linux" ]]; then
-  setup awesome
-  setup alacritty
-  setup rofi
+  setup $CONFIG awesome
+  setup $CONFIG alacritty
+  setup $CONFIG rofi
 fi
 if [[ $platform == "macos" ]]; then
-  setup karabiner
-  setup aerospace
+  setup $CONFIG karabiner
+  setup $CONFIG aerospace
 fi
