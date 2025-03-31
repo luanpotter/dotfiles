@@ -44,7 +44,7 @@ beautiful.init("/home/luan/.config/awesome/theme.lua")
 beautiful.useless_gap = 5
 
 -- This is used later as the default terminal and editor to run.
-terminal = "alacritty"
+terminal = "warp"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -111,7 +111,7 @@ mytextclock = wibox.widget.textclock()
     function battery()
         local remain = 0
         local icon = ""
-        local fd = io.popen("acpi | grep \"Battery 1\"", "r")
+        local fd = io.popen("acpi | grep \"Battery 0\"", "r")
         if not fd then
             return "no info"
         end
@@ -590,4 +590,4 @@ client.connect_signal("focus", function(c) c.border_color = beautiful.border_foc
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-awful.spawn.single_instance("alacritty", awful.rules.rules)
+awful.spawn.single_instance(terminal, awful.rules.rules)
