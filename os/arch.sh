@@ -11,5 +11,5 @@ sudo pacman -S --noconfirm \
   zathura zathura-djvu zathura-pdf-mupdf \
   flameshot
 
-# yay : fpp and postman
-yay -S postman fpp-git
+# yay : fpp
+yay -S fpp-git

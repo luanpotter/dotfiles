@@ -10,7 +10,7 @@ All machines are structured as follows, inside your home dir:
 .
 ├── .config # basic config folder most programs use, should be there already
 ├── projects # where you will clone every project
-├── softwares # software binaries and scripts (not cloned)
+├── bin # software binaries and scripts (not cloned)
 └── downloads # where all software will be configured to put downloads (browsers, torrent, etc)
 ```
 
@@ -18,18 +18,11 @@ All machines are structured as follows, inside your home dir:
 
 Setup is really easy:
 
- * Symlink configuration files for each of the managed configs:
+ * Run the main setup script:
 
 ```bash
-    ./config/setup.sh
+    ./setup.sh
 ```
-
- * Link scripts folder inside your softwares folder:
-
- ```bash
-     mkdir $HOME/softwares
-     ln -s $HOME/projects/dotfiles/scripts $HOME/softwares/scripts
- ```
 
  * Source `functions.sh` in your `.bashrc`; it should look like this:
 
@@ -48,25 +41,5 @@ Setup is really easy:
  ```bash
    source ~/.bashrc
  ```
-
- * Use the script to install the custom fonts (note: Linux only!)
-
-```bash
-    cd ./fonts
-    ./install.sh
-    # must be run from within fonts folder (TODO fix this!)
-```
-
- * Setup git only once in your life (changes are persistent):
-
-```bash
-    ./git-setup.sh # open this file first to change your email and name!
-```
-
- * Finally, link the .vimrc file:
-
- ```bash
-     ln -s $HOME/projects/dotfiles/.vimrc ~/.vimrc
-```
 
 After that, you must open vim once (`v`), and see a lot of erros; just run `:PlugInstall` once to do everything. Next run should give you no errors.

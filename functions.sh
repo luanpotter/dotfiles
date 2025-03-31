@@ -163,6 +163,7 @@ function software {
 
 software ""
 software "scripts"
+software "local_scripts"
 
 software 'flutter/bin'
 add_path_if_exists "$HOME/.pub-cache/bin"

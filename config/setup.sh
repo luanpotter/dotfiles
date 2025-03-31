@@ -1,17 +1,11 @@
 #!/bin/bash -x
-#
+
 ## -- determine OS
 platform=linux
 if [[ "$OSTYPE" == "darwin"* ]]; then
   platform=macos
 fi
 # --
-
-mkdir -p $HOME/bin
-SCRIPTS="$HOME/bin/scripts"
-if [ ! -f $SCRIPTS ]; then
-  ln -s $HOME/projects/dotfiles/scripts $SCRIPTS
-fi
 
 CONFIG="$HOME/.config"
 
@@ -25,7 +19,9 @@ function setup() {
   ln -s ~/projects/dotfiles/config/$dir "$path/$dir"
 }
 
+setup $HOME ".vimrc"
 setup $HOME ".warp"
+
 if [[ $platform == "linux" ]]; then
   setup $CONFIG awesome
   setup $CONFIG alacritty
