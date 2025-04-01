@@ -92,6 +92,7 @@ fi
 
 alias src='source'
 alias vbash='v ~/.bashrc'
+alias vzsh='v ~/.zshrc'
 alias vfunc='v ~/projects/dotfiles/functions.sh'
 alias vgit='v ~/projects/dotfiles/fn-git.sh'
 alias vmonitors='v ~/projects/dotfiles/monitors.sh'
@@ -99,6 +100,7 @@ alias vvim='v ~/.vimrc'
 alias vrc='v ~/.config/awesome/rc.lua'
 alias vterm='v ~/.config/alacritty/alacritty.yml'
 alias sb='src ~/.bashrc'
+alias sz='src ~/.zshrc'
 
 alias mci='mvn clean install'
 alias mcint='mci -Dmaven.test.skip'
@@ -158,15 +160,17 @@ function add_path_if_exists {
 }
 
 function software {
-  add_path_if_exists "$HOME/softwares/$1"
+  add_path_if_exists "$HOME/bin/$1"
 }
 
 software ""
 software "scripts"
 software "local_scripts"
 
-software 'flutter/bin'
+add_path_if_exists "$HOME/.yarn/bin"
 add_path_if_exists "$HOME/.pub-cache/bin"
+
+software 'flutter/bin'
 software 'google-cloud-sdk/bin'
 software 'node-v10.12.0-linux-x64/bin'
 
