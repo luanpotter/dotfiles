@@ -27,6 +27,7 @@ BROWSER=firefox
 if [[ "$platform" == "linux" ]]; then
   xdg-settings set default-web-browser firefox.desktop
 fi
+export GTK_THEME=Adwaita-dark
 # --
 
 # TODO(luan): re-consider this option
@@ -138,6 +139,7 @@ alias t='tree'
 alias v='vim'
 alias n='npm'
 alias nr='npm run'
+alias br='bun run'
 alias y='yarn'
 alias ylint='yarn nx run-many -t type_checker'
 alias m='mvn'
