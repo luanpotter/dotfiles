@@ -351,7 +351,7 @@ globalkeys = awful.util.table.join(
               {description = "restore minimized", group = "client"}),
 
     -- Prompt
-    awful.key({ modkey },            "r",     function () awful.spawn("rofi -show run") end,
+    awful.key({ modkey },            "r",     function () awful.spawn("rofi -modi combi,run,search:~/projects/dotfiles/config/rofi/rofi-web-search.py,calc,window,emoji,filebrowser -show combi -combi-modes run,search,window,emoji,filebrowser") end,
               {description = "run prompt", group = "launcher"}),
 
     awful.key({ modkey }, "x",
