@@ -172,6 +172,7 @@ software "local_scripts"
 
 add_path_if_exists "$HOME/.yarn/bin"
 add_path_if_exists "$HOME/.pub-cache/bin"
+add_path_if_exists "$HOME/.bun/bin"
 
 software 'flutter/bin'
 software 'google-cloud-sdk/bin'
