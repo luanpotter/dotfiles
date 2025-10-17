@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+level=${1:-65535}
+echo $level > /sys/class/backlight/amdgpu_bl1/brightness
