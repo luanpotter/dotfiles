@@ -12,9 +12,12 @@ setopt PROMPT_SUBST 2> /dev/null
 (autoload -U colors && colors) 2> /dev/null
 PROMPT='[%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}:%~]%(!.#.$) '
 
-# changes zsh autocomplete to work like bash's
-setopt noautomenu 2> /dev/null
-setopt nomenucomplete 2> /dev/null
+# zsh settings
+if [ -n "$ZSH_VERSION" ]; then
+  # changes zsh autocomplete to work like bash's
+  setopt noautomenu
+  setopt nomenucomplete
+fi
 # --
 
 # -- default softwares
