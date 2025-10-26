@@ -111,24 +111,41 @@ mytextclock = wibox.widget.textclock()
     function battery()
         local remain = 0
         local icon = ""
-        local fd = io.popen("acpi | grep \"Battery 0\"", "r")
+        local max_percent = -1
+        local best_line = ""
+
+        local fd = io.popen("acpi", "r")
         if not fd then
             return "no info"
         end
-        local text = fd:read("*a")
+
+        -- Read all lines and find the battery with highest percentage
+        for line in fd:lines() do
+            if string.match(line, "Battery") then
+                local percent = string.match(line, ", (%d+)%%")
+                if percent then
+                    local p = tonumber(percent)
+                    if p and p > max_percent then
+                        max_percent = p
+                        best_line = line
+                    end
+                end
+            end
+        end
+
         io.close(fd)
-        if string.match(text, "Discharging") then
+
+        if max_percent == -1 then
+            return ':battery error:'
+        end
+
+        if string.match(best_line, "Discharging") then
             icon =  "▾"
         else
             icon = "▴"
         end
-
-        remain = string.match(text, ", (%d+)%%")
-        if not remain then
-            return ':battery error:'
-        end
-
-        return remain .. "% <b>" .. icon .. "</b> "
+        
+        return max_percent .. "% <b>" .. icon .. "</b> "
     end
 
     function init_battery()
