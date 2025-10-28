@@ -40,6 +40,7 @@ function gpu() {
 }
 
 alias gitb='git --no-pager branch --sort=-committerdate'
+unalias gb
 function gb() {
   gbb 15 $1
 }
@@ -62,10 +63,7 @@ function og_gt() {
 }
 
 function gt() {
-  if [[ "$1" == "s" ]]; then
-    echo "USE gs or gsd my dude"
-    return 2
-  elif [[ "$1" == "ms" ]]; then
+  if [[ "$1" == "ms" ]]; then
     shift
     command gt s "$@"
   else
