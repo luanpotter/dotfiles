@@ -1,0 +1,32 @@
+# theme and style
+macos-titlebar-style = hidden
+
+# remap macos "command" keys to "control" commands on tmux
+
+keybind = cmd+t=ignore
+keybind = cmd+w=ignore
+keybind = cmd+1=ignore
+keybind = cmd+2=ignore
+keybind = cmd+3=ignore
+keybind = cmd+4=ignore
+keybind = cmd+5=ignore
+keybind = cmd+6=ignore
+keybind = cmd+7=ignore
+keybind = cmd+8=ignore
+keybind = cmd+9=ignore
+
+keybind = cmd+t=text:\x14
+keybind = cmd+w=text:\x17
+
+keybind = cmd+1=esc:1
+keybind = cmd+2=esc:2
+keybind = cmd+3=esc:3
+keybind = cmd+4=esc:4
+keybind = cmd+5=esc:5
+keybind = cmd+6=esc:6
+keybind = cmd+7=esc:7
+keybind = cmd+8=esc:8
+keybind = cmd+9=esc:9
+
+keybind = performable:cmd+c=copy_to_clipboard
+keybind = performable:cmd+v=paste_from_clipboard

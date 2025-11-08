@@ -20,7 +20,10 @@ function setup() {
 }
 
 setup $HOME ".vimrc"
+
 setup $HOME ".warp"
+setup $CONFIG "ghostty"
+setup $CONFIG "tmux"
 
 if [[ $platform == "linux" ]]; then
   setup $CONFIG awesome
