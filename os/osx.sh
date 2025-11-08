@@ -23,5 +23,5 @@ brew install \
 
 # TODO: install manually for now
 # https://karabiner-elements.pqrs.org/
-# https://ianyh.com/amethyst/
+# aerospace
 # vscode, intellij
