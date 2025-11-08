@@ -24,13 +24,21 @@ fi
 EDITOR=vim
 
 if [[ "$platform" == "linux" ]]; then
-  TERM=alacritty
+  terminals=("alacritty" "ghostty" "xterm")
+  for term in "${terminals[@]}"; do
+    if command -v "$term" >/dev/null 2>&1; then
+      TERM="$term"
+      break
+    fi
+  done
 fi
 
 export XDG_CONFIG_HOME="$HOME/.config"
 BROWSER=firefox
 if [[ "$platform" == "linux" ]]; then
-  xdg-settings set default-web-browser firefox.desktop
+  if command -v "xdg-settings" >/dev/null 2>&1; then
+    xdg-settings set default-web-browser firefox.desktop
+  fi
 fi
 export GTK_THEME=Adwaita-dark
 
