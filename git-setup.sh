@@ -1,5 +1,5 @@
-# install git and hub, something like
-# sudo pacman -S git hub
+# install git and gh, something like
+# pac -S git github-cli
 # dont forget to add your ssh key too; check:
 # https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 
