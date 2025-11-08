@@ -158,7 +158,7 @@ alias gproto='g buildProtos'
 alias pac='sudo pacman'
 alias up='pac -Syyu'
 alias up-aur='yay -Syyu'
-alias prune='pac -Qqdt | sudo pac -Rsn -'
+alias prune='pac -Qqdt | pac -Rsn -'
 
 alias crop='echo "Use imagemagick to crop images; e.g.:"; echo "convert print.png -crop WxH+DX+DY printo.png"'
 
