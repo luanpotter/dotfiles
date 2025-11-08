@@ -1,17 +1,19 @@
-# note: this require some aliases defined on the git-setup.sh file
+# NOTE: this require some aliases defined on the git-setup.sh file
 
-export GIT_PILE_PREFIX="luan."
-export GIT_PILE_USE_PR_TEMPLATE=true
-
-# new git pile aliases
-alias u='git fetch origin main && git rebase origin/main'
-alias spr='git submitpr'
-alias upr='git updatepr'
+if [ -n "$ZSH_VERSION" ]; then
+  # TODO: reconsider this, at some point it was causing issues
+  # test -f ~/softwares/scripts/.git-completion.zsh && . $_
+  true
+else
+  test -f ~/softwares/scripts/.git-completion.bash && . $_
+fi
 
 alias gcm='git commit -m '
 alias gcmnv='git commit --no-verify -m'
-alias gcma='git commit -m "Address comments"'
+alias gcma='gcm "Address comments"'
+alias gcmnva='gcmnv "Address comments"'
 alias gac='gall && gcma && git push'
+alias xxx="gall && gcm '.' && git push"
 alias grc='git rebase --continue'
 alias grs='git rebase --skip'
 alias gra='git rebase --abort'
@@ -20,7 +22,7 @@ alias gca='git commit --amend --no-edit'
 alias ga='git add'
 alias gall='git add -A'
 alias gpr='git pull --rebase'
-alias gpf='git pushf' # pushf is aliased to force with lease
+alias gpf='git pushf' # NOTE: pushf is already aliased to force with lease
 alias gg='git co green && gpr'
 alias gm='git co main && gpr'
 alias grg='git rebase green'
@@ -31,7 +33,6 @@ alias gsu='git stash --keep-index'
 
 alias s='git status'
 alias d='git diff -w'
-alias xxx="gall && gcm '.' && git push"
 
 alias branch='git rev-parse --abbrev-ref HEAD'
 function gpu() {
@@ -40,7 +41,7 @@ function gpu() {
 }
 
 alias gitb='git --no-pager branch --sort=-committerdate'
-unalias gb
+maybe_unalias gb # with zsh, oh-my-zsh might have this pre-bound
 function gb() {
   gbb 15 $1
 }
