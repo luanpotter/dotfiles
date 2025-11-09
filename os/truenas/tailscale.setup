@@ -1,0 +1,24 @@
+# This is just a text dump of the steps needed to create a Tailscale VM on TrueNas
+# I am not currently using this but saving (using the Tailscale App) but saving for future reference
+
+# VM was created with:
+# * alpine standard
+# * 1 CPU / 1 Core / 256 MB
+# * 2GB disk
+
+# setup:
+# 1. temporarily use outside DNS due to the VM not being able to reach the trunas ip from the inside for dns
+echo "nameserver 1.1.1.1" > /etc/resolv.conf
+# 2. update and install
+setup-apkrepos -c
+apk update
+apk add tailscale
+# 3. go back to internal DNS
+echo "nameserver 192.168.100.173" > /etc/resolv.conf
+
+# run:
+rc-service tailscale start
+rc-update add tailscale default
+
+# then:
+tailscale up # (and log in)
