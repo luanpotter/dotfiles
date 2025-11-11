@@ -5,6 +5,7 @@ packages=(
     libinput # input
     polkit uwsm # session
     xdg-desktop-portal xdg-desktop-portal-wlr # portals for screen sharing, file pickers
+    xorg-xwayland # xorg compat
     hyprland # hyprland
     pipewire wireplumber # audio stack
 )
