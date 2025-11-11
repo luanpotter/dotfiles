@@ -8,6 +8,8 @@ packages=(
     xorg-xwayland # xorg compat
     hyprland # hyprland
     pipewire wireplumber # audio stack
+    # plugins
+    waybar # top bar
 )
 
 sudo pacman -Sy --needed "${packages[@]}"
