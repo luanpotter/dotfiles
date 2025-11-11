@@ -1,6 +1,9 @@
 #!/bin/bash -xe
 
-sudo pacman -Syu --needed \
-    libva-mesa-driver libva-utils \
-    vulkan-radeon vulkan-tools \
+packages=(
+    libva-mesa-driver libva-utils
+    vulkan-radeon vulkan-tools
     mesa mesa-demos
+)
+
+sudo pacman -Sy --needed "${packages[@]}"
