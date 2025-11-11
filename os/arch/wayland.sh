@@ -1,0 +1,12 @@
+#!/bin/bash -xe
+
+packages=(
+    wayland wayland-protocols # base
+    libinput # input
+    polkit uwsm # session
+    xdg-desktop-portal xdg-desktop-portal-wlr # portals for screen sharing, file pickers
+    hyprland # hyprland
+    pipewire wireplumber # audio stack
+)
+
+sudo pacman -Sy --needed "${packages[@]}"
