@@ -27,6 +27,7 @@ setup $CONFIG "tmux"
 
 if [[ $platform == "linux" ]]; then
   setup $CONFIG awesome
+  setup $CONFIG hypr
   setup $CONFIG alacritty
   setup $CONFIG rofi
 fi
