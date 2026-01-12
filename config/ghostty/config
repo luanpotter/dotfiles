@@ -3,11 +3,29 @@ macos-titlebar-style = hidden
 
 ## remap macos "command" keys to "control" commands on tmux
 
-# ctrl+t and ctrl+w
+# new tab
 keybind = cmd+t=ignore
-keybind = cmd+w=ignore
 keybind = cmd+t=text:\x14
+
+# close tab
+keybind = cmd+w=ignore
 keybind = cmd+w=text:\x17
+
+# r-search
+keybind = cmd+r=ignore
+keybind = cmd+r=text:\x12
+
+# clear
+keybind = cmd+l=ignore
+keybind = cmd+l=text:\x0C
+
+# ctrl+c
+keybind = cmd+c=ignore
+keybind = cmd+c=text:\x03
+
+# ctrl+d
+keybind = cmd+d=ignore
+keybind = cmd+d=text:\x04
 
 # tab switching with single keybind
 keybind = cmd+digit_1=text:\x02\x30
