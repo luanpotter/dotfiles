@@ -163,5 +163,5 @@ def validate_config(c):
 
 if __name__ == "__main__":
     main()
-    sp.call(['sh', '/home/luan/projects/dotfiles/scripts/sw', '2'])
+    sp.call(['sh', os.path.expanduser('~/projects/dotfiles/scripts/sw'), '2'])
 

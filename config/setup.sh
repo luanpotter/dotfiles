@@ -1,4 +1,5 @@
-#!/bin/bash -x
+#!/usr/bin/env bash
+set -xe
 
 ## -- determine OS
 platform=linux

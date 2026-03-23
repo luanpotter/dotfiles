@@ -1,4 +1,5 @@
-#!/bin/bash -xe
+#!/usr/bin/env bash
+set -xe
 
 packages=(
   pipewire pipewire-pulse pipewire-alsa pipewire-jack wireplumber

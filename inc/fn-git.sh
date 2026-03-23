@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # NOTE: this require some aliases defined on the git-setup.sh file
 
 if [ -n "$ZSH_VERSION" ]; then

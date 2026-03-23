@@ -1,4 +1,5 @@
-#!/bin/bash -xe
+#!/usr/bin/env bash
+set -xe
 
 function not_exists() {
  ! command -v $1 2>&1 >/dev/null

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # -- determine OS
 platform=linux
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -140,8 +141,8 @@ alias sz='src ~/.zshrc'
 alias vbash='v ~/.bashrc'
 alias vzsh='v ~/.zshrc'
 alias vfunc='v ~/projects/dotfiles/functions.sh'
-alias vgit='v ~/projects/dotfiles/fn-git.sh'
-alias vmonitors='v ~/projects/dotfiles/monitors.sh'
+alias vgit='v ~/projects/dotfiles/inc/fn-git.sh'
+alias vmonitors='v ~/projects/dotfiles/inc/monitors.sh'
 alias vvim='v ~/.vimrc'
 alias vrc='v ~/.config/awesome/rc.lua'
 alias vterm='v ~/.config/alacritty/alacritty.yml'
@@ -221,15 +222,15 @@ if [ -d "$android" ]; then
   export ANDROID_HOME="$android"
 fi
 if [ -d "$HOME/softwares/java" ]; then
-  src ~/projects/dotfiles/java.sh
+  src ~/projects/dotfiles/inc/java.sh
 fi
 # --
 
 # -- imports
-src ~/projects/dotfiles/fn-git.sh
-src ~/projects/dotfiles/monitors.sh
-src ~/projects/dotfiles/net.sh
+src ~/projects/dotfiles/inc/fn-git.sh
+src ~/projects/dotfiles/inc/monitors.sh
+src ~/projects/dotfiles/inc/net.sh
 if [[ "$platform" == "macos" ]]; then
-  src ~/project/dotfiles/sed-fix.sh
+  src ~/projects/dotfiles/inc/sed-fix.sh
 fi
 # --

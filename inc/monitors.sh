@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # variables
 EXT_MONITOR=DisplayPort-2
