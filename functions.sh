@@ -229,4 +229,7 @@ fi
 src ~/projects/dotfiles/fn-git.sh
 src ~/projects/dotfiles/monitors.sh
 src ~/projects/dotfiles/net.sh
+if [[ "$platform" == "macos" ]]; then
+  src ~/project/dotfiles/sed-fix.sh
+fi
 # --
