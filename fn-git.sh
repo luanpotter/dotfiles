@@ -29,7 +29,7 @@ alias grg='git rebase green'
 alias grm='git rebase main'
 alias gsp='git stash pop'
 alias gsf='git stash push '
-alias gsu='git stash --keep-index'
+alias gsu='git stash --include-untracked --keep-index'
 
 alias s='git status'
 alias d='git diff -w'
