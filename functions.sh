@@ -25,13 +25,7 @@ fi
 EDITOR=vim
 
 if [[ "$platform" == "linux" ]]; then
-  terminals=("alacritty" "ghostty" "xterm")
-  for term in "${terminals[@]}"; do
-    if command -v "$term" >/dev/null 2>&1; then
-      TERM="$term"
-      break
-    fi
-  done
+  TERM="xterm-256color"
 fi
 
 export XDG_CONFIG_HOME="$HOME/.config"
