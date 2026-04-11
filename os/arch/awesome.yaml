@@ -1,0 +1,5 @@
+modules:
+  - name: awesome
+    install:
+      - pacman:awesome
+    config: ~/.config/awesome

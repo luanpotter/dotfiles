@@ -1,0 +1,50 @@
+bootstrap: [git, base-devel, yq, gum]
+aur_helper: yay
+
+modules:
+  - name: reflector
+    install:
+      - pacman:reflector
+    exec: |
+      sudo reflector --verbose --latest 5 --sort rate --save /etc/pacman.d/mirrorlist
+
+  - name: core
+    install:
+      - pacman:vim
+      - pacman:zip
+      - pacman:unzip
+      - pacman:tree
+      - pacman:htop
+      - pacman:wget
+      - pacman:openssh
+      - pacman:the_silver_searcher
+      - pacman:jq
+      - pacman:screenfetch
+      - pacman:pinta
+      - pacman:scrot
+      - pacman:imagemagick
+      - pacman:vlc
+      - pacman:zathura
+      - pacman:zathura-djvu
+      - pacman:zathura-pdf-mupdf
+      - pacman:flameshot
+      - aur:fpp-git
+
+  - name: rofi
+    install:
+      - pacman:rofi
+      - pacman:rofi-emoji
+      - pacman:xdotool
+    config: ~/.config/rofi
+
+  - name: lightdm
+    install:
+      - pacman:lightdm
+      - pacman:lightdm-mini-greeter
+    exec: |
+      sudo systemctl enable lightdm
+
+  - name: fonts
+    exec: |
+      sudo bash -O globstar -O nullglob -c "cp $DOTFILES_DIR/fonts/**/*.{ttf,otf} /usr/share/fonts/" 2>/dev/null || true
+      fc-cache

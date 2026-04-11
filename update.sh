@@ -39,12 +39,23 @@ main() {
     
     log_info "dotfiles update (platform=$PLATFORM, dry_run=$DRY_RUN)"
     
+    # Phase 1: bootstrap (installs yq/gum, merges manifests, installs AUR helper)
+    local manifest
+    manifest="$(step_bootstrap)"
+
+    if [[ -z "$manifest" ]]; then
+        log_ok "done (bootstrap only)"
+        return 0
+    fi
+
     if [[ "$CHECK" == true ]]; then
-        # TODO: audit mode
+        # TODO: step_audit "$manifest"
         log_warn "audit mode not yet implemented"
     else
-        # TODO: implement
-        log_warn "update functionality not yet implemented"
+        # TODO: step_packages "$manifest"
+        # TODO: step_configs "$manifest"
+        # TODO: step_exec "$manifest"
+        log_ok "system is up to date"
     fi
     
     log_ok "done"

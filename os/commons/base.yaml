@@ -1,0 +1,18 @@
+modules:
+  - name: vim
+    install:
+      - pacman:vim
+    config: ~/.vimrc
+
+  - name: shell
+    exec: |
+      local dirs=(
+        ~/bin
+        ~/bin/local_scripts
+        ~/downloads
+      )
+      for dir in "${dirs[@]}"; do
+        mkdir -p "$dir"
+      done
+
+      # ... (etc)

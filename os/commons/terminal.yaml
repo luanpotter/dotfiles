@@ -1,0 +1,15 @@
+modules:
+  - name: tmux
+    install:
+      - pacman:tmux
+    config: ~/.config/tmux
+
+  - name: ghostty
+    install:
+      - pacman:ghostty
+    config: ~/.config/ghostty
+
+  - name: alacritty
+    install:
+      - pacman:alacritty
+    config: ~/.config/alacritty
