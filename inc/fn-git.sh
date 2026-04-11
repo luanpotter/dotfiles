@@ -2,11 +2,11 @@
 # NOTE: this require some aliases defined on the git-setup.sh file
 
 if [ -n "$ZSH_VERSION" ]; then
-  # TODO: reconsider this, at some point it was causing issues
-  # test -f ~/softwares/scripts/.git-completion.zsh && . $_
-  true
+	# TODO: reconsider this, at some point it was causing issues
+	# test -f ~/softwares/scripts/.git-completion.zsh && . $_
+	true
 else
-  test -f ~/softwares/scripts/.git-completion.bash && . $_
+	test -f ~/softwares/scripts/.git-completion.bash && . $_
 fi
 
 alias gcm='git commit -m '
@@ -37,40 +37,40 @@ alias d='git diff -w'
 
 alias branch='git rev-parse --abbrev-ref HEAD'
 function gpu() {
-  b=`branch`
-  git pull --rebase origin "$b"
+	b=$(branch)
+	git pull --rebase origin "$b"
 }
 
 alias gitb='git --no-pager branch --sort=-committerdate'
 maybe_unalias gb # with zsh, oh-my-zsh might have this pre-bound
 function gb() {
-  gbb 15 $1
+	gbb 15 $1
 }
 
 function gbb() {
-  param=$2
-  n=$1
-  if [ -z "$param" ]; then
-    result=`gitb | head -n$n | awk '{ print "(" NR  ") " $0 }'`
-    echo "$result"
-  else
-    branch=`gitb | awk "NR==$param" | sed 's/[ *]*//g'`
-    git checkout "$branch"
-  fi
+	param=$2
+	n=$1
+	if [ -z "$param" ]; then
+		result=$(gitb | head -n$n | awk '{ print "(" NR  ") " $0 }')
+		echo "$result"
+	else
+		branch=$(gitb | awk "NR==$param" | sed 's/[ *]*//g')
+		git checkout "$branch"
+	fi
 }
 
 # graphite
 function og_gt() {
-  command gt "$@"
+	command gt "$@"
 }
 
 function gt() {
-  if [[ "$1" == "ms" ]]; then
-    shift
-    command gt s "$@"
-  else
-    command gt "$@"
-  fi
+	if [[ "$1" == "ms" ]]; then
+		shift
+		command gt s "$@"
+	else
+		command gt "$@"
+	fi
 }
 
 alias gtt='gt co `gt trunk`'
