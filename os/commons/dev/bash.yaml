@@ -1,0 +1,4 @@
+modules:
+  - name: bash-dev
+    install:
+      - pacman:shfmt

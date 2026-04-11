@@ -7,11 +7,11 @@ LIB="$DOTFILES_DIR/lib"
 source "$LIB/utils.sh"
 shopt -s nullglob
 for f in "$LIB/steps/"*.sh; do
-    source "$f"
+	source "$f"
 done
 
 usage() {
-  cat <<EOF
+	cat <<EOF
 Usage: ./update.sh [OPTIONS]
 
 Declarative dotfiles engine. Reads YAML manifests from os/ and converges
@@ -26,39 +26,58 @@ EOF
 }
 
 main() {
-    local CHECK=false
-    
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            --help)    usage; exit 0 ;;
-            --dry-run) DRY_RUN=true; shift ;;
-            --check)   CHECK=true; shift ;;
-            *)         log_error "Unknown option: $1"; usage; exit 1 ;;
-        esac
-    done
-    
-    log_info "dotfiles update (platform=$PLATFORM, dry_run=$DRY_RUN)"
-    
-    # Phase 1: bootstrap (installs yq/gum, merges manifests, installs AUR helper)
-    local manifest
-    manifest="$(step_bootstrap)"
+	local CHECK=false
 
-    if [[ -z "$manifest" ]]; then
-        log_ok "done (bootstrap only)"
-        return 0
-    fi
+	while [[ $# -gt 0 ]]; do
+		case "$1" in
+		--help)
+			usage
+			exit 0
+			;;
+		--dry-run)
+			DRY_RUN=true
+			shift
+			;;
+		--check)
+			CHECK=true
+			shift
+			;;
+		*)
+			log_error "Unknown option: $1"
+			usage
+			exit 1
+			;;
+		esac
+	done
 
-    if [[ "$CHECK" == true ]]; then
-        # TODO: step_audit "$manifest"
-        log_warn "audit mode not yet implemented"
-    else
-        # TODO: step_packages "$manifest"
-        # TODO: step_configs "$manifest"
-        # TODO: step_exec "$manifest"
-        log_ok "system is up to date"
-    fi
-    
-    log_ok "done"
+	log_info "dotfiles update (platform=$PLATFORM, dry_run=$DRY_RUN)"
+
+	# Phase 1: bootstrap (installs yq/gum, merges manifests, installs AUR helper)
+	local manifest
+	manifest="$(step_bootstrap)"
+
+	if [[ -z "$manifest" ]]; then
+		log_ok "done (bootstrap only)"
+		return 0
+	fi
+
+	if [[ "$CHECK" == true ]]; then
+		# TODO: step_audit "$manifest"
+		log_warn "audit mode not yet implemented"
+	else
+		local pending=0
+		local count
+		count=$(step_packages "$manifest")
+		pending=$((pending + count))
+		# TODO: count+=$(step_configs "$manifest")
+		# TODO: count+=$(step_exec "$manifest")
+
+		if [[ "$DRY_RUN" == true && $pending -gt 0 ]]; then
+			log_warn "update needed, would update $pending package(s)"
+		fi
+	fi
+
+	log_ok "done"
 }
 
 main "$@"

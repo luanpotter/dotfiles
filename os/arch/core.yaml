@@ -21,7 +21,6 @@ modules:
       - pacman:jq
       - pacman:screenfetch
       - pacman:pinta
-      - pacman:scrot
       - pacman:imagemagick
       - pacman:vlc
       - pacman:zathura

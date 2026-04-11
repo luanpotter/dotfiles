@@ -2,7 +2,7 @@ modules:
   - name: git
     install:
       - pacman:git
-      - pacman:github-cli
+      - snap:gh
     exec: |
       git config --global rerere.enabled true
       git config --global pull.rebase true
