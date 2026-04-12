@@ -3,3 +3,7 @@ modules:
     install:
       - pacman:awesome
     config: ~/.config/awesome
+
+  - name: desktop
+    install:
+      - pacman:acpi

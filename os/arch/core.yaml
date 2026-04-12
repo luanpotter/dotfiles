@@ -17,8 +17,6 @@ modules:
   - name: core
     install:
       - pacman:vim
-      - pacman:zip
-      - pacman:unzip
       - pacman:tree
       - pacman:btop
       - pacman:htop
@@ -26,16 +24,26 @@ modules:
       - pacman:openssh
       - pacman:the_silver_searcher
       - pacman:jq
+      - pacman:snapd
+      - aur:fpp-git
+
+  - name: compression
+    install:
+      - pacman:zip
+      - pacman:unzip
+      - pacman:unrar
+
+  - name: media
+    install:
+      - pacman:audacity
+      - pacman:vlc
+      - pacman:flameshot
       - pacman:screenfetch
       - pacman:pinta
       - pacman:imagemagick
-      - pacman:vlc
       - pacman:zathura
       - pacman:zathura-djvu
       - pacman:zathura-pdf-mupdf
-      - pacman:flameshot
-      - pacman:snapd
-      - aur:fpp-git
 
   - name: rofi
     install:
