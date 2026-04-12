@@ -92,18 +92,22 @@ merge_manifests() {
 
 	log_verbose_info "merging ${#files[@]} manifest(s)"
 
-	# merge all files, then filter modules by enabled/disabled state
-	# Resolution: env.yaml override (final say) → module default field → enabled
+	# merge all files, then filter modules by platform, enabled/disabled state
+	# Resolution: env mismatch → skip; env.yaml override → module default → enabled
 	yq -s '
         (reduce .[] as $item ({}; . * ($item | del(.modules)))) +
         {modules: [.[] | (.modules // [])[]]}
-    ' "${files[@]}" | yq --argjson env "$(yq '.modules // {}' "$ENV_FILE")" '
+    ' "${files[@]}" | yq --argjson env "$(yq '.modules // {}' "$ENV_FILE")" \
+		--arg platform "$PLATFORM" '
         .modules = [.modules[] | select(
-            ($env[.name] // null) as $override |
-            if $override != null then $override
-            elif .default == false then false
-            else true
+            if .env != null and .env != $platform then false
+            else
+                ($env[.name] // null) as $override |
+                if $override != null then $override
+                elif .default == false then false
+                else true
+                end
             end
-        ) | del(.default)]
+        ) | del(.default, .env)]
     '
 }
