@@ -21,6 +21,9 @@ Options:
   --help       Show this help message
   --dry-run    Show what would be done without making changes
   --check      Audit mode: surface unmanaged packages and configs
+  --yes, -y    Auto-confirm exec blocks (no interactive prompts)
+  --force      Re-run all exec blocks regardless of hash
+  --verbose, -v Verbose output (show per-item details)
 
 EOF
 }
@@ -40,6 +43,18 @@ main() {
 			;;
 		--check)
 			CHECK=true
+			shift
+			;;
+		--yes | -y)
+			AUTO_YES=true
+			shift
+			;;
+		--force)
+			FORCE_EXEC=true
+			shift
+			;;
+		--verbose | -v)
+			VERBOSE=true
 			shift
 			;;
 		*)
@@ -69,11 +84,13 @@ main() {
 		local count
 		count=$(step_packages "$manifest")
 		pending=$((pending + count))
-		# TODO: count+=$(step_configs "$manifest")
-		# TODO: count+=$(step_exec "$manifest")
+		count=$(step_configs "$manifest")
+		pending=$((pending + count))
+		count=$(step_exec "$manifest")
+		pending=$((pending + count))
 
 		if [[ "$DRY_RUN" == true && $pending -gt 0 ]]; then
-			log_warn "update needed, would update $pending package(s)"
+			log_warn "update needed, would update $pending item(s)"
 		fi
 	fi
 

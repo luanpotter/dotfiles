@@ -49,7 +49,7 @@ step_bootstrap() {
 			log_info "bootstrap: installing ${missing[*]}"
 			run_cmd sudo pacman -S --needed --noconfirm "${missing[@]}"
 		else
-			log_ok "bootstrap: all packages present"
+			log_verbose "bootstrap: all packages present"
 		fi
 	fi
 
@@ -68,7 +68,7 @@ step_bootstrap() {
 			rm -rf "$tmp"
 		fi
 	elif [[ -n "$aur_helper" ]]; then
-		log_ok "bootstrap: $aur_helper already installed"
+		log_verbose "bootstrap: $aur_helper already installed"
 	fi
 
 	# -- output merged manifest for downstream steps

@@ -4,7 +4,7 @@
 # groups them by package manager, and installs any missing packages
 step_packages() {
 	local manifest="$1"
-	log_info "packages: collecting install entries"
+	log_verbose_info "packages: collecting install entries"
 
 	# extract unique manager:package pairs from all modules
 	local -a all_entries=()
@@ -57,7 +57,7 @@ _install_pacman() {
 		log_info "packages: pacman installing ${missing[*]}"
 		run_cmd sudo pacman -S --needed --noconfirm "${missing[@]}"
 	else
-		log_ok "packages: all pacman packages present (${#} total)"
+		log_verbose "packages: all pacman packages present (${#} total)"
 	fi
 	echo "${#missing[@]}"
 }
@@ -77,7 +77,7 @@ _install_aur() {
 		log_info "packages: $helper installing ${missing[*]}"
 		run_cmd "$helper" -S --needed --noconfirm "${missing[@]}"
 	else
-		log_ok "packages: all AUR packages present (${#} total)"
+		log_verbose "packages: all AUR packages present (${#} total)"
 	fi
 	echo "${#missing[@]}"
 }
@@ -97,7 +97,7 @@ _install_snap() {
 			run_cmd sudo snap install "$pkg"
 		done
 	else
-		log_ok "packages: all snap packages present (${#} total)"
+		log_verbose "packages: all snap packages present (${#} total)"
 	fi
 	echo "${#missing[@]}"
 }
@@ -115,7 +115,7 @@ _install_brew() {
 		log_info "packages: brew installing ${missing[*]}"
 		run_cmd brew install "${missing[@]}"
 	else
-		log_ok "packages: all brew packages present (${#} total)"
+		log_verbose "packages: all brew packages present (${#} total)"
 	fi
 	echo "${#missing[@]}"
 }
