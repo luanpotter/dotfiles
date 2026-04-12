@@ -1,6 +1,7 @@
 modules:
   - name: pipewire
     install:
+      - pacman:pavucontrol
       - pacman:pipewire
       - pacman:pipewire-pulse
       - pacman:pipewire-alsa

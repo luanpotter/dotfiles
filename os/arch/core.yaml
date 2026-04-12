@@ -25,6 +25,7 @@ modules:
       - pacman:the_silver_searcher
       - pacman:jq
       - pacman:snapd
+      - pacman:xclip
       - aur:fpp-git
 
   - name: compression
@@ -33,21 +34,11 @@ modules:
       - pacman:unzip
       - pacman:unrar
 
-  - name: media
-    install:
-      - pacman:audacity
-      - pacman:vlc
-      - pacman:flameshot
-      - pacman:screenfetch
-      - pacman:pinta
-      - pacman:imagemagick
-      - pacman:zathura
-      - pacman:zathura-djvu
-      - pacman:zathura-pdf-mupdf
 
   - name: rofi
     install:
       - pacman:rofi
+      - pacman:rofi-calc
       - pacman:rofi-emoji
       - pacman:xdotool
     config: ~/.config/rofi

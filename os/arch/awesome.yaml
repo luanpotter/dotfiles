@@ -1,9 +1,15 @@
 modules:
+  - name: xorg
+    install:
+      - pacman:xinit-xsession
+      - pacman:xorg-server
+      - pacman:xorg-server-xephyr
+      - pacman:xorg-xinit
+      # xorg 2D acceleration for AMD
+      - pacman:xf86-video-amdgpu
+
   - name: awesome
     install:
       - pacman:awesome
-    config: ~/.config/awesome
-
-  - name: desktop
-    install:
       - pacman:acpi
+    config: ~/.config/awesome
