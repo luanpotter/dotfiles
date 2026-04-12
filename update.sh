@@ -77,8 +77,7 @@ main() {
 	fi
 
 	if [[ "$CHECK" == true ]]; then
-		# TODO: step_audit "$manifest"
-		log_warn "audit mode not yet implemented"
+		step_audit "$manifest"
 	else
 		local pending=0
 		local count
