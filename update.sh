@@ -21,6 +21,7 @@ Options:
   --help       Show this help message
   --dry-run    Show what would be done without making changes
   --check      Audit mode: surface unmanaged packages and configs
+  --manage     Toggle modules on/off via TUI
   --yes, -y    Auto-confirm exec blocks (no interactive prompts)
   --force      Re-run all exec blocks regardless of hash
   --verbose, -v Verbose output (show per-item details)
@@ -30,6 +31,7 @@ EOF
 
 main() {
 	local CHECK=false
+	local MANAGE=false
 
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
@@ -43,6 +45,10 @@ main() {
 			;;
 		--check)
 			CHECK=true
+			shift
+			;;
+		--manage)
+			MANAGE=true
 			shift
 			;;
 		--yes | -y)
@@ -76,7 +82,10 @@ main() {
 		return 0
 	fi
 
-	if [[ "$CHECK" == true ]]; then
+	if [[ "$MANAGE" == true ]]; then
+		step_manage "$manifest"
+		return 0
+	elif [[ "$CHECK" == true ]]; then
 		step_audit "$manifest"
 	else
 		local pending=0
