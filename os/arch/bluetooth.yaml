@@ -1,0 +1,7 @@
+modules:
+  - name: bluetooth
+    install:
+      - pacman:bluez
+      - pacman:bluez-utils
+    exec: |
+      sudo systemctl enable --now bluetooth

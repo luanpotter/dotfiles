@@ -1,0 +1,10 @@
+modules:
+  - name: gpu-amd
+    default: false
+    install:
+      - pacman:libva-mesa-driver
+      - pacman:libva-utils
+      - pacman:vulkan-radeon
+      - pacman:vulkan-tools
+      - pacman:mesa
+      - pacman:mesa-demos

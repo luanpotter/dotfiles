@@ -1,0 +1,10 @@
+modules:
+  - name: pipewire
+    install:
+      - pacman:pipewire
+      - pacman:pipewire-pulse
+      - pacman:pipewire-alsa
+      - pacman:pipewire-jack
+      - pacman:wireplumber
+    exec: |
+      systemctl --user enable --now pipewire pipewire-pulse wireplumber

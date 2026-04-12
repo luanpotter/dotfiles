@@ -1,0 +1,20 @@
+modules:
+  - name: hyprland
+    default: false
+    install:
+      - pacman:wayland
+      - pacman:wayland-protocols
+      - pacman:libinput
+      - pacman:polkit
+      - pacman:uwsm
+      - pacman:xdg-desktop-portal
+      - pacman:xdg-desktop-portal-wlr
+      - pacman:xorg-xwayland
+      - pacman:hyprland
+    config: ~/.config/hypr
+
+  - name: waybar
+    default: false
+    install:
+      - pacman:waybar
+    config: ~/.config/waybar

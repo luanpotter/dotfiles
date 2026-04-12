@@ -20,10 +20,11 @@ step_configs() {
 	for i in "${!names[@]}"; do
 		local name="${names[$i]}"
 		local target="${targets[$i]}"
-		local source="$DOTFILES_DIR/config/$name"
 
 		# expand ~ to $HOME
 		target="${target/#\~/$HOME}"
+
+		local source="$DOTFILES_DIR/config/$name"
 
 		if [[ ! -e "$source" ]]; then
 			log_warn "configs: config/$name does not exist, skipping"
