@@ -73,6 +73,21 @@ main() {
 
 	log_info "dotfiles update (platform=$PLATFORM, dry_run=$DRY_RUN)"
 
+	# Phase 0: git pull if clean on master
+	local branch
+	branch="$(git -C "$DOTFILES_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
+	if [[ "$branch" == "master" ]] && git -C "$DOTFILES_DIR" diff --quiet 2>/dev/null &&
+		git -C "$DOTFILES_DIR" diff --cached --quiet 2>/dev/null; then
+		log_info "pulling latest from master"
+		run_cmd git -C "$DOTFILES_DIR" pull --ff-only
+	else
+		log_warn "running with local changes (branch=$branch)"
+	fi
+
+	# Phase 0.5: system upgrade
+	log_info "upgrading system packages"
+	run_cmd sudo pacman -Syu --noconfirm
+
 	# Phase 1: bootstrap (installs yq/gum, merges manifests, installs AUR helper)
 	local manifest
 	manifest="$(step_bootstrap)"
