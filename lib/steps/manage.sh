@@ -31,7 +31,7 @@ step_manage() {
 		[[ -n "$name" ]] || continue
 		names+=("$name")
 		defaults[$name]="$default"
-	done < <(yq -s '[.[] | (.modules // [])[] | [.name, (.default // "null" | tostring)]] | .[] | @tsv' "${files[@]}")
+	done < <(yq -r -s '[.[] | (.modules // [])[] | [.name, (if .default == false then "false" else "true" end)]] | .[] | @tsv' "${files[@]}")
 
 	# read current env.yaml overrides
 	local -A overrides=()
