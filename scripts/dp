@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+mapfile -t queue < <(git status --porcelain | awk '/^.[MARCD]/ || /^\?\?/ { sub(/^.../, ""); print }')
+
+view() {
+  local file="$1" left="${#queue[@]}"
+  local diff_tmp script_tmp
+  diff_tmp=$(mktemp)
+  script_tmp=$(mktemp)
+  if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
+    git --no-pager diff -- "$file" > "$diff_tmp"
+  else
+    { echo "(untracked)"; git --no-pager diff --no-index /dev/null "$file" 2>/dev/null || true; } > "$diff_tmp"
+  fi
+
+  cat > "$script_tmp" <<'VIMSCRIPT'
+syntax on
+set nofoldenable laststatus=2 showtabline=2
+highlight StatusLine  ctermbg=blue ctermfg=white cterm=bold
+highlight TabLineFill ctermbg=blue ctermfg=white cterm=bold
+highlight TabLineSel  ctermbg=blue ctermfg=white cterm=bold
+highlight TabLine     ctermbg=blue ctermfg=white cterm=bold
+
+let g:dp_diff = $DP_DIFF
+let g:dp_file = $DP_FILE
+let g:dp_left = str2nr($DP_LEFT)
+
+function! DpUpdateBars()
+  let mode = &filetype ==# 'diff' ? 'diff' : 'file'
+  let &tabline    = ' ' . g:dp_file . '  (' . g:dp_left . ' left)  [' . mode . '] '
+  let &statusline = ' [Enter] add    [BS] skip    [Tab] defer    [Space] view    [q] quit '
+endfunction
+
+function! DpBuildLineMap()
+  let lines = readfile(g:dp_diff)
+  let map = []
+  let new_line = 0
+  let in_hunk = 0
+  let i = 0
+  while i < len(lines)
+    let l = lines[i]
+    let lnum = i + 1
+    if l =~# '^@@'
+      let m = matchlist(l, '^@@ -\d\+\(,\d\+\)\? +\(\d\+\)')
+      if !empty(m)
+        let new_line = str2nr(m[2])
+        let in_hunk = 1
+        call add(map, [lnum, new_line])
+      else
+        call add(map, [lnum, 0])
+      endif
+    elseif in_hunk && l =~# '^[ +]'
+      call add(map, [lnum, new_line])
+      let new_line += 1
+    elseif in_hunk && l =~# '^-'
+      call add(map, [lnum, new_line])
+    else
+      call add(map, [lnum, 0])
+    endif
+    let i += 1
+  endwhile
+  return map
+endfunction
+
+function! DpDiffToFile(diff_lnum)
+  for e in DpBuildLineMap()
+    if e[0] == a:diff_lnum
+      return e[1] > 0 ? e[1] : 1
+    endif
+  endfor
+  return 1
+endfunction
+
+function! DpFileToDiff(file_lnum)
+  let best = 1
+  let best_dist = 999999999
+  for e in DpBuildLineMap()
+    if e[1] == 0 | continue | endif
+    if e[1] == a:file_lnum | return e[0] | endif
+    let d = abs(e[1] - a:file_lnum)
+    if d < best_dist | let best_dist = d | let best = e[0] | endif
+  endfor
+  return best
+endfunction
+
+function! DpToggle()
+  let cur = line('.')
+  if &filetype ==# 'diff'
+    let target = DpDiffToFile(cur)
+    execute 'edit ' . fnameescape(g:dp_file)
+  else
+    let target = DpFileToDiff(cur)
+    execute 'edit ' . fnameescape(g:dp_diff)
+    setlocal filetype=diff
+  endif
+  execute 'normal! ' . target . 'Gzz'
+  call DpUpdateBars()
+endfunction
+
+augroup dp
+  autocmd!
+  autocmd BufEnter * setlocal readonly nomodifiable | call DpUpdateBars()
+  autocmd FileType * call DpUpdateBars()
+augroup END
+
+setlocal filetype=diff
+call DpUpdateBars()
+
+nnoremap <silent> <CR>    :cq 10<CR>
+nnoremap <silent> <BS>    :cq 20<CR>
+nnoremap <silent> <Tab>   :cq 30<CR>
+nnoremap <silent> q       :cq 40<CR>
+nnoremap <silent> <Space> :call DpToggle()<CR>
+VIMSCRIPT
+
+  DP_DIFF="$diff_tmp" DP_FILE="$file" DP_LEFT="$left" \
+    vim -R -n -N -u NONE -S "$script_tmp" "$diff_tmp"
+  local rc=$?
+  rm -f "$diff_tmp" "$script_tmp"
+  return $rc
+}
+
+while [ ${#queue[@]} -gt 0 ]; do
+  file="${queue[0]}"
+  queue=("${queue[@]:1}")
+  view "$file"
+  case $? in
+    10) git add -- "$file" ;;
+    20) ;;
+    30) queue+=("$file") ;;
+    40) exit 0 ;;
+    *)  queue=("$file" "${queue[@]}") ;;  # crash / unknown exit: re-queue
+  esac
+done
