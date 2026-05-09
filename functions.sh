@@ -151,7 +151,8 @@ alias glint='g detekt --auto-correct'
 alias gproto='g buildProtos'
 
 alias pac='sudo pacman'
-alias up='pac -Syyu'
+alias up='sudo ~/projects/dotfiles/update.sh'
+alias up-old='pac -Syyu'
 alias up-aur='yay -Syyu'
 alias prune='pac -Qqdt | pac -Rsn -'
 
