@@ -29,6 +29,17 @@ Options:
 EOF
 }
 
+is_running_as_root() {
+	[[ "${EUID:-$(id -u)}" -eq 0 ]]
+}
+
+prime_sudo() {
+	if [[ "$DRY_RUN" == true ]] || is_running_as_root; then
+		return 0
+	fi
+	sudo -v
+}
+
 main() {
 	local CHECK=false
 	local MANAGE=false
@@ -71,6 +82,7 @@ main() {
 		esac
 	done
 
+	prime_sudo
 	log_info "dotfiles update (platform=$PLATFORM, dry_run=$DRY_RUN)"
 
 	local manifest
