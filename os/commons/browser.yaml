@@ -1,0 +1,8 @@
+modules:
+  - name: chromium
+    install:
+      - pacman:chromium
+
+  - name: firefox
+    install:
+      - pacman:firefox
