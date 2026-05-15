@@ -36,10 +36,10 @@ step_packages() {
 		local count=0
 
 		case "$mgr" in
-		pacman) count=$(_install_pacman "${pkgs[@]}") ;;
-		aur) count=$(_install_aur "$aur_helper" "${pkgs[@]}") ;;
-		brew) count=$(_install_brew "${pkgs[@]}") ;;
-		snap) count=$(_install_snap "${pkgs[@]}") ;;
+		pacman) count=$(_install_pacman "${pkgs[@]}" | tail -n 1) ;;
+		aur) count=$(_install_aur "$aur_helper" "${pkgs[@]}" | tail -n 1) ;;
+		brew) count=$(_install_brew "${pkgs[@]}" | tail -n 1) ;;
+		snap) count=$(_install_snap "${pkgs[@]}" | tail -n 1) ;;
 		*) log_warn "packages: unknown manager '$mgr', skipping" ;;
 		esac
 		total_missing=$((total_missing + count))
