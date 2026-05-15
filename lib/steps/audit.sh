@@ -1,5 +1,45 @@
 #!/usr/bin/env bash
 
+_audit_install_entry_for_pkg() {
+	local pkg="$1"
+	if pacman -Qm "$pkg" &>/dev/null; then
+		printf 'aur:%s\n' "$pkg"
+	else
+		printf 'pacman:%s\n' "$pkg"
+	fi
+}
+
+# List existing module names; safe when `modules:` is absent or null (yq 3/jq compat).
+_audit_yaml_module_names_get() {
+	local file="$1"
+	yq -r '(.modules // [])[] | .name // empty' "$file" 2>/dev/null || true
+}
+
+_audit_yaml_has_list_module_entry() {
+	# Match `modules:` lists that use `- name:` (same as other os/**/*.yaml files).
+	grep -qE '^[[:space:]]*-[[:space:]]+name:[[:space:]]' "$1" 2>/dev/null
+}
+
+# Append one module — matches spacing in e.g. os/arch/core.yaml: no gap after `modules:`,
+# one blank line before each later `- name:`.
+_audit_append_module_block() {
+	local target_rel="$1"
+	local module_name="$2"
+	shift 2
+	local -a entries=("$@")
+	local file="$DOTFILES_DIR/$target_rel"
+	local install_yaml="" e
+	local nl_before=$''
+
+	for e in "${entries[@]}"; do
+		install_yaml+="      - $e"$'\n'
+	done
+	if _audit_yaml_has_list_module_entry "$file"; then
+		nl_before=$'\n'
+	fi
+	printf '%s  - name: %s\n    install:\n%s' "$nl_before" "$module_name" "$install_yaml" >>"$file"
+}
+
 # step_audit surfaces explicitly installed packages not tracked by any module.
 # Shows a gum TUI for triaging unmanaged packages: import into a YAML file,
 # uninstall, or skip.
@@ -28,7 +68,7 @@ step_audit() {
 		if [[ "$mgr" == pacman || "$mgr" == aur ]]; then
 			declared[$pkg]=1
 		fi
-	done < <(echo "$manifest" | yq -r '[.modules[].install // [] | .[]] | unique | .[]')
+	done < <(echo "$manifest" | yq -r '[(.modules // [])[] | (.install // [])[]] | unique | .[]')
 
 	# -- get all explicitly installed packages from pacman
 	local -a installed=()
@@ -91,7 +131,7 @@ step_audit() {
 
 		case "$action" in
 		Import*)
-			_audit_import "$manifest" "${unmanaged[@]}"
+			_audit_import "${unmanaged[@]}"
 			# re-scan after import
 			return 0
 			;;
@@ -108,8 +148,6 @@ step_audit() {
 }
 
 _audit_import() {
-	local manifest="$1"
-	shift
 	local -a unmanaged=("$@")
 
 	# pick packages to import
@@ -123,23 +161,68 @@ _audit_import() {
 		return 0
 	fi
 
-	# pick target YAML file
-	local -a yaml_files=()
+	# pick target YAML file (first choice creates os/<path> stubbed as `modules:`)
+	local -a yaml_choices=("[+] Create new YAML under os/")
 	shopt -s nullglob globstar
+	local f
 	for f in "$DOTFILES_DIR/os"/**/*.yaml; do
-		yaml_files+=("${f#"$DOTFILES_DIR/"}")
+		yaml_choices+=("${f#"$DOTFILES_DIR/"}")
 	done
 	shopt -u nullglob globstar
 
-	local target_file
-	target_file=$(printf '%s\n' "${yaml_files[@]}" | gum filter --header "Select target YAML file")
-	[[ -z "$target_file" ]] && return 0
+	local target_pick target_file=""
+	target_pick=$(printf '%s\n' "${yaml_choices[@]}" | gum filter --header "Select target YAML file")
+	[[ -z "$target_pick" ]] && return 0
 
-	# pick existing module or create new
+	if [[ "$target_pick" == "[+] Create new YAML under os/" ]]; then
+		local rel
+		if ! rel=$(gum input --placeholder "relative path under os/, e.g. arch/misc.yaml"); then
+			return 0
+		fi
+		rel="${rel/#\//}"
+		rel="${rel#"os/"}"
+		[[ -z "$rel" ]] && return 0
+		if [[ "$rel" == *..* ]] || [[ "$rel" == /* ]]; then
+			log_error "audit: path must be relative with no .. (e.g. arch/misc.yaml)"
+			return 1
+		fi
+		case "$rel" in
+		*.yaml | *.yml) ;;
+		*) rel="$rel.yaml" ;;
+		esac
+		local dir full
+		dir="$DOTFILES_DIR/os/$(dirname "$rel")"
+		full="$DOTFILES_DIR/os/$rel"
+		mkdir -p "$dir"
+		if [[ -e "$full" ]]; then
+			log_warn "audit: file already exists — choose it from the list instead ($rel)"
+			return 1
+		fi
+		printf '%s\n' 'modules:' >"$full"
+		target_file="os/$rel"
+	else
+		target_file="$target_pick"
+	fi
+
+	local grouping
+	grouping="$(gum choose \
+		"One module for all selections" \
+		"Separate module per package (name = package)")" || return 0
+
+	if [[ "$grouping" == Separate* ]]; then
+		local pkg ent
+		for pkg in "${selected[@]}"; do
+			ent="$(_audit_install_entry_for_pkg "$pkg")"
+			_audit_append_module_block "$target_file" "$pkg" "$ent"
+		done
+		log_ok "audit: added ${#selected[@]} separate module(s) to $target_file"
+		return 0
+	fi
+
 	local -a module_names=()
 	while IFS= read -r name; do
 		[[ -n "$name" ]] && module_names+=("$name")
-	done < <(yq -r '.modules[].name // empty' "$DOTFILES_DIR/$target_file")
+	done < <(_audit_yaml_module_names_get "$DOTFILES_DIR/$target_file")
 	module_names+=("[new module]")
 
 	local target_module
@@ -149,20 +232,11 @@ _audit_import() {
 	if [[ "$target_module" == "[new module]" ]]; then
 		target_module=$(gum input --placeholder "module name")
 		[[ -z "$target_module" ]] && return 0
-		# detect manager: if package is foreign (AUR), use aur:, else pacman:
 		local -a entries=()
 		for pkg in "${selected[@]}"; do
-			if pacman -Qm "$pkg" &>/dev/null; then
-				entries+=("aur:$pkg")
-			else
-				entries+=("pacman:$pkg")
-			fi
+			entries+=("$(_audit_install_entry_for_pkg "$pkg")")
 		done
-		# append new module
-		local install_yaml
-		install_yaml=$(printf '    - %s\n' "${entries[@]}")
-		printf '\n  - name: %s\n    install:\n%s\n' "$target_module" "$install_yaml" \
-			>>"$DOTFILES_DIR/$target_file"
+		_audit_append_module_block "$target_file" "$target_module" "${entries[@]}"
 		log_ok "audit: created module '$target_module' in $target_file with ${#selected[@]} package(s)"
 	else
 		# append to existing module's install list using sed to preserve formatting
