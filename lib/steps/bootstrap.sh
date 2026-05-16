@@ -5,7 +5,7 @@
 step_bootstrap() {
 	log_info "bootstrap: ensuring core dependencies"
 
-	if [[ "$PLATFORM" != arch ]]; then
+	if [[ "$DOTFILES_PLATFORM" != arch ]]; then
 		log_warn "bootstrap: only Arch Linux supported for now, skipping"
 		return 0
 	fi

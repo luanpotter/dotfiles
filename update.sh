@@ -18,13 +18,14 @@ Declarative dotfiles engine. Reads YAML manifests from os/ and converges
 the current system to match the desired state.
 
 Options:
-  --help       Show this help message
-  --dry-run    Show what would be done without making changes
-  --check      Audit mode: surface unmanaged packages and configs
-  --manage     Toggle modules on/off via TUI
-  --yes, -y    Auto-confirm exec blocks (no interactive prompts)
-  --force      Re-run all exec blocks regardless of hash
-  --verbose, -v Verbose output (show per-item details)
+  --help              Show this help message
+  --print-platform    Print DOTFILES_PLATFORM and os-release context, then exit
+  --dry-run           Show what would be done without making changes
+  --check             Audit mode: surface unmanaged packages and configs
+  --manage            Toggle modules on/off via TUI
+  --yes, -y           Auto-confirm exec blocks (no interactive prompts)
+  --force             Re-run all exec blocks regardless of hash
+  --verbose, -v       Verbose output (show per-item details)
 
 EOF
 }
@@ -48,6 +49,10 @@ main() {
 		case "$1" in
 		--help)
 			usage
+			exit 0
+			;;
+		--print-platform)
+			dotfiles_print_platform
 			exit 0
 			;;
 		--dry-run)
@@ -83,7 +88,7 @@ main() {
 	done
 
 	prime_sudo
-	log_info "dotfiles update (platform=$PLATFORM, dry_run=$DRY_RUN)"
+	log_info "dotfiles update (dotfiles_platform=$DOTFILES_PLATFORM, dry_run=$DRY_RUN)"
 
 	local manifest
 	manifest="$(step_bootstrap)"

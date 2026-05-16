@@ -13,7 +13,7 @@ step_manage() {
 
 	# read all modules (including filtered-out ones) from raw YAML files
 	local commons_dir="$DOTFILES_DIR/os/commons"
-	local platform_dir="$DOTFILES_DIR/os/$PLATFORM"
+	local platform_dir="$DOTFILES_DIR/os/$DOTFILES_PLATFORM"
 	local -a files=()
 	shopt -s nullglob globstar
 	for dir in "$commons_dir" "$platform_dir"; do

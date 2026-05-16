@@ -4,11 +4,9 @@
 # -- resolve paths
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-# -- OS detection
-PLATFORM=arch
-if [[ "$OSTYPE" == darwin* ]]; then
-	PLATFORM=macos
-fi
+# -- OS detection (lib/detect.sh)
+# shellcheck source=detect.sh
+source "$DOTFILES_DIR/lib/detect.sh"
 
 # -- dry-run flag (set by update.sh)
 DRY_RUN="${DRY_RUN:-false}"
@@ -66,11 +64,11 @@ env_set_hash() {
 }
 
 # -- manifest merge
-# Merges os/commons/**/*.yaml + os/<platform>/**/*.yaml, then filters modules
+# Merges os/commons/**/*.yaml + os/<DOTFILES_PLATFORM>/**/*.yaml, then filters modules
 # based on their `default` field and env.yaml overrides. Prints merged YAML to stdout.
 merge_manifests() {
 	local commons_dir="$DOTFILES_DIR/os/commons"
-	local platform_dir="$DOTFILES_DIR/os/$PLATFORM"
+	local platform_dir="$DOTFILES_DIR/os/$DOTFILES_PLATFORM"
 
 	_ensure_env
 
@@ -98,7 +96,7 @@ merge_manifests() {
         (reduce .[] as $item ({}; . * ($item | del(.modules)))) +
         {modules: [.[] | (.modules // [])[]]}
     ' "${files[@]}" | yq --argjson env "$(yq '.modules // {}' "$ENV_FILE")" \
-		--arg platform "$PLATFORM" '
+		--arg platform "$DOTFILES_PLATFORM" '
         .modules = [.modules[] | select(
             if .env != null and .env != $platform then false
             else
