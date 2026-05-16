@@ -39,6 +39,28 @@ run_cmd() {
 	fi
 }
 
+declare -A DOTFILES_MANAGERS_BY_PLATFORM=(
+	[arch]='pacman aur brew snap'
+	[debian]='apt'
+	[macos]='brew'
+	[default]=''
+)
+
+# Returns 0 if install lines using this manager should run on DOTFILES_PLATFORM.
+dotfiles_manager_supported() {
+	local mgr="$1"
+	local list="${DOTFILES_MANAGERS_BY_PLATFORM[$DOTFILES_PLATFORM]:-}"
+	[[ -z "$list" ]] && list="${DOTFILES_MANAGERS_BY_PLATFORM[default]}"
+
+	local -a allowed=()
+	read -ra allowed <<<"$list"
+	local m
+	for m in "${allowed[@]}"; do
+		[[ "$m" == "$mgr" ]] && return 0
+	done
+	return 1
+}
+
 # -- env file helpers
 # Ensures env.yaml exists with valid YAML structure
 _ensure_env() {

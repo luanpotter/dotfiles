@@ -47,17 +47,22 @@ step_audit() {
 	local manifest="$1"
 	log_info "audit: checking for unmanaged packages"
 
+	if [[ "$DOTFILES_PLATFORM" != arch ]]; then
+		log_error "audit: not supported on this platform yet (only Arch for now)"
+		return 1
+	fi
+
 	# -- collect all declared packages (pacman + aur from modules, plus bootstrap)
 	local -A declared=()
 
 	# bootstrap packages
 	while IFS= read -r pkg; do
 		[[ -n "$pkg" ]] && declared[$pkg]=1
-	done < <(echo "$manifest" | yq -r '.bootstrap // [] | .[]')
+	done < <(printf '%s\n' "$manifest" | yq -r '.bootstrap // [] | .[]')
 
 	# aur helper itself
 	local aur_helper
-	aur_helper="$(echo "$manifest" | yq -r '.aur_helper // ""')"
+	aur_helper="$(printf '%s\n' "$manifest" | yq -r '.aur_helper // ""')"
 	[[ -n "$aur_helper" ]] && declared[$aur_helper]=1
 
 	# module install entries (pacman: and aur: only)
@@ -68,7 +73,7 @@ step_audit() {
 		if [[ "$mgr" == pacman || "$mgr" == aur ]]; then
 			declared[$pkg]=1
 		fi
-	done < <(echo "$manifest" | yq -r '[(.modules // [])[] | (.install // [])[]] | unique | .[]')
+	done < <(printf '%s\n' "$manifest" | yq -r '[(.modules // [])[] | (.install // [])[]] | unique | .[]')
 
 	# -- get all explicitly installed packages from pacman
 	local -a installed=()

@@ -2,6 +2,7 @@ modules:
   - name: git
     install:
       - pacman:git
+      - apt:git
       - snap:gh
     exec: |
       git config --global rerere.enabled true

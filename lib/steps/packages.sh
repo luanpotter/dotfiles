@@ -4,13 +4,22 @@
 # groups them by package manager, and installs any missing packages
 step_packages() {
 	local manifest="$1"
+	if ! command -v yq &>/dev/null; then
+		log_error "packages: yq not found (manifest tooling required)"
+		return 1
+	fi
 	log_verbose_info "packages: collecting install entries"
 
 	# extract unique manager:package pairs from all modules
+	local entries
+	if ! entries="$(printf '%s\n' "$manifest" | yq -r '[.modules[].install // [] | .[]] | unique | .[]')"; then
+		log_error "packages: failed to read install entries from manifest"
+		return 1
+	fi
 	local -a all_entries=()
 	while IFS= read -r entry; do
 		[[ -n "$entry" ]] && all_entries+=("$entry")
-	done < <(echo "$manifest" | yq -r '[.modules[].install // [] | .[]] | unique | .[]')
+	done <<<"$entries"
 
 	if [[ ${#all_entries[@]} -eq 0 ]]; then
 		log_ok "packages: nothing to install"
@@ -22,12 +31,16 @@ step_packages() {
 	for entry in "${all_entries[@]}"; do
 		local mgr="${entry%%:*}"
 		local pkg="${entry#*:}"
+		dotfiles_manager_supported "$mgr" || continue
 		groups[$mgr]+="$pkg "
 	done
 
 	# aur helper from manifest (defaults to yay)
 	local aur_helper
-	aur_helper="$(echo "$manifest" | yq -r '.aur_helper // "yay"')"
+	if ! aur_helper="$(printf '%s\n' "$manifest" | yq -r '.aur_helper // "yay"')"; then
+		log_error "packages: failed to read aur_helper from manifest"
+		return 1
+	fi
 
 	local total_missing=0
 	for mgr in "${!groups[@]}"; do
@@ -38,6 +51,7 @@ step_packages() {
 		case "$mgr" in
 		pacman) count=$(_install_pacman "${pkgs[@]}" | tail -n 1) ;;
 		aur) count=$(_install_aur "$aur_helper" "${pkgs[@]}" | tail -n 1) ;;
+		apt) count=$(_install_apt "${pkgs[@]}" | tail -n 1) ;;
 		brew) count=$(_install_brew "${pkgs[@]}" | tail -n 1) ;;
 		snap) count=$(_install_snap "${pkgs[@]}" | tail -n 1) ;;
 		*) log_warn "packages: unknown manager '$mgr', skipping" ;;
@@ -46,6 +60,25 @@ step_packages() {
 	done
 
 	echo "$total_missing"
+}
+
+_install_apt() {
+	if ! command -v apt-get &>/dev/null; then
+		log_error "packages: apt-get not found"
+		return 1
+	fi
+	local -a missing=()
+	for pkg in "$@"; do
+		dpkg -s "$pkg" &>/dev/null || missing+=("$pkg")
+	done
+	if [[ ${#missing[@]} -gt 0 ]]; then
+		log_info "packages: apt installing ${missing[*]}"
+		run_cmd sudo apt-get update
+		run_cmd sudo apt-get install -y "${missing[@]}"
+	else
+		log_verbose "packages: all apt packages present (${#} total)"
+	fi
+	echo "${#missing[@]}"
 }
 
 _install_pacman() {

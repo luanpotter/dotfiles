@@ -9,7 +9,10 @@ step_exec() {
 	log_verbose_info "exec: running module exec blocks"
 
 	local count
-	count=$(echo "$manifest" | yq -r '[.modules[] | select(.exec)] | length')
+	if ! count="$(printf '%s\n' "$manifest" | yq -r '[.modules[] | select(.exec)] | length')"; then
+		log_error "exec: failed to read exec blocks from manifest"
+		return 1
+	fi
 
 	if [[ "$count" -eq 0 ]]; then
 		log_ok "exec: no exec blocks"
@@ -20,9 +23,15 @@ step_exec() {
 	local pending=0
 	for ((i = 0; i < count; i++)); do
 		local name
-		name=$(echo "$manifest" | yq -r "[ .modules[] | select(.exec) ] | .[$i].name")
+		if ! name="$(printf '%s\n' "$manifest" | yq -r "[ .modules[] | select(.exec) ] | .[$i].name")"; then
+			log_error "exec: failed to read exec block name from manifest"
+			return 1
+		fi
 		local exec_block
-		exec_block=$(echo "$manifest" | yq -r "[ .modules[] | select(.exec) ] | .[$i].exec")
+		if ! exec_block="$(printf '%s\n' "$manifest" | yq -r "[ .modules[] | select(.exec) ] | .[$i].exec")"; then
+			log_error "exec: failed to read exec block '$name' from manifest"
+			return 1
+		fi
 
 		# hash check: skip if unchanged (unless --force)
 		local hash

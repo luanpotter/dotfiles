@@ -2,6 +2,7 @@ modules:
   - name: vim
     install:
       - pacman:vim
+      - apt:vim
     config: ~/.vimrc
 
   - name: shell

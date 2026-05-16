@@ -2,6 +2,7 @@ modules:
   - name: tmux
     install:
       - pacman:tmux
+      - apt:tmux
     config: ~/.config/tmux
 
   - name: ghostty
@@ -12,4 +13,5 @@ modules:
   - name: alacritty
     install:
       - pacman:alacritty
+      - apt:alacritty
     config: ~/.config/alacritty

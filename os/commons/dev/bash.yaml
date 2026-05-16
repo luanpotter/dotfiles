@@ -2,3 +2,4 @@ modules:
   - name: bash-dev
     install:
       - pacman:shfmt
+      - apt:shfmt

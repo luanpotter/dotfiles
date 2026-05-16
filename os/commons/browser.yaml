@@ -2,7 +2,9 @@ modules:
   - name: chromium
     install:
       - pacman:chromium
+      - apt:chromium
 
   - name: firefox
     install:
       - pacman:firefox
+      - apt:firefox

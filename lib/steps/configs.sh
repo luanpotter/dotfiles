@@ -6,15 +6,21 @@ step_configs() {
 	local manifest="$1"
 	log_verbose_info "configs: checking symlinks"
 
+	local config_entries
+	if ! config_entries="$(printf '%s\n' "$manifest" | yq -r '
+		[.modules[] | select(.config) | [.name, .config]] | .[] | @tsv
+	')"; then
+		log_error "configs: failed to read config entries from manifest"
+		return 1
+	fi
+
 	local -a names=()
 	local -a targets=()
 	while IFS=$'\t' read -r name target; do
 		[[ -n "$name" ]] || continue
 		names+=("$name")
 		targets+=("$target")
-	done < <(echo "$manifest" | yq -r '
-		[.modules[] | select(.config) | [.name, .config]] | .[] | @tsv
-	')
+	done <<<"$config_entries"
 
 	local pending=0
 	for i in "${!names[@]}"; do
