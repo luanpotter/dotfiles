@@ -32,6 +32,26 @@ step_bootstrap() {
 		;;
 	esac
 
+	# -- install manager tooling for listed but missing managers
+	local mgr_list="${DOTFILES_MANAGERS_BY_PLATFORM[$DOTFILES_PLATFORM]:-}"
+	case "$DOTFILES_PLATFORM" in
+	debian)
+		local -a missing_mgr_pkgs=()
+		for mgr in $mgr_list; do
+			case "$mgr" in
+			snap)
+				command -v snap &>/dev/null || missing_mgr_pkgs+=(snapd)
+				;;
+			esac
+		done
+		if [[ ${#missing_mgr_pkgs[@]} -gt 0 ]]; then
+			log_info "bootstrap: installing manager tooling: ${missing_mgr_pkgs[*]}"
+			run_cmd sudo apt-get update >&2 || return 1
+			run_cmd sudo apt-get install -y "${missing_mgr_pkgs[@]}" >&2 || return 1
+		fi
+		;;
+	esac
+
 	if ! command -v yq &>/dev/null; then
 		log_warn "bootstrap: yq not available, cannot merge manifests (dry-run?)"
 		return 0
