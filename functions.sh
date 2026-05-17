@@ -152,7 +152,7 @@ alias gproto='g buildProtos'
 
 alias pac='sudo pacman'
 alias up='~/projects/dotfiles/update.sh'
-alias up-old='pac -Syyu'
+alias up-pac='pac -Syyu'
 alias up-aur='yay -Syyu'
 alias prune='pac -Qqdt | pac -Rsn -'
 
