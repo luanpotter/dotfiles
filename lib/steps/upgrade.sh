@@ -5,6 +5,9 @@ step_upgrade() {
 	case "$DOTFILES_PLATFORM" in
 	arch)
 		run_cmd sudo pacman -Syu --noconfirm
+		if command -v yay &>/dev/null; then
+			run_cmd yay -Sua --noconfirm
+		fi
 		;;
 	debian)
 		run_cmd sudo apt-get update

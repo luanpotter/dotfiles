@@ -40,17 +40,10 @@ _audit_append_module_block() {
 	printf '%s  - name: %s\n    install:\n%s' "$nl_before" "$module_name" "$install_yaml" >>"$file"
 }
 
-# step_audit surfaces explicitly installed packages not tracked by any module.
-# Shows a gum TUI for triaging unmanaged packages: import into a YAML file,
-# uninstall, or skip.
-step_audit() {
+# _audit_pacman implements the Arch audit backend.
+# Surfaces explicitly installed packages not tracked by any module.
+_audit_pacman() {
 	local manifest="$1"
-	log_info "audit: checking for unmanaged packages"
-
-	if [[ "$DOTFILES_PLATFORM" != arch ]]; then
-		log_error "audit: not supported on this platform yet (only Arch for now)"
-		return 1
-	fi
 
 	# -- collect all declared packages (pacman + aur from modules, plus bootstrap)
 	local -A declared=()
@@ -150,6 +143,23 @@ step_audit() {
 		Done*) break ;;
 		esac
 	done
+}
+
+# step_audit dispatches to the platform-specific audit backend.
+# Unsupported platforms print one line and exit 0.
+step_audit() {
+	local manifest="$1"
+	log_info "audit: checking for unmanaged packages"
+
+	case "$DOTFILES_PLATFORM" in
+	arch)
+		_audit_pacman "$manifest"
+		;;
+	*)
+		log_info "audit: native backend not implemented for '$DOTFILES_PLATFORM'"
+		return 0
+		;;
+	esac
 }
 
 _audit_import() {
