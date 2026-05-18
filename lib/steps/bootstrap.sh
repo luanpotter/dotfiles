@@ -1,10 +1,75 @@
 #!/usr/bin/env bash
 
+# Install the underlying system package / binary for a manager if missing.
+# Native managers are verified but need no separate tooling.
+# Portable managers (brew, snap, flatpak) need platform-specific install.
+# AUR needs its helper (e.g. yay) installed from the AUR.
+_bootstrap_manager_tooling() {
+	local mgr="$1"
+
+	case "$mgr" in
+	pacman|apt)
+		if ! check_cmd "$mgr"; then
+			log_warn "bootstrap: native manager '$mgr' not found on system"
+		fi
+		return 0
+		;;
+	aur)
+		local helper="yay"
+		if check_cmd "$helper"; then
+			log_verbose "bootstrap: AUR helper '$helper' already installed"
+			return 0
+		fi
+		log_info "bootstrap: installing AUR helper '$helper'"
+		if [[ "$DRY_RUN" == true ]]; then
+			log_info "[dry-run] would install $helper from AUR"
+			return 0
+		fi
+		local tmp
+		tmp="$(mktemp -d)"
+		git clone "https://aur.archlinux.org/${helper}.git" "$tmp/$helper" >&2
+		(cd "$tmp/$helper" && makepkg -si --noconfirm) >&2
+		rm -rf "$tmp"
+		return 0
+		;;
+	brew)
+		if check_cmd brew; then
+			return 0
+		fi
+		log_error "bootstrap: Homebrew not found; install from https://brew.sh"
+		return 1
+		;;
+	snap)
+		check_cmd snap && return 0
+		case "$DOTFILES_PLATFORM" in
+		arch)
+			log_info "bootstrap: installing snapd"
+			run_cmd sudo pacman -S --needed --noconfirm snapd >&2 || return 1
+			;;
+		debian)
+			log_info "bootstrap: installing snapd"
+			run_cmd sudo apt-get update >&2 || return 1
+			run_cmd sudo apt-get install -y snapd >&2 || return 1
+			;;
+		*)
+			log_warn "bootstrap: don't know how to install snapd on $DOTFILES_PLATFORM"
+			;;
+		esac
+		return 0
+		;;
+	*)
+		log_warn "bootstrap: no tooling recipe for manager '$mgr'"
+		return 0
+		;;
+	esac
+}
+
 # step_bootstrap ensures yq and platform package managers are ready,
 # then merges manifests and prints the merged YAML to stdout.
 step_bootstrap() {
 	log_info "bootstrap: ensuring core dependencies"
 
+	# -- 1. core tooling per platform
 	case "$DOTFILES_PLATFORM" in
 	arch)
 		local -a missing=()
@@ -27,40 +92,40 @@ step_bootstrap() {
 			run_cmd sudo apt-get install -y "${missing[@]}" >&2 || return 1
 		fi
 		;;
+	macos)
+		if ! check_cmd brew; then
+			log_error "bootstrap: Homebrew not found; install from https://brew.sh"
+			return 1
+		fi
+		local -a missing=()
+		brew list yq &>/dev/null 2>&1 || missing+=(yq)
+		brew list gum &>/dev/null 2>&1 || missing+=(gum)
+		if [[ ${#missing[@]} -gt 0 ]]; then
+			log_info "bootstrap: brewing ${missing[*]}"
+			run_cmd brew install "${missing[@]}" >&2 || return 1
+		fi
+		;;
 	*)
 		log_warn "bootstrap: platform '$DOTFILES_PLATFORM' has no bootstrap recipe; ensure yq is installed"
 		;;
 	esac
 
-	# -- install manager tooling for listed but missing managers
-	local mgr_list="${DOTFILES_MANAGERS_BY_PLATFORM[$DOTFILES_PLATFORM]:-}"
-	case "$DOTFILES_PLATFORM" in
-	debian)
-		local -a missing_mgr_pkgs=()
-		for mgr in $mgr_list; do
-			case "$mgr" in
-			snap)
-				command -v snap &>/dev/null || missing_mgr_pkgs+=(snapd)
-				;;
-			esac
-		done
-		if [[ ${#missing_mgr_pkgs[@]} -gt 0 ]]; then
-			log_info "bootstrap: installing manager tooling: ${missing_mgr_pkgs[*]}"
-			run_cmd sudo apt-get update >&2 || return 1
-			run_cmd sudo apt-get install -y "${missing_mgr_pkgs[@]}" >&2 || return 1
-		fi
-		;;
-	esac
-
-	if ! command -v yq &>/dev/null; then
+	if ! check_cmd yq; then
 		log_warn "bootstrap: yq not available, cannot merge manifests (dry-run?)"
 		return 0
 	fi
 
+	# -- 2. read manifest once, before manager tooling
 	local manifest
 	manifest="$(merge_manifests)"
 
-	# -- read bootstrap packages from merged manifest
+	# -- 3. manager tooling bootstrap
+	local mgr_list="${DOTFILES_MANAGERS_BY_PLATFORM[$DOTFILES_PLATFORM]:-}"
+	for mgr in $mgr_list; do
+		_bootstrap_manager_tooling "$mgr" || return 1
+	done
+
+	# -- 4. manifest bootstrap packages (platform-specific install)
 	local -a bootstrap_pkgs=()
 	while IFS= read -r pkg; do
 		[[ -n "$pkg" ]] && bootstrap_pkgs+=("$pkg")
@@ -81,23 +146,6 @@ step_bootstrap() {
 			else
 				log_verbose "bootstrap: all packages present"
 			fi
-		fi
-
-		local aur_helper
-		aur_helper="$(yq -r '.aur_helper // ""' <<<"$manifest")"
-		if [[ -n "$aur_helper" ]] && ! command -v "$aur_helper" &>/dev/null; then
-			log_info "bootstrap: installing AUR helper '$aur_helper'"
-			if [[ "$DRY_RUN" == true ]]; then
-				log_info "[dry-run] would install $aur_helper from AUR"
-			else
-				local tmp
-				tmp="$(mktemp -d)"
-				git clone "https://aur.archlinux.org/${aur_helper}.git" "$tmp/$aur_helper" >&2
-				(cd "$tmp/$aur_helper" && makepkg -si --noconfirm) >&2
-				rm -rf "$tmp"
-			fi
-		elif [[ -n "$aur_helper" ]]; then
-			log_verbose "bootstrap: $aur_helper already installed"
 		fi
 		;;
 	debian)

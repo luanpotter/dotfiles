@@ -1,5 +1,4 @@
 bootstrap: [git, base-devel, yq, gum]
-aur_helper: yay
 
 modules:
   - name: system

@@ -4,7 +4,7 @@
 # groups them by package manager, and installs any missing packages
 step_packages() {
 	local manifest="$1"
-	if ! command -v yq &>/dev/null; then
+	if ! check_cmd yq; then
 		log_error "packages: yq not found (manifest tooling required)"
 		return 1
 	fi
@@ -35,13 +35,6 @@ step_packages() {
 		groups[$mgr]+="$pkg "
 	done
 
-	# aur helper from manifest (defaults to yay)
-	local aur_helper
-	if ! aur_helper="$(printf '%s\n' "$manifest" | yq -r '.aur_helper // "yay"')"; then
-		log_error "packages: failed to read aur_helper from manifest"
-		return 1
-	fi
-
 	local total_missing=0
 	for mgr in "${!groups[@]}"; do
 		local -a pkgs=()
@@ -50,7 +43,7 @@ step_packages() {
 
 		case "$mgr" in
 		pacman) count=$(_install_pacman "${pkgs[@]}" | tail -n 1) ;;
-		aur) count=$(_install_aur "$aur_helper" "${pkgs[@]}" | tail -n 1) ;;
+		aur) count=$(_install_yay "${pkgs[@]}" | tail -n 1) ;;
 		apt) count=$(_install_apt "${pkgs[@]}" | tail -n 1) ;;
 		brew) count=$(_install_brew "${pkgs[@]}" | tail -n 1) ;;
 		snap) count=$(_install_snap "${pkgs[@]}" | tail -n 1) ;;
@@ -63,7 +56,7 @@ step_packages() {
 }
 
 _install_apt() {
-	if ! command -v apt-get &>/dev/null; then
+	if ! check_cmd apt-get; then
 		log_error "packages: apt-get not found"
 		return 1
 	fi
@@ -95,11 +88,9 @@ _install_pacman() {
 	echo "${#missing[@]}"
 }
 
-_install_aur() {
-	local helper="$1"
-	shift
-	if ! command -v "$helper" &>/dev/null; then
-		log_error "packages: AUR helper '$helper' not found"
+_install_yay() {
+	if ! check_cmd yay; then
+		log_error "packages: AUR helper 'yay' not found"
 		return 1
 	fi
 	local -a missing=()
@@ -107,8 +98,8 @@ _install_aur() {
 		pacman -Qi "$pkg" &>/dev/null || missing+=("$pkg")
 	done
 	if [[ ${#missing[@]} -gt 0 ]]; then
-		log_info "packages: $helper installing ${missing[*]}"
-		run_cmd "$helper" -S --needed --noconfirm "${missing[@]}"
+		log_info "packages: yay installing ${missing[*]}"
+		run_cmd yay -S --needed --noconfirm "${missing[@]}"
 	else
 		log_verbose "packages: all AUR packages present (${#} total)"
 	fi
@@ -116,16 +107,16 @@ _install_aur() {
 }
 
 _install_snap() {
-	if ! command -v snap &>/dev/null; then
+	if ! check_cmd snap; then
 		log_error "packages: snap not found"
 		return 1
 	fi
 
 	# Check if snapd daemon is actually running before querying packages
 	local snapd_running=false
-	if command -v systemctl &>/dev/null && systemctl is-active --quiet snapd 2>/dev/null; then
+	if check_cmd systemctl && systemctl is-active --quiet snapd 2>/dev/null; then
 		snapd_running=true
-	elif command -v pgrep &>/dev/null && pgrep -x snapd &>/dev/null; then
+	elif check_cmd pgrep && pgrep -x snapd &>/dev/null; then
 		snapd_running=true
 	fi
 
@@ -150,7 +141,7 @@ _install_snap() {
 }
 
 _install_brew() {
-	if ! command -v brew &>/dev/null; then
+	if ! check_cmd brew; then
 		log_error "packages: brew not found"
 		return 1
 	fi

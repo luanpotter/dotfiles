@@ -6,7 +6,7 @@ step_manage() {
 	local manifest="$1"
 	log_info "manage: listing all modules"
 
-	if ! command -v gum &>/dev/null; then
+	if ! check_cmd gum; then
 		log_error "manage: gum is required for the TUI"
 		return 1
 	fi

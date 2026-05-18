@@ -39,8 +39,14 @@ run_cmd() {
 	fi
 }
 
+# -- command presence check
+# Returns 0 if the given command exists in PATH.
+check_cmd() {
+	command -v "$1" &>/dev/null
+}
+
 declare -A DOTFILES_MANAGERS_BY_PLATFORM=(
-	[arch]='pacman aur brew snap'
+	[arch]='pacman aur snap'
 	[debian]='apt snap'
 	[macos]='brew'
 	[default]=''
