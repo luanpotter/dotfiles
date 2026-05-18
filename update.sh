@@ -4,8 +4,10 @@ set -euo pipefail
 # -- load lib
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 LIB="$DOTFILES_DIR/lib"
+# shellcheck source=lib/utils.sh
 source "$LIB/utils.sh"
 shopt -s nullglob
+# shellcheck source=lib/steps/exec.sh
 for f in "$LIB/steps/"*.sh; do
 	source "$f"
 done
