@@ -1,0 +1,14 @@
+name: Dotfiles Smoke Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image and run assertions
+        run: test/run.sh --assert
