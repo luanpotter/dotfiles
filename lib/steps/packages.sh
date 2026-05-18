@@ -120,6 +120,20 @@ _install_snap() {
 		log_error "packages: snap not found"
 		return 1
 	fi
+
+	# Check if snapd daemon is actually running before querying packages
+	local snapd_running=false
+	if command -v systemctl &>/dev/null && systemctl is-active --quiet snapd 2>/dev/null; then
+		snapd_running=true
+	elif command -v pgrep &>/dev/null && pgrep -x snapd &>/dev/null; then
+		snapd_running=true
+	fi
+
+	if ! $snapd_running; then
+		log_warn "packages: snapd is not running, skipping snap packages"
+		return 0
+	fi
+
 	local -a missing=()
 	for pkg in "$@"; do
 		snap list "$pkg" &>/dev/null 2>&1 || missing+=("$pkg")
