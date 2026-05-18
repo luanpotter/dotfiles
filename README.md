@@ -18,28 +18,12 @@ All machines are structured as follows, inside your home dir:
 
 Setup is really easy:
 
- * Run the main setup script:
+ * Run the main update script:
 
 ```bash
-    ./setup.sh
+    ./update.sh
 ```
 
- * Source `functions.sh` in your `.bashrc`; it should look like this:
+It should bootstrap everything for your system!
 
- ```bash
-    # If not running interactively, don't do anything
-    [[ $- != *i* ]] && return
-
-    source "$HOME/projects/dotfiles/functions.sh"
-
-    # Env specific custom stuff
-    # ...
- ```
-
- Note: if you are using zsh, don't forget to make sure your `~/.zshrc` is sourcing your bashrc:
-
- ```bash
-   source ~/.bashrc
- ```
-
-After that, you must open vim once (`v`), and see a lot of erros; just run `:PlugInstall` once to do everything. Next run should give you no errors.
+Note that to finalize the vim install, you must open it once (`v`); you will see a lot of errors, just run `:PlugInstall` once.

@@ -17,7 +17,6 @@ RUN apt-get update \
 WORKDIR /home/test/dotfiles
 
 COPY --chown=test:test . .
-
+RUN chown test:test /home/test/dotfiles
 USER test
-
 RUN ./update.sh --yes
