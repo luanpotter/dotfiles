@@ -11,20 +11,20 @@ elif [[ $q == '-f' ]]; then
 fi
 
 IFS=':' read -ra p <<< "$q"
-file=`find . -name "${p[0]}" | grep -vwE target`
+file=$(find . -name "${p[0]}" | grep -vwE target)
 if [ -z "$file" ]; then
  IFS='.' read -ra s <<< "${p[0]}"
- file=`find . -name "${s[-1]}.*" | grep -vwE target`
+ file=$(find . -name "${s[-1]}.*" | grep -vwE target)
 fi
 
 if [ -z "$file" ]; then
   echo 'No matches found!'
 else
   if [[ $path == 2 ]]; then
-    echo $file | fpp
+    echo "$file" | fpp
   elif [[ $path == 1 ]]; then
-    echo $file
+    echo "$file"
   else
-    vim +"${p[1]}" $file
+    vim +"${p[1]}" "$file"
   fi
 fi

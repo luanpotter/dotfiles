@@ -8,3 +8,7 @@ modules:
     install:
       - pacman:firefox
       - apt:firefox
+    exec: |
+      if check_cmd xdg-settings; then
+        xdg-settings set default-web-browser firefox.desktop
+      fi

@@ -11,7 +11,7 @@ shopt -s globstar 2> /dev/null
 PS1='[\u@\h \W]\$ ' 2> /dev/null
 setopt PROMPT_SUBST 2> /dev/null
 (autoload -U colors && colors) 2> /dev/null
-PROMPT='[%{$fg[magenta]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}:%~]%(!.#.$) '
+export PROMPT="[%{\$fg[magenta]%}%n%{\$reset_color%}@%{\$fg[yellow]%}%m%{\$reset_color%}:%~]%(!.#.$) "
 
 # -- zsh settings
 if [ -n "$ZSH_VERSION" ]; then
@@ -22,19 +22,14 @@ fi
 # --
 
 # -- default softwares
-EDITOR=vim
+export EDITOR=vim
 
 if [[ "$platform" == "linux" ]]; then
   TERM="xterm-256color"
 fi
 
 export XDG_CONFIG_HOME="$HOME/.config"
-BROWSER=firefox
-if [[ "$platform" == "linux" ]]; then
-  if command -v "xdg-settings" >/dev/null 2>&1; then
-    xdg-settings set default-web-browser firefox.desktop
-  fi
-fi
+export BROWSER=firefox
 export GTK_THEME=Adwaita-dark
 
 # TODO(luan): re-consider this option
@@ -63,11 +58,11 @@ most_used() {
   size=${1:-10}
   history 1 | cat | awk '{CMD[$2]++;count++;} END { for (a in CMD) \
     print CMD[a] " " CMD[a]/count*100 "% " a; }' | grep -v "./" \
-    | column -c3 -s " " -t | sort -nr | nl | head -n $size
+    | column -c3 -s " " -t | sort -nr | nl | head -n "$size"
 }
 
 my_ip() {
-  ip addr | grep -a wlp2s0 | sed -n 2p | rex '^.*inet ([\d.]*).*$' '$1'
+  ip addr | grep -a wlp2s0 | sed -n '2s/.*inet \([0-9.]*\).*/\1/p'
 }
 
 to_mp3() {

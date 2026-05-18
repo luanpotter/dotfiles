@@ -6,7 +6,7 @@ if [ -n "$ZSH_VERSION" ]; then
 	# test -f ~/softwares/scripts/.git-completion.zsh && . $_
 	true
 else
-	test -f ~/softwares/scripts/.git-completion.bash && . $_
+	test -f ~/softwares/scripts/.git-completion.bash && . "$_"
 fi
 
 alias gcm='git commit -m '
@@ -44,14 +44,14 @@ function gpu() {
 alias gitb='git --no-pager branch --sort=-committerdate'
 maybe_unalias gb # with zsh, oh-my-zsh might have this pre-bound
 function gb() {
-	gbb 15 $1
+	gbb 15 "$1"
 }
 
 function gbb() {
 	param=$2
 	n=$1
 	if [ -z "$param" ]; then
-		result=$(gitb | head -n$n | awk '{ print "(" NR  ") " $0 }')
+		result=$(gitb | head -n "$n" | awk '{ print "(" NR  ") " $0 }')
 		echo "$result"
 	else
 		branch=$(gitb | awk "NR==$param" | sed 's/[ *]*//g')

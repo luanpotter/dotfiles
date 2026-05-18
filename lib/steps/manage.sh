@@ -3,7 +3,7 @@
 # step_manage shows all modules with their enabled/disabled status
 # and lets the user toggle them via gum. Writes overrides to env.yaml.
 step_manage() {
-	local manifest="$1"
+	# manifest is intentionally ignored; this step reads raw os/ YAMLs directly.
 	log_info "manage: listing all modules"
 
 	if ! check_cmd gum; then

@@ -59,7 +59,8 @@ step_configs() {
 		pending=$((pending + 1))
 
 		if [[ -e "$target" && ! -L "$target" ]]; then
-			local backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d%H%M%S)"
+			local backup_dir
+			backup_dir="$HOME/.dotfiles-backup/$(date +%Y%m%d%H%M%S)"
 			log_warn "configs: backing up $target → $backup_dir/"
 			run_cmd mkdir -p "$backup_dir"
 			run_cmd mv "$target" "$backup_dir/"

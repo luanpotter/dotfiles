@@ -5,7 +5,6 @@
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # -- OS detection (lib/detect.sh)
-# shellcheck source=detect.sh
 source "$DOTFILES_DIR/lib/detect.sh"
 
 # -- dry-run flag (set by update.sh)
@@ -120,20 +119,23 @@ merge_manifests() {
 
 	# merge all files, then filter modules by platform, enabled/disabled state
 	# Resolution: env mismatch → skip; env.yaml override → module default → enabled
-	yq -s '
-        (reduce .[] as $item ({}; . * ($item | del(.modules)))) +
-        {modules: [.[] | (.modules // [])[]]}
-    ' "${files[@]}" | yq --argjson env "$(yq '.modules // {}' "$ENV_FILE")" \
-		--arg platform "$DOTFILES_PLATFORM" '
-        .modules = [.modules[] | select(
-            if .env != null and .env != $platform then false
-            else
-                ($env[.name] // null) as $override |
-                if $override != null then $override
-                elif .default == false then false
-                else true
-                end
-            end
-        ) | del(.default, .env)]
-    '
+	local filter_merge filter_select
+	read -r -d '' filter_merge <<'YQ'
+(reduce .[] as $item ({}; . * ($item | del(.modules)))) +
+{modules: [.[] | (.modules // [])[]]}
+YQ
+	read -r -d '' filter_select <<'YQ'
+.modules = [.modules[] | select(
+    if .env != null and .env != $platform then false
+    else
+        ($env[.name] // null) as $override |
+        if $override != null then $override
+        elif .default == false then false
+        else true
+        end
+    end
+) | del(.default, .env)]
+YQ
+	yq -s "$filter_merge" "${files[@]}" | yq --argjson env "$(yq '.modules // {}' "$ENV_FILE")" \
+		--arg platform "$DOTFILES_PLATFORM" "$filter_select"
 }
