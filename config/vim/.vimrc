@@ -44,7 +44,29 @@ Plug 'iamcco/coc-flutter'
 call plug#end()
 
 "" clipboard config
-set clipboard+=unnamed
+if has('mac') || has('macunix')
+  set clipboard+=unnamed
+elseif has('clipboard')
+  set clipboard=unnamedplus
+elseif has('unix') && executable('xclip')
+  function! s:CopyYankToClipboard() abort
+    if v:event.operator !=# 'y'
+      return
+    endif
+
+    let l:text = join(v:event.regcontents, "\n")
+    if v:event.regtype ==# 'V'
+      let l:text .= "\n"
+    endif
+
+    call system('xclip -selection clipboard -in -silent', l:text)
+  endfunction
+
+  augroup clipboard_yank
+    autocmd!
+    autocmd TextYankPost * call <SID>CopyYankToClipboard()
+  augroup END
+endif
 
 "" x will never copy
 nnoremap x "_x
