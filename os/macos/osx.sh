@@ -12,7 +12,7 @@ fi
 
 # install brew packages
 brew install \
-    gh wget tree the_silver_searcher jq yq fpp htop \
+    gh wget tree the_silver_searcher jq python-yq fpp htop \
     yt-dlp ffmpeg imagemagick
 
 # java / kotlin

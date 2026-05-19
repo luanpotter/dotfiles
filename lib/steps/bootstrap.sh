@@ -98,7 +98,7 @@ step_bootstrap() {
 			return 1
 		fi
 		local -a missing=()
-		brew list yq &>/dev/null 2>&1 || missing+=(yq)
+		brew list python-yq &>/dev/null 2>&1 || missing+=(python-yq)
 		brew list gum &>/dev/null 2>&1 || missing+=(gum)
 		if [[ ${#missing[@]} -gt 0 ]]; then
 			log_info "bootstrap: brewing ${missing[*]}"
