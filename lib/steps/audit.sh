@@ -1,5 +1,42 @@
 #!/usr/bin/env bash
 
+# -- declared-package collection
+
+_audit_collect_declared_all() {
+	local manifest="$1"
+	printf '%s\n' "$manifest" | yq -r '.bootstrap // [] | .[]'
+	printf '%s\n' "$manifest" | yq -r '[(.modules // [])[] | (.install // [])[]] | unique | .[]' | sed 's/^[^:]*://'
+}
+
+# -- shared YAML helpers
+
+_audit_yaml_module_names_get() {
+	local file="$1"
+	yq -r '(.modules // [])[] | .name // empty' "$file" 2>/dev/null || true
+}
+
+_audit_yaml_has_list_module_entry() {
+	grep -qE '^[[:space:]]*-[[:space:]]+name:[[:space:]]' "$1" 2>/dev/null
+}
+
+_audit_append_module_block() {
+	local target_rel="$1"
+	local module_name="$2"
+	shift 2
+	local -a entries=("$@")
+	local file="$DOTFILES_DIR/$target_rel"
+	local install_yaml="" e
+	local nl_before=$''
+
+	for e in "${entries[@]}"; do
+		install_yaml+="      - $e"$'\n'
+	done
+	if _audit_yaml_has_list_module_entry "$file"; then
+		nl_before=$'\n'
+	fi
+	printf '%s  - name: %s\n    install:\n%s' "$nl_before" "$module_name" "$install_yaml" >>"$file"
+}
+
 # -- per-manager: collect installed packages
 
 _audit_collect_installed_pacman() {
@@ -297,7 +334,9 @@ step_audit() {
 	fi
 
 	local -A declared=()
-	_audit_collect_declared_all "$manifest" declared
+	while IFS= read -r pkg; do
+		[[ -n "$pkg" ]] && declared[$pkg]=1
+	done < <(_audit_collect_declared_all "$manifest")
 
 	local total_installed=0 total_unmanaged=0
 	local -a audit_managers=() audit_unmanaged=()
@@ -391,11 +430,11 @@ step_audit() {
 		local i=0
 		while [[ $i -lt ${#audit_unmanaged[@]} ]]; do
 			local mgr="${audit_unmanaged[i]}"
-			((i++))
+			i=$((i + 1))
 			local -a pkgs=()
 			while [[ $i -lt ${#audit_unmanaged[@]} && "${audit_unmanaged[i]}" != @(pacman|aur|apt|brew|snap) ]]; do
 				pkgs+=("${audit_unmanaged[i]}")
-				((i++))
+				i=$((i + 1))
 			done
 			printf '%s\n' "${pkgs[@]}"
 		done
@@ -415,11 +454,11 @@ step_audit() {
 	local i=0
 	while [[ $i -lt ${#audit_unmanaged[@]} ]]; do
 		local mgr="${audit_unmanaged[i]}"
-		((i++))
+		i=$((i + 1))
 		local -a pkgs=()
 		while [[ $i -lt ${#audit_unmanaged[@]} && "${audit_unmanaged[i]}" != @(pacman|aur|apt|brew|snap) ]]; do
 			pkgs+=("${audit_unmanaged[i]}")
-			((i++))
+			i=$((i + 1))
 		done
 		if [[ "$mgr" == "$chosen_mgr" ]]; then
 			chosen_pkgs=("${pkgs[@]}")
