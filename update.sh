@@ -40,6 +40,10 @@ prime_sudo() {
 	if [[ "$DRY_RUN" == true ]] || is_running_as_root; then
 		return 0
 	fi
+	if [[ "$DOTFILES_PLATFORM" == "macos" ]]; then
+		# On macOS, brew flows don't need sudo
+		return 0
+	fi
 	sudo -v
 }
 
