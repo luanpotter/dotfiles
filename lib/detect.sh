@@ -43,7 +43,7 @@ dotfiles_detect_os() {
 	fi
 
 	case "$DOTFILES_PLATFORM" in
-	debian|ubuntu)
+	debian | ubuntu)
 		DOTFILES_PLATFORM=debian
 		;;
 	esac

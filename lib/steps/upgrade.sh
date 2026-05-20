@@ -7,11 +7,11 @@ step_upgrade() {
 	for mgr in $mgr_list; do
 		case "$mgr" in
 		pacman) _upgrade_pacman ;;
-		aur)    _upgrade_aur ;;
-		apt)    _upgrade_apt ;;
-		brew)   _upgrade_brew ;;
-		snap)   _upgrade_snap ;;
-		*)      log_warn "upgrade: no update recipe for manager '$mgr'" ;;
+		aur) _upgrade_aur ;;
+		apt) _upgrade_apt ;;
+		brew) _upgrade_brew ;;
+		snap) _upgrade_snap ;;
+		*) log_warn "upgrade: no update recipe for manager '$mgr'" ;;
 		esac
 	done
 }

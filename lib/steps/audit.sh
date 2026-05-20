@@ -346,7 +346,7 @@ step_audit() {
 		local collect_fn="" leaf_fn="" fmt_fn="" uninstall_fn=""
 
 		case "$mgr" in
-		pacman|aur)
+		pacman | aur)
 			collect_fn="_audit_collect_installed_pacman"
 			leaf_fn="_audit_leaf_filter_pacman"
 			fmt_fn="_audit_entry_format_pacman"
@@ -471,7 +471,7 @@ step_audit() {
 
 	local fmt_fn="" uninstall_fn=""
 	case "$chosen_mgr" in
-	pacman|aur)
+	pacman | aur)
 		fmt_fn="_audit_entry_format_pacman"
 		uninstall_fn="_audit_uninstall_pacman"
 		;;

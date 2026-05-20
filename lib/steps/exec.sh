@@ -60,7 +60,10 @@ step_exec() {
 		fi
 
 		log_info "exec: running '$name'"
-		(set +u; eval "$exec_block")
+		(
+			set +u
+			eval "$exec_block"
+		)
 		env_set_hash "$name" "$hash"
 	done
 

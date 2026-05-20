@@ -2,22 +2,22 @@
 # -- determine OS
 platform=linux
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  platform=macos
+	platform=macos
 fi
 # --
 
 # -- basics
-shopt -s globstar 2> /dev/null
-PS1='[\u@\h \W]\$ ' 2> /dev/null
-setopt PROMPT_SUBST 2> /dev/null
-(autoload -U colors && colors) 2> /dev/null
+shopt -s globstar 2>/dev/null
+PS1='[\u@\h \W]\$ ' 2>/dev/null
+setopt PROMPT_SUBST 2>/dev/null
+(autoload -U colors && colors) 2>/dev/null
 export PROMPT="[%{\$fg[magenta]%}%n%{\$reset_color%}@%{\$fg[yellow]%}%m%{\$reset_color%}:%~]%(!.#.$) "
 
 # -- zsh settings
 if [ -n "$ZSH_VERSION" ]; then
-  # changes zsh autocomplete to work like bash's
-  setopt noautomenu
-  setopt nomenucomplete
+	# changes zsh autocomplete to work like bash's
+	setopt noautomenu
+	setopt nomenucomplete
 fi
 # --
 
@@ -25,7 +25,7 @@ fi
 export EDITOR=vim
 
 if [[ "$platform" == "linux" ]]; then
-  TERM="xterm-256color"
+	TERM="xterm-256color"
 fi
 
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -39,54 +39,55 @@ export GTK_THEME=Adwaita-dark
 
 # -- helper functions
 maybe_unalias() {
-  local name="$1"
-  if alias "$name" 2>/dev/null; then
-      unalias "$name"
-  fi
+	local name="$1"
+	if alias "$name" 2>/dev/null; then
+		unalias "$name"
+	fi
 }
 
 remove_from_path() {
-   local p d
-   p=":$1:"
-   d=":$PATH:"
-   d=${d//$p/:}
-   d=${d/#:/}
-   PATH=${d/%:/}
+	local p d
+	p=":$1:"
+	d=":$PATH:"
+	d=${d//$p/:}
+	d=${d/#:/}
+	PATH=${d/%:/}
 }
 
 most_used() {
-  size=${1:-10}
-  history 1 | cat | awk '{CMD[$2]++;count++;} END { for (a in CMD) \
-    print CMD[a] " " CMD[a]/count*100 "% " a; }' | grep -v "./" \
-    | column -c3 -s " " -t | sort -nr | nl | head -n "$size"
+	local size=${1:-10}
+	history 1 | awk '
+		{ cmd[$2]++; total++ }
+		END { for (c in cmd) print cmd[c], cmd[c]/total*100 "%", c }
+	' | grep -v "./" | column -c3 -s ' ' -t | sort -nr | nl | head -n "$size"
 }
 
 my_ip() {
-  ip addr | grep -a wlp2s0 | sed -n '2s/.*inet \([0-9.]*\).*/\1/p'
+	ip addr | grep -a wlp2s0 | sed -n '2s/.*inet \([0-9.]*\).*/\1/p'
 }
 
 to_mp3() {
-  ffmpeg -i "$1" -vn -ab 128k -ar 44100 -y "$2"
+	ffmpeg -i "$1" -vn -ab 128k -ar 44100 -y "$2"
 }
 
 download_mp3() {
-  yt-dlp "$1" -o "video.webm"
-  mv "video.webm.mp4" "video.webm"
-  to_mp3 "video.webm" "$2"
-  rm "video.webm"
+	yt-dlp "$1" -o "video.webm"
+	mv "video.webm.mp4" "video.webm"
+	to_mp3 "video.webm" "$2"
+	rm "video.webm"
 }
 
 xcr() {
-  if [[ "$platform" == "linux" ]]; then
-    xclip -selection c
-  else
-    pbcopy
-  fi
+	if [[ "$platform" == "linux" ]]; then
+		xclip -selection c
+	else
+		pbcopy
+	fi
 }
 
 xc() {
-  sed -z 's/\n$//' | xcr
-  # sed 's/\n$//' | xcr
+	sed -z 's/\n$//' | xcr
+	# sed 's/\n$//' | xcr
 }
 # --
 
@@ -99,7 +100,7 @@ alias mkp-js='n init'
 
 # colored ls on all systems
 export CLICOLOR=1
-ls --color=auto &> /dev/null && alias ls='ls --color=auto'
+ls --color=auto &>/dev/null && alias ls='ls --color=auto'
 #
 
 # -- basic aliases
@@ -186,13 +187,13 @@ alias pg='ps aux | grep'
 
 # -- path
 add_path_if_exists() {
-  if [ -d "$1" ]; then
-    export PATH="$1:$PATH"
-  fi
+	if [ -d "$1" ]; then
+		export PATH="$1:$PATH"
+	fi
 }
 
 add_software() {
-  add_path_if_exists "$HOME/bin/$1"
+	add_path_if_exists "$HOME/bin/$1"
 }
 
 add_software ""
@@ -209,10 +210,10 @@ add_software 'node-v10.12.0-linux-x64/bin'
 
 android="$HOME/softwares/android/Android"
 if [ -d "$android" ]; then
-  export ANDROID_HOME="$android"
+	export ANDROID_HOME="$android"
 fi
 if [ -d "$HOME/softwares/java" ]; then
-  src ~/projects/dotfiles/inc/java.sh
+	src ~/projects/dotfiles/inc/java.sh
 fi
 # --
 
@@ -221,6 +222,6 @@ src ~/projects/dotfiles/inc/fn-git.sh
 src ~/projects/dotfiles/inc/monitors.sh
 src ~/projects/dotfiles/inc/net.sh
 if [[ "$platform" == "macos" ]]; then
-  src ~/projects/dotfiles/inc/sed-fix.sh
+	src ~/projects/dotfiles/inc/sed-fix.sh
 fi
 # --

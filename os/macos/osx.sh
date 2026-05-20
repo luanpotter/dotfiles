@@ -2,18 +2,18 @@
 set -xe
 
 function not_exists() {
- ! command -v "$1" >/dev/null 2>&1
+	! command -v "$1" >/dev/null 2>&1
 }
 
 # install brew
 if not_exists brew; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 # install brew packages
 brew install \
-    gh wget tree the_silver_searcher jq python-yq fpp htop \
-    yt-dlp ffmpeg imagemagick
+	gh wget tree the_silver_searcher jq python-yq fpp htop \
+	yt-dlp ffmpeg imagemagick
 
 # java / kotlin
 # brew install jenv kotlin

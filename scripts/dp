@@ -3,17 +3,20 @@
 mapfile -t queue < <(git status --porcelain | awk '/^.[MARCD]/ || /^\?\?/ { sub(/^.../, ""); print }')
 
 view() {
-  local file="$1" left="${#queue[@]}"
-  local diff_tmp script_tmp
-  diff_tmp=$(mktemp)
-  script_tmp=$(mktemp)
-  if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
-    git --no-pager diff -- "$file" > "$diff_tmp"
-  else
-    { echo "(untracked)"; git --no-pager diff --no-index /dev/null "$file" 2>/dev/null || true; } > "$diff_tmp"
-  fi
+	local file="$1" left="${#queue[@]}"
+	local diff_tmp script_tmp
+	diff_tmp=$(mktemp)
+	script_tmp=$(mktemp)
+	if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
+		git --no-pager diff -- "$file" >"$diff_tmp"
+	else
+		{
+			echo "(untracked)"
+			git --no-pager diff --no-index /dev/null "$file" 2>/dev/null || true
+		} >"$diff_tmp"
+	fi
 
-  cat > "$script_tmp" <<'VIMSCRIPT'
+	cat >"$script_tmp" <<'VIMSCRIPT'
 syntax on
 set nofoldenable laststatus=2 showtabline=2
 highlight StatusLine  ctermbg=blue ctermfg=white cterm=bold
@@ -113,22 +116,22 @@ nnoremap <silent> q       :cq 40<CR>
 nnoremap <silent> <Space> :call DpToggle()<CR>
 VIMSCRIPT
 
-  DP_DIFF="$diff_tmp" DP_FILE="$file" DP_LEFT="$left" \
-    vim -R -n -N -u NONE -S "$script_tmp" "$diff_tmp"
-  local rc=$?
-  rm -f "$diff_tmp" "$script_tmp"
-  return $rc
+	DP_DIFF="$diff_tmp" DP_FILE="$file" DP_LEFT="$left" \
+		vim -R -n -N -u NONE -S "$script_tmp" "$diff_tmp"
+	local rc=$?
+	rm -f "$diff_tmp" "$script_tmp"
+	return $rc
 }
 
 while [ ${#queue[@]} -gt 0 ]; do
-  file="${queue[0]}"
-  queue=("${queue[@]:1}")
-  view "$file"
-  case $? in
-    10) git add -- "$file" ;;
-    20) ;;
-    30) queue+=("$file") ;;
-    40) exit 0 ;;
-    *)  queue=("$file" "${queue[@]}") ;;  # crash / unknown exit: re-queue
-  esac
+	file="${queue[0]}"
+	queue=("${queue[@]:1}")
+	view "$file"
+	case $? in
+	10) git add -- "$file" ;;
+	20) ;;
+	30) queue+=("$file") ;;
+	40) exit 0 ;;
+	*) queue=("$file" "${queue[@]}") ;; # crash / unknown exit: re-queue
+	esac
 done

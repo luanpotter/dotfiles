@@ -8,7 +8,7 @@ _bootstrap_manager_tooling() {
 	local mgr="$1"
 
 	case "$mgr" in
-	pacman|apt)
+	pacman | apt)
 		if ! check_cmd "$mgr"; then
 			log_warn "bootstrap: native manager '$mgr' not found on system"
 		fi

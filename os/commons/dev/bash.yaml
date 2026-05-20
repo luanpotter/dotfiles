@@ -2,4 +2,8 @@ modules:
   - name: bash-dev
     install:
       - pacman:shfmt
+      - pacman:shellcheck
       - apt:shfmt
+      - apt:shellcheck
+      - brew:shfmt
+      - brew:shellcheck
