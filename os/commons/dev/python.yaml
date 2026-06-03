@@ -1,0 +1,34 @@
+modules:
+  - name: python
+    install:
+      - pacman:pyenv
+      - pacman:python
+      # for macos, python comes incomplete. we need to add some build deps
+      # ref: https://github.com/pyenv/pyenv/wiki#suggested-build-environment
+      #      https://github.com/pyenv/pyenv/wiki/Common-build-problems
+      - brew:openssl # ssl, hashlib
+      - brew:readline # REPL
+      - brew:sqlite3 # sqlite3
+      - brew:xz # lzma
+      - brew:zlib # zlib/gzip
+      - brew:tcl-tk # tkinter
+      - brew:libb2 # hashlib.blake2b/blake2s
+      - brew:pyenv
+    exec: |
+      if [[ "$DOTFILES_PLATFORM" == "macos" ]]; then
+        PYTHON_VERSION="$(pyenv install --list | grep -E '^\s+[0-9]+\.[0-9]+\.[0-9]+$' | tail -1 | tr -d ' ')"
+        if [[ -z "$PYTHON_VERSION" ]]; then
+          echo "error: could not determine latest python version" >&2
+          exit 1
+        fi
+
+        if ! pyenv versions --bare | grep -qxF "$PYTHON_VERSION"; then
+          pyenv install "$PYTHON_VERSION"
+        fi
+
+        pyenv global "$PYTHON_VERSION"
+
+        # sanity: fail loudly if any stdlib module was skipped during build
+        "$(pyenv prefix "$PYTHON_VERSION")/bin/python" -c \
+          "import ssl, hashlib, lzma, sqlite3, _blake2, readline; hashlib.blake2b(b'x').hexdigest(); print('python stdlib ok')"
+      fi
