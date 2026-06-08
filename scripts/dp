@@ -102,7 +102,7 @@ endfunction
 
 augroup dp
   autocmd!
-  autocmd BufEnter * setlocal readonly nomodifiable | call DpUpdateBars()
+  autocmd BufEnter * if expand('%') ==# g:dp_diff | setlocal readonly nomodifiable | else | setlocal noreadonly modifiable | endif | call DpUpdateBars()
   autocmd FileType * call DpUpdateBars()
 augroup END
 
