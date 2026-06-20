@@ -266,13 +266,14 @@ hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
+hl.bind(mainMod .. " + space", hl.dsp.layout("togglesplit"))
 
--- Move focus with mainMod + arrow keys
-hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
+-- Move focus with mainMod + jkli
+-- Stays within the current monitor (does not cross to other monitors)
+hl.bind(mainMod .. " + J", smw.focus("left"))
+hl.bind(mainMod .. " + K", smw.focus("down"))
+hl.bind(mainMod .. " + L", smw.focus("up"))
+hl.bind(mainMod .. " + I", smw.focus("right"))
 
 -- Shift focus to the next monitor (like Awesome's super+o)
 hl.bind(mainMod .. " + O", hl.dsp.focus({ monitor = "+1" }))

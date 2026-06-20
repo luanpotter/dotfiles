@@ -119,6 +119,19 @@ function M.move_silent(n)
     end
 end
 
+-- Move focus in a direction but never cross to another monitor.
+function M.focus(direction)
+    return function()
+        local window = hl.get_active_window()
+        local monitor = hl.get_active_monitor()
+        hl.dispatch(hl.dsp.focus({ direction = direction }))
+        local after = hl.get_active_monitor()
+        if monitor and after and monitor.id ~= after.id and window then
+            hl.dispatch(hl.dsp.focus({ window = window }))
+        end
+    end
+end
+
 function M.cycle(dir)
     return function()
         local m = cur_mon()
