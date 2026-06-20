@@ -47,12 +47,14 @@ step_exec() {
 		pending=$((pending + 1))
 
 		if [[ "$DRY_RUN" == true ]]; then
-			log_info "exec: [dry-run] would run exec for '$name'"
+			log_info "exec: [dry-run] would run exec for '$name':"
+			printf '%s\n' "$exec_block" >&2
 			continue
 		fi
 
 		# interactive confirmation (unless --yes)
 		if [[ "$AUTO_YES" != true ]]; then
+			printf '\n%s\n' "$exec_block" >&2
 			if ! gum confirm "Run exec for '$name'?"; then
 				log_warn "exec: skipped '$name'"
 				continue
