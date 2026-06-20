@@ -4,11 +4,6 @@ modules:
       - pacman:audacity
       - pacman:vlc
       - pacman:flameshot
-      - pacman:pinta
+      # TODO: pinta
       - pacman:imagemagick
-      # pdf viewer
-      - pacman:zathura
-      - pacman:zathura-djvu
-      - pacman:zathura-pdf-mupdf
-      # kenku-fm for playing ambient ttrpg music
-      - pacman:kenku-fm-bin
+      # TODO: kenku-fm for playing ambient ttrpg music

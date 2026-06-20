@@ -23,7 +23,6 @@ modules:
       - pacman:openssh
       - pacman:the_silver_searcher
       - pacman:jq
-      - pacman:snapd
       - pacman:xclip
 
   - name: compression
@@ -31,7 +30,6 @@ modules:
       - pacman:zip
       - pacman:unzip
       - pacman:unrar
-
 
   - name: rofi
     install:
