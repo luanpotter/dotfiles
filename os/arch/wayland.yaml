@@ -25,4 +25,5 @@ modules:
     install:
       - pacman:waybar
       - pacman:otf-font-awesome
+      - pacman:otf-droid-nerd
     config: ~/.config/waybar
