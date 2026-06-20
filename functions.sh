@@ -135,6 +135,7 @@ alias vgit='v ~/projects/dotfiles/inc/fn-git.sh'
 alias vmonitors='v ~/projects/dotfiles/inc/monitors.sh'
 alias vvim='v ~/.vimrc'
 alias vrc='v ~/.config/awesome/rc.lua'
+alias vway='v ~/.config/hypr/hyprland.lua'
 alias vterm='v ~/.config/alacritty/alacritty.yml'
 
 alias mci='mvn clean install'

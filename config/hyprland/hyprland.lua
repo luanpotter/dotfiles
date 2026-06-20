@@ -15,12 +15,6 @@
 -- Create your files separately and then require them like this:
 -- require("myColors")
 
-
-
--- wofi config
-hl.bind("SUPER + R", hl.dsp.exec_cmd("wofi --show drun"))
-
-
 ------------------
 ---- MONITORS ----
 ------------------
@@ -39,7 +33,7 @@ hl.monitor({
 ---------------------
 
 -- Set programs that you use
-local terminal    = "kitty"
+local terminal    = "ghostty"
 local fileManager = "dolphin"
 local menu        = "hyprlauncher"
 
@@ -49,7 +43,7 @@ local menu        = "hyprlauncher"
 -------------------
 
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
-hl.on("hyprland.start", function () 
+hl.on("hyprland.start", function ()
   hl.exec_cmd("/usr/lib/hyprpolkitagent/hyprpolkitagent")
   hl.exec_cmd("waybar & hyprpaper")
 end)
@@ -259,14 +253,11 @@ hl.device({
 
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
--- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
-hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
-local closeWindowBind = hl.bind(mainMod .. " + C", hl.dsp.window.close())
--- closeWindowBind:set_enabled(false)
-hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("wofi --show drun"))
+hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 
@@ -283,10 +274,6 @@ for i = 1, 10 do
     hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
     hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
 end
-
--- Example special workspace (scratchpad)
-hl.bind(mainMod .. " + S",         hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
 -- Scroll through existing workspaces with mainMod + scroll
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
