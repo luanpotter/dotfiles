@@ -276,6 +276,8 @@ hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
 
 -- Shift focus to the next monitor (like Awesome's super+o)
 hl.bind(mainMod .. " + O", hl.dsp.focus({ monitor = "+1" }))
+-- Move the active window to the active workspace on the next monitor
+hl.bind(mainMod .. " + SHIFT + O", smw.move_to_other_monitor())
 
 -- Switch workspaces with mainMod + [1-9] (per-monitor, each monitor keeps its own)
 -- Move active window to a workspace with mainMod + SHIFT + [1-9]

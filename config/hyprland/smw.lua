@@ -132,6 +132,28 @@ function M.cycle(dir)
     end
 end
 
+-- Move the active window to the active workspace on the next monitor and follow it.
+function M.move_to_other_monitor()
+    return function()
+        local m = cur_mon()
+        if not m then return end
+        local monitors = hl.get_monitors()
+        if #monitors < 2 then return end
+
+        table.sort(monitors, function(a, b) return a.id < b.id end)
+        local target = nil
+        for i, mon in ipairs(monitors) do
+            if mon.id == m.id then
+                target = monitors[(i % #monitors) + 1]
+                break
+            end
+        end
+        if not target or not target.active_workspace then return end
+
+        hl.dispatch(hl.dsp.window.move({ workspace = "name:" .. target.active_workspace.name }))
+    end
+end
+
 -- Move all windows not on any mapped workspace to the current workspace.
 -- Useful after first setup to collect windows left on old numbered workspaces.
 function M.grab_rogue_windows()
