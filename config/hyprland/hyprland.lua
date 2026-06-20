@@ -112,9 +112,9 @@ hl.config({
         rounding       = 0,
         rounding_power = 2,
 
-        -- Change transparency of focused and unfocused windows
+        -- "terminal-inactive-opacity" overrides for terminals only
         active_opacity   = 1.0,
-        inactive_opacity = 0.8,
+        inactive_opacity = 1.0,
 
         shadow = {
             enabled      = true,
@@ -165,22 +165,9 @@ hl.animation({ leaf = "workspacesOut", enabled = true,  speed = 1.94, bezier = "
 hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "quick" })
 
 -- Ref https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
--- "Smart gaps" / "No gaps when only"
--- uncomment all if you wish to use that.
--- hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
--- hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
--- hl.window_rule({
---     name  = "no-gaps-wtv1",
---     match = { float = false, workspace = "w[tv1]" },
---     border_size = 0,
---     rounding    = 0,
--- })
--- hl.window_rule({
---     name  = "no-gaps-f1",
---     match = { float = false, workspace = "f[1]" },
---     border_size = 0,
---     rounding    = 0,
--- })
+-- smart gaps - drop gaps for single window
+hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
+hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
 
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
 hl.config({
@@ -330,6 +317,13 @@ local suppressMaximizeRule = hl.window_rule({
     suppress_event = "maximize",
 })
 -- suppressMaximizeRule:set_enabled(false)
+
+-- Only terminals go transparent when unfocused
+hl.window_rule({
+    name    = "terminal-inactive-opacity",
+    match   = { class = "com.mitchellh.ghostty" },
+    opacity = "1.0 override 0.8 override 1.0 override",
+})
 
 hl.window_rule({
     -- Fix some dragging issues with XWayland
