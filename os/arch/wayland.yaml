@@ -17,4 +17,5 @@ modules:
     default: false
     install:
       - pacman:waybar
+      - pacman:otf-font-awesome
     config: ~/.config/waybar
