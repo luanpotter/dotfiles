@@ -15,6 +15,10 @@
 -- Create your files separately and then require them like this:
 -- require("myColors")
 
+-- Per-monitor workspaces (AwesomeWM-style): each monitor gets its own 1-9.
+package.path = package.path .. ";./?.lua"
+local smw = require("smw")
+
 ------------------
 ---- MONITORS ----
 ------------------
@@ -253,6 +257,9 @@ hl.device({
 
 local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 
+-- Initialize per-monitor workspaces
+smw.setup()
+
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("wofi --show drun"))
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
@@ -267,17 +274,22 @@ hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + up",    hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + down",  hl.dsp.focus({ direction = "down" }))
 
--- Switch workspaces with mainMod + [0-9]
--- Move active window to a workspace with mainMod + SHIFT + [0-9]
-for i = 1, 10 do
-    local key = i % 10 -- 10 maps to key 0
-    hl.bind(mainMod .. " + " .. key,             hl.dsp.focus({ workspace = i}))
-    hl.bind(mainMod .. " + SHIFT + " .. key,     hl.dsp.window.move({ workspace = i }))
+-- Shift focus to the next monitor (like Awesome's super+o)
+hl.bind(mainMod .. " + O", hl.dsp.focus({ monitor = "+1" }))
+
+-- Switch workspaces with mainMod + [1-9] (per-monitor, each monitor keeps its own)
+-- Move active window to a workspace with mainMod + SHIFT + [1-9]
+for i = 1, 9 do
+    hl.bind(mainMod .. " + " .. i,         smw.workspace(i))
+    hl.bind(mainMod .. " + SHIFT + " .. i, smw.move_silent(i))
 end
 
--- Scroll through existing workspaces with mainMod + scroll
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+-- Cycle workspaces on the current monitor with mainMod + scroll
+hl.bind(mainMod .. " + mouse_down", smw.cycle("next"))
+hl.bind(mainMod .. " + mouse_up",   smw.cycle("prev"))
+
+-- Grab windows left on old workspaces (useful after first setup)
+hl.bind(mainMod .. " + SHIFT + G", smw.grab_rogue_windows())
 
 -- Move/resize windows with mainMod + LMB/RMB and dragging
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })

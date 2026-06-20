@@ -37,6 +37,16 @@
     //    "custom/power"
     //],
     // Modules configuration
+    "hyprland/workspaces": {
+        "all-outputs": false,
+        "format": "{icon}",
+        "format-icons": {
+            "m1:1":"1","m1:2":"2","m1:3":"3","m1:4":"4","m1:5":"5","m1:6":"6","m1:7":"7","m1:8":"8","m1:9":"9",
+            "m2:1":"1","m2:2":"2","m2:3":"3","m2:4":"4","m2:5":"5","m2:6":"6","m2:7":"7","m2:8":"8","m2:9":"9",
+            "m3:1":"1","m3:2":"2","m3:3":"3","m3:4":"4","m3:5":"5","m3:6":"6","m3:7":"7","m3:8":"8","m3:9":"9"
+        },
+        "disable-scroll": true
+    },
     // "sway/workspaces": {
     //     "disable-scroll": true,
     //     "all-outputs": true,
