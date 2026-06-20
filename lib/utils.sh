@@ -128,8 +128,8 @@ YQ
 .modules = [.modules[] | select(
     if .env != null and .env != $platform then false
     else
-        ($env[.name] // null) as $override |
-        if $override != null then $override
+        .name as $n |
+        if ($env | has($n)) then $env[$n]
         elif .default == false then false
         else true
         end
