@@ -119,6 +119,8 @@ main() {
 		pending=$((pending + count))
 		count=$(step_configs "$manifest")
 		pending=$((pending + count))
+		count=$(step_scripts)
+		pending=$((pending + count))
 		count=$(step_exec "$manifest")
 		pending=$((pending + count))
 
