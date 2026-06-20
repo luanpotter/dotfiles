@@ -16,6 +16,7 @@ modules:
   - name: core
     install:
       - pacman:vim
+      - pacman:less
       - pacman:tree
       - pacman:btop
       - pacman:htop
