@@ -1,0 +1,13 @@
+modules:
+  - name: node
+    install:
+      - pacman:nvm
+      - pacman:bun
+    exec: |
+      source /usr/share/nvm/init-nvm.sh
+      LATEST="$(nvm ls-remote --lts | tail -1 | awk '{print $2}')"
+      if ! nvm ls "$LATEST" &>/dev/null; then
+        nvm install "$LATEST"
+      fi
+      nvm use "$LATEST"
+      nvm alias default "$LATEST"

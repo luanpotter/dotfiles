@@ -216,6 +216,12 @@ if [ -d "$HOME/softwares/java" ]; then
 fi
 # --
 
+# -- nvm
+if [[ -f /usr/share/nvm/init-nvm.sh ]]; then
+	src /usr/share/nvm/init-nvm.sh
+fi
+# --
+
 # -- imports
 src ~/projects/dotfiles/inc/fn-git.sh
 src ~/projects/dotfiles/inc/monitors.sh
