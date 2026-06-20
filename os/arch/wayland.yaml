@@ -11,6 +11,13 @@ modules:
       - pacman:xdg-desktop-portal-wlr
       - pacman:xorg-xwayland
       - pacman:hyprland
+      - pacman:xdg-utils
+      - pacman:wl-clipboard
+      - pacman:qt6-wayland
+      - pacman:qt5-wayland
+      - pacman:hyprpaper
+      - pacman:xdg-desktop-portal-gtk
+      - pacman:xdg-desktop-portal-hyprland
     config: ~/.config/hypr
 
   - name: waybar
