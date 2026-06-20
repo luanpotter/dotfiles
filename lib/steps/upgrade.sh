@@ -7,7 +7,6 @@ step_upgrade() {
 	for mgr in $mgr_list; do
 		case "$mgr" in
 		pacman) _upgrade_pacman ;;
-		aur) _upgrade_aur ;;
 		apt) _upgrade_apt ;;
 		brew) _upgrade_brew ;;
 		snap) _upgrade_snap ;;
@@ -21,14 +20,6 @@ _upgrade_pacman() {
 		run_cmd sudo pacman -Syu --noconfirm
 	else
 		log_warn "upgrade: pacman not found, skipping"
-	fi
-}
-
-_upgrade_aur() {
-	if check_cmd yay; then
-		run_cmd yay -Sua --noconfirm
-	else
-		log_warn "upgrade: yay not found, skipping AUR updates"
 	fi
 }
 

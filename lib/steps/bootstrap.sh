@@ -3,7 +3,6 @@
 # Install the underlying system package / binary for a manager if missing.
 # Native managers are verified but need no separate tooling.
 # Portable managers (brew, snap, flatpak) need platform-specific install.
-# AUR needs its helper (e.g. yay) installed from the AUR.
 _bootstrap_manager_tooling() {
 	local mgr="$1"
 
@@ -14,25 +13,7 @@ _bootstrap_manager_tooling() {
 		fi
 		return 0
 		;;
-	aur)
-		local helper="yay"
-		if check_cmd "$helper"; then
-			log_verbose "bootstrap: AUR helper '$helper' already installed"
-			return 0
-		fi
-		log_info "bootstrap: installing AUR helper '$helper'"
-		if [[ "$DRY_RUN" == true ]]; then
-			log_info "[dry-run] would install $helper from AUR"
-			return 0
-		fi
-		local tmp
-		tmp="$(mktemp -d)"
-		git clone "https://aur.archlinux.org/${helper}.git" "$tmp/$helper" >&2
-		(cd "$tmp/$helper" && makepkg -si --noconfirm) >&2
-		rm -rf "$tmp"
-		return 0
-		;;
-	brew)
+brew)
 		if check_cmd brew; then
 			return 0
 		fi

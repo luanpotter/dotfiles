@@ -43,7 +43,6 @@ step_packages() {
 
 		case "$mgr" in
 		pacman) count=$(_install_pacman "${pkgs[@]}" | tail -n 1) ;;
-		aur) count=$(_install_yay "${pkgs[@]}" | tail -n 1) ;;
 		apt) count=$(_install_apt "${pkgs[@]}" | tail -n 1) ;;
 		brew) count=$(_install_brew "${pkgs[@]}" | tail -n 1) ;;
 		snap) count=$(_install_snap "${pkgs[@]}" | tail -n 1) ;;
@@ -84,24 +83,6 @@ _install_pacman() {
 		run_cmd sudo pacman -S --needed --noconfirm "${missing[@]}"
 	else
 		log_verbose "packages: all pacman packages present (${#} total)"
-	fi
-	echo "${#missing[@]}"
-}
-
-_install_yay() {
-	if ! check_cmd yay; then
-		log_error "packages: AUR helper 'yay' not found"
-		return 1
-	fi
-	local -a missing=()
-	for pkg in "$@"; do
-		pacman -Qi "$pkg" &>/dev/null || missing+=("$pkg")
-	done
-	if [[ ${#missing[@]} -gt 0 ]]; then
-		log_info "packages: yay installing ${missing[*]}"
-		run_cmd yay -S --needed --noconfirm "${missing[@]}"
-	else
-		log_verbose "packages: all AUR packages present (${#} total)"
 	fi
 	echo "${#missing[@]}"
 }

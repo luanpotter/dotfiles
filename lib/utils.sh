@@ -45,7 +45,7 @@ check_cmd() {
 }
 
 declare -A DOTFILES_MANAGERS_BY_PLATFORM=(
-	[arch]='pacman aur snap'
+	[arch]='pacman'
 	[debian]='apt snap'
 	[macos]='brew'
 	[default]=''

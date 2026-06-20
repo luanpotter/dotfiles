@@ -54,12 +54,7 @@ _audit_collect_installed_brew() {
 # -- per-manager: entry format for import
 
 _audit_entry_format_pacman() {
-	local pkg="$1"
-	if pacman -Qm "$pkg" &>/dev/null; then
-		printf 'aur:%s\n' "$pkg"
-	else
-		printf 'pacman:%s\n' "$pkg"
-	fi
+	printf 'pacman:%s\n' "$1"
 }
 
 _audit_entry_format_apt() {
@@ -346,7 +341,7 @@ step_audit() {
 		local collect_fn="" leaf_fn="" fmt_fn="" uninstall_fn=""
 
 		case "$mgr" in
-		pacman | aur)
+		pacman)
 			collect_fn="_audit_collect_installed_pacman"
 			leaf_fn="_audit_leaf_filter_pacman"
 			fmt_fn="_audit_entry_format_pacman"
@@ -370,14 +365,11 @@ step_audit() {
 		esac
 
 		# collect installed
-		if ! check_cmd "$mgr" && [[ "$mgr" != pacman && "$mgr" != aur ]]; then
+		if ! check_cmd "$mgr" && [[ "$mgr" != pacman ]]; then
 			log_verbose "audit: $mgr not installed, skipping"
 			continue
 		fi
-		# pacman is special: aur lines are tracked in pacman -Qqe, but the
-		# aur binary itself may not exist.  We still audit pacman/aur if
-		# pacman is present.
-		if [[ "$mgr" == pacman || "$mgr" == aur ]]; then
+		if [[ "$mgr" == pacman ]]; then
 			if ! check_cmd pacman; then
 				log_verbose "audit: pacman not installed, skipping"
 				continue
@@ -432,7 +424,7 @@ step_audit() {
 			local mgr="${audit_unmanaged[i]}"
 			i=$((i + 1))
 			local -a pkgs=()
-			while [[ $i -lt ${#audit_unmanaged[@]} && "${audit_unmanaged[i]}" != @(pacman|aur|apt|brew|snap) ]]; do
+			while [[ $i -lt ${#audit_unmanaged[@]} && "${audit_unmanaged[i]}" != @(pacman|apt|brew|snap) ]]; do
 				pkgs+=("${audit_unmanaged[i]}")
 				i=$((i + 1))
 			done
@@ -456,7 +448,7 @@ step_audit() {
 		local mgr="${audit_unmanaged[i]}"
 		i=$((i + 1))
 		local -a pkgs=()
-		while [[ $i -lt ${#audit_unmanaged[@]} && "${audit_unmanaged[i]}" != @(pacman|aur|apt|brew|snap) ]]; do
+		while [[ $i -lt ${#audit_unmanaged[@]} && "${audit_unmanaged[i]}" != @(pacman|apt|brew|snap) ]]; do
 			pkgs+=("${audit_unmanaged[i]}")
 			i=$((i + 1))
 		done
@@ -471,7 +463,7 @@ step_audit() {
 
 	local fmt_fn="" uninstall_fn=""
 	case "$chosen_mgr" in
-	pacman | aur)
+	pacman)
 		fmt_fn="_audit_entry_format_pacman"
 		uninstall_fn="_audit_uninstall_pacman"
 		;;

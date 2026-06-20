@@ -25,7 +25,6 @@ modules:
       - pacman:jq
       - pacman:snapd
       - pacman:xclip
-      - aur:fpp-git
 
   - name: compression
     install:
