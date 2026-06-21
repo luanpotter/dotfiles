@@ -1,5 +1,8 @@
 modules:
   - name: flutter
     install:
-      # install from source on bin
+      # NOTE: install from source on bin
+      # flutter linux dependencies
       - pacman:cmake
+      - pacman:ninja
+      - pacman:clang
