@@ -1,0 +1,5 @@
+modules:
+  - name: flutter
+    install:
+      # install from source on bin
+      - pacman:cmake
