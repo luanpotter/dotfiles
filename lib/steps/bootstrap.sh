@@ -13,7 +13,7 @@ _bootstrap_manager_tooling() {
 		fi
 		return 0
 		;;
-brew)
+	brew)
 		if check_cmd brew; then
 			return 0
 		fi

@@ -20,8 +20,8 @@ step_scripts() {
 		current="$(readlink -f "$target")"
 		if [[ "$current" == "$(readlink -f "$src")" ]]; then
 			log_verbose "scripts: already linked"
-    else
-      log_warn "scripts: incorrectly linked"
+		else
+			log_warn "scripts: incorrectly linked"
 		fi
 		echo "0"
 		return 0
