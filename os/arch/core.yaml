@@ -7,6 +7,10 @@ modules:
       - pacman:linux-headers
       - pacman:base
 
+  - name: compat
+    install:
+      - pacman:fuse2
+
   - name: reflector
     install:
       - pacman:reflector
