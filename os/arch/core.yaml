@@ -10,6 +10,8 @@ modules:
   - name: compat
     install:
       - pacman:fuse2
+      - pacman:libsecret
+      - pacman:gnome-keyring
 
   - name: reflector
     install:
