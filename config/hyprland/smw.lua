@@ -12,19 +12,20 @@
 local M = {}
 
 local ws_per_monitor = 9
-local monitor_prio   = {}  -- monitor.name -> 0-based priority
+local monitor_priority   = {}  -- monitor.name -> 0-based priority
 
-local function prefix(m)     return (monitor_prio[m.name] or 0) + 1 end
+local function priority(m)   return monitor_priority[m.name] or 999 end
+local function prefix(m)     return (monitor_priority[m.name] or 0) + 1 end
 local function ws_name(m, n) return "m" .. prefix(m) .. ":" .. n end
 local function ws_ref(m, n)  return "name:" .. ws_name(m, n) end
 
 local function assign_priority(m)
-    if m.is_mirror or monitor_prio[m.name] then return end
+    if m.is_mirror or monitor_priority[m.name] then return end
     local max = -1
-    for _, p in pairs(monitor_prio) do
+    for _, p in pairs(monitor_priority) do
         if p > max then max = p end
     end
-    monitor_prio[m.name] = max + 1
+    monitor_priority[m.name] = max + 1
 end
 
 local function cur_mon()
@@ -61,7 +62,7 @@ end
 -- each monitor's previous workspace so the view doesn't jump on config reload.
 function M.remap_all()
     local saved = snapshot()
-    monitor_prio = {}
+    monitor_priority = {}
     local monitors = hl.get_monitors()
     for _, m in ipairs(monitors) do assign_priority(m) end
 
@@ -94,10 +95,76 @@ function M.remap_all()
     end
 end
 
+-- On monitor removed, merge any orphan m{idx}:N workspaces into the remaining
+-- monitor immediately instead of relying on a specific callback ordering.
+local function remaining_monitor(exclude_name)
+    local remaining = nil
+    for _, mon in ipairs(hl.get_monitors()) do
+        if mon.name ~= exclude_name then
+            if not remaining or priority(mon) < priority(remaining) then
+                remaining = mon
+            end
+        end
+    end
+    return remaining
+end
+
+local function cleanup_removed_workspaces(removed_idx, removed_ws_n, remaining)
+    if not removed_idx or not remaining then return end
+
+    local remaining_idx = prefix(remaining)
+    local followed_active_window = false
+
+    for _, window in ipairs(hl.get_windows()) do
+        if window.mapped and window.workspace then
+            local n = tonumber(window.workspace.name:match("^m" .. removed_idx .. ":(%d+)$"))
+            if n then
+                local should_follow = removed_ws_n and n == removed_ws_n and not followed_active_window
+                hl.dispatch(hl.dsp.window.move({
+                    workspace = "name:m" .. remaining_idx .. ":" .. n,
+                    window = window,
+                    follow = should_follow,
+                }))
+                if should_follow then
+                    followed_active_window = true
+                end
+            end
+        end
+    end
+
+    for i = 1, ws_per_monitor do
+        hl.workspace_rule({ workspace = "name:m" .. removed_idx .. ":" .. i, persistent = false })
+    end
+
+    if removed_ws_n and not followed_active_window then
+        hl.dispatch(hl.dsp.focus({ workspace = "name:m" .. remaining_idx .. ":" .. removed_ws_n }))
+    elseif not removed_ws_n then
+        hl.dispatch(hl.dsp.focus({ monitor = remaining.name }))
+    end
+end
+
+local function on_monitor_removed(m)
+    local removed_idx = nil
+    local known_priority = m and m.name and monitor_priority[m.name]
+    if known_priority ~= nil then
+        removed_idx = known_priority + 1
+    elseif m and m.active_workspace then
+        removed_idx = tonumber(m.active_workspace.name:match("^m(%d+):%d+$"))
+    end
+
+    local removed_ws_n = m and m.active_workspace and tonumber(m.active_workspace.name:match(":(%d+)$"))
+
+    if m and m.name then
+        monitor_priority[m.name] = nil
+    end
+
+    cleanup_removed_workspaces(removed_idx, removed_ws_n, remaining_monitor(m and m.name))
+end
+
 function M.setup()
     M.remap_all()
     hl.on("monitor.added",   function(m) assign_priority(m); M.map_monitor(m) end)
-    hl.on("monitor.removed", function(m) monitor_prio[m.name] = nil end)
+    hl.on("monitor.removed", function(m) on_monitor_removed(m) end)
     hl.on("config.reloaded", function() M.remap_all() end)
 end
 
@@ -177,7 +244,7 @@ function M.grab_rogue_windows()
         if not cur_ws then return end
 
         local mapped = {}
-        for _, prio in pairs(monitor_prio) do
+        for _, prio in pairs(monitor_priority) do
             for i = 1, ws_per_monitor do
                 mapped["m" .. (prio + 1) .. ":" .. i] = true
             end
