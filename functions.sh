@@ -18,6 +18,9 @@ if [ -n "$ZSH_VERSION" ]; then
 	# changes zsh autocomplete to work like bash's
 	setopt noautomenu
 	setopt nomenucomplete
+
+	# restore reverse search (vi mode overrides this)
+	bindkey '^R' history-incremental-search-backward
 fi
 # --
 
