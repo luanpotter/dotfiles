@@ -80,17 +80,12 @@ download_mp3() {
 	rm "video.webm"
 }
 
-xcr() {
+xc() {
 	if [[ "$platform" == "linux" ]]; then
-		xclip -selection c
+    wl-copy -n -t text/plain
 	else
 		pbcopy
 	fi
-}
-
-xc() {
-	sed -z 's/\n$//' | xcr
-	# sed 's/\n$//' | xcr
 }
 # --
 
