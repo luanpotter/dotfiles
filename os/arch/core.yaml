@@ -23,6 +23,7 @@ modules:
     install:
       - pacman:vim
       - pacman:less
+      - pacman:man
       - pacman:tree
       - pacman:btop
       - pacman:htop
