@@ -2,3 +2,4 @@ modules:
   - name: ruby
     install:
       - pacman:ruby
+      - pacman:ruby-erb
