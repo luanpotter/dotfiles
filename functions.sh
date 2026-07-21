@@ -202,6 +202,12 @@ add_path_if_exists "$HOME/.yarn/bin"
 add_path_if_exists "$HOME/.pub-cache/bin"
 add_path_if_exists "$HOME/.bun/bin"
 
+# ruby and gems
+if command -v gem &> /dev/null; then
+  export GEM_HOME="$(gem env user_gemhome)"
+  add_path_if_exists "$GEM_HOME"
+fi
+
 add_software 'flutter/bin'
 add_software 'google-cloud-sdk/bin'
 add_software 'node-v10.12.0-linux-x64/bin'
