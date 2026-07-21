@@ -1,0 +1,4 @@
+modules:
+  - name: ruby
+    install:
+      - pacman:ruby
