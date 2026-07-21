@@ -204,8 +204,9 @@ add_path_if_exists "$HOME/.bun/bin"
 
 # ruby and gems
 if command -v gem &> /dev/null; then
-  export GEM_HOME="$(gem env user_gemhome)"
-  add_path_if_exists "$GEM_HOME"
+  GEM_HOME="$(gem env user_gemhome)"
+  export GEM_HOME
+  add_path_if_exists "$GEM_HOME/bin"
 fi
 
 add_software 'flutter/bin'
