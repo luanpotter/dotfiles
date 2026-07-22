@@ -3,6 +3,7 @@ modules:
     install:
       - pacman:pyenv
       - pacman:python
+      - pacman:uv
       # for macos, python comes incomplete. we need to add some build deps
       # ref: https://github.com/pyenv/pyenv/wiki#suggested-build-environment
       #      https://github.com/pyenv/pyenv/wiki/Common-build-problems
