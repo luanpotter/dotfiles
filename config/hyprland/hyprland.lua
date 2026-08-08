@@ -36,7 +36,7 @@ local menu       = table.concat({
     "rofi -show combi",
     "-modes combi," .. rofiModes,
     "-combi-modes " .. rofiCombi,
-    "-run-command 'uwsm app -- {cmd}'",
+    "-run-command 'systemd-run --user --scope --quiet --collect --slice=app.slice -- {cmd}'",
 }, " ")
 
 
