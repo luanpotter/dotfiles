@@ -28,14 +28,33 @@ local fileManager = "dolphin"
 local menu        = "hyprlauncher"
 
 
+----------------------
+---- CGROUP SCOPES ----
+----------------------
+
+-- Typically a process inherits its parent's cgroup;
+-- this routes spawns through `uwsm app` so each get its own isolate.
+
+hl._raw_exec     = hl._raw_exec     or hl.exec_cmd
+hl._raw_dsp_exec = hl._raw_dsp_exec or hl.dsp.exec_cmd
+local raw_exec, raw_dsp_exec = hl._raw_exec, hl._raw_dsp_exec
+
+hl.exec_cmd     = function(cmd) return raw_exec("uwsm app -- " .. cmd) end
+hl.dsp.exec_cmd = function(cmd) return raw_dsp_exec("uwsm app -- " .. cmd) end
+
+-- Session infrastructure belongs in background.slice rather than app.slice.
+-- Short-lived utilities can also just call raw_dsp_exec directly to skip the uwsm cost.
+local function exec_bg(cmd) return raw_exec("uwsm app -s b -- " .. cmd) end
+
 -------------------
 ---- AUTOSTART ----
 -------------------
 
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 hl.on("hyprland.start", function ()
-  hl.exec_cmd("/usr/lib/hyprpolkitagent/hyprpolkitagent")
-  hl.exec_cmd("waybar & hyprpaper")
+  exec_bg("/usr/lib/hyprpolkitagent/hyprpolkitagent")
+  exec_bg("waybar")
+  exec_bg("hyprpaper")
 end)
 
 
@@ -272,18 +291,19 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Laptop multimedia keys for volume and LCD brightness
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
-hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
-hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
+-- These use raw_dsp_exec to skip uwsm: see CGROUP SCOPES above.
+hl.bind("XF86AudioRaiseVolume", raw_dsp_exec("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", raw_dsp_exec("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),      { locked = true, repeating = true })
+hl.bind("XF86AudioMute",        raw_dsp_exec("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),     { locked = true, repeating = true })
+hl.bind("XF86AudioMicMute",     raw_dsp_exec("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"),   { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp",  raw_dsp_exec("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown",raw_dsp_exec("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
 
 -- Requires playerctl
-hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
-hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPrev",  hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
+hl.bind("XF86AudioNext",  raw_dsp_exec("playerctl next"),       { locked = true })
+hl.bind("XF86AudioPause", raw_dsp_exec("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPlay",  raw_dsp_exec("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPrev",  raw_dsp_exec("playerctl previous"),   { locked = true })
 
 
 --------------------------------
