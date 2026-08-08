@@ -5,6 +5,7 @@ modules:
     install:
       - pacman:linux
       - pacman:linux-headers
+      - pacman:linux-firmware
       - pacman:base
 
   - name: compat
@@ -21,9 +22,10 @@ modules:
 
   - name: core
     install:
-      - pacman:vim
       - pacman:less
       - pacman:man
+      - pacman:man-db
+      - pacman:sudo
       - pacman:tree
       - pacman:btop
       - pacman:htop
