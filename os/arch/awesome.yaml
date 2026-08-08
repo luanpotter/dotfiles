@@ -7,6 +7,8 @@ modules:
       - pacman:xorg-xinit
       # xorg 2D acceleration for AMD
       - pacman:xf86-video-amdgpu
+      # X11 clipboard; equivalent to wl-clipboard
+      - pacman:xclip
 
   - name: awesome
     install:

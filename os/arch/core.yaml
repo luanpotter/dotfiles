@@ -31,7 +31,6 @@ modules:
       - pacman:openssh
       - pacman:the_silver_searcher
       - pacman:jq
-      - pacman:xclip
 
   - name: compression
     install:
