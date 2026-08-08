@@ -25,7 +25,19 @@ hl.monitor({
 -- Set programs that you use
 local terminal    = "ghostty"
 local fileManager = "dolphin"
-local menu        = "hyprlauncher"
+
+-- rofi needs the `run` mode rather than `drun`: `-run-command` is the only
+-- launch hook rofi exposes so we can scope launched apps cgroups
+local rofiSearch = os.getenv("HOME") .. "/.config/rofi/rofi-web-search.py"
+local rofiModes  = "run,search:" .. rofiSearch .. ",calc,window,emoji,filebrowser"
+-- these are out of combi to avoid noise, can still be tabbed into
+local rofiCombi  = "run,search,window,emoji,filebrowser"
+local menu       = table.concat({
+    "rofi -show combi",
+    "-modes combi," .. rofiModes,
+    "-combi-modes " .. rofiCombi,
+    "-run-command 'uwsm app -- {cmd}'",
+}, " ")
 
 
 ----------------------
@@ -213,7 +225,7 @@ hl.config({
 
 hl.config({
     input = {
-        kb_layout  = "us",
+        kb_layout  = "us,br",
         kb_variant = "",
         kb_model   = "",
         kb_options = "",
@@ -252,13 +264,16 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 -- Initialize per-monitor workspaces
 smw.setup()
 
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("wofi --show drun"))
+hl.bind(mainMod .. " + R", raw_dsp_exec(menu))
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + space", hl.dsp.layout("togglesplit"))
+
+-- Cycle keyboard layout
+hl.bind(mainMod .. " + SHIFT + space", raw_dsp_exec("hyprctl switchxkblayout all next"))
 
 -- Move focus with mainMod + jkli
 -- Stays within the current monitor (does not cross to other monitors)

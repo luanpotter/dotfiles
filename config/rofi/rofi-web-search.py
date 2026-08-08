@@ -7,10 +7,10 @@ import re
 import urllib.parse
 import urllib.request
 import sys
-import os
 import datetime
 import gzip
 
+import shutil
 import subprocess as sp
 
 import html
@@ -21,7 +21,7 @@ import html
 ################################################################################
 SEARCH_ENGINE = 'duckduckgo'         # or 'duckduckgo'
 BROWSER = 'firefox'                  # or 'firefox', 'chromium', 'brave', 'lynx'
-TERMINAL = ['gnome-terminal', '--']  # or ['st', '-e'] or something like that
+TERMINAL = ['ghostty', '-e']         # or ['st', '-e'] or something like that
 ################################################################################
 
 CONFIG = {
@@ -140,7 +140,9 @@ def main():
         print('Suggestions from', CONFIG['SEARCH_ENGINE_NAME'][SEARCH_ENGINE], 'are not supported.')
     else:
         url = CONFIG['SEARCH_URL'][SEARCH_ENGINE] + urllib.parse.quote_plus(search_string)
-        sp.Popen(CONFIG['BROWSER_PATH'][BROWSER] + [url], stdout=sp.DEVNULL, stderr=sp.DEVNULL, shell=False)
+        # scope runs as their own cgroup instead of childs of rofi
+        prefix = ['uwsm', 'app', '--'] if shutil.which('uwsm') else []
+        sp.Popen(prefix + CONFIG['BROWSER_PATH'][BROWSER] + [url], stdout=sp.DEVNULL, stderr=sp.DEVNULL, shell=False)
 
 def validate_config(c):
     if type(c) != dict:
@@ -163,5 +165,4 @@ def validate_config(c):
 
 if __name__ == "__main__":
     main()
-    sp.call(['sh', os.path.expanduser('~/projects/dotfiles/scripts/sw'), '2'])
 

@@ -44,7 +44,8 @@ modules:
       - pacman:rofi
       - pacman:rofi-calc
       - pacman:rofi-emoji
-      - pacman:xdotool
+      # rofi-emoji copies using the wayland clipboard
+      - pacman:wl-clipboard
     config: ~/.config/rofi
 
   - name: lightdm
