@@ -26,8 +26,8 @@ log_info() { printf "${_BLUE}[info]${_RESET}  %s\n" "$*" >&2; }
 log_ok() { printf "${_GREEN}[ ok ]${_RESET}  %s\n" "$*" >&2; }
 log_warn() { printf "${_YELLOW}[warn]${_RESET}  %s\n" "$*" >&2; }
 log_error() { printf "${_RED}[err]${_RESET}   %s\n" "$*" >&2; }
-log_verbose() { [[ "$VERBOSE" == true ]] && log_ok "$@" || true; }
-log_verbose_info() { [[ "$VERBOSE" == true ]] && log_info "$@" || true; }
+log_verbose() { if [[ "$VERBOSE" == true ]]; then log_ok "$@"; fi; }
+log_verbose_info() { if [[ "$VERBOSE" == true ]]; then log_info "$@"; fi; }
 
 # -- dry-run guard: prints command if DRY_RUN, otherwise executes it
 run_cmd() {
