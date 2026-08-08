@@ -82,7 +82,7 @@ download_mp3() {
 
 xc() {
 	if [[ "$platform" == "linux" ]]; then
-    wl-copy -n -t text/plain
+		wl-copy -n -t text/plain
 	else
 		pbcopy
 	fi
@@ -203,10 +203,10 @@ add_path_if_exists "$HOME/.pub-cache/bin"
 add_path_if_exists "$HOME/.bun/bin"
 
 # ruby and gems
-if command -v gem &> /dev/null; then
-  GEM_HOME="$(gem env user_gemhome)"
-  export GEM_HOME
-  add_path_if_exists "$GEM_HOME/bin"
+if command -v gem &>/dev/null; then
+	GEM_HOME="$(gem env user_gemhome)"
+	export GEM_HOME
+	add_path_if_exists "$GEM_HOME/bin"
 fi
 
 add_software 'flutter/bin'
