@@ -2,4 +2,4 @@ modules:
   - name: vm
     install:
       - pacman:virtualbox
-      - pacman:virtualbox-host-modules-arch
+      - pacman:virtualbox-host-dkms
