@@ -34,6 +34,10 @@ modules:
       - pacman:the_silver_searcher
       - pacman:jq
 
+  # configs the graphical session env ($PATH, etc)
+  - name: environment.d
+    config: ~/.config/environment.d
+
   - name: compression
     install:
       - pacman:zip
