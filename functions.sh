@@ -204,11 +204,11 @@ add_path_if_exists "$HOME/.bun/bin"
 
 # ruby and gems
 if [[ "$platform" == "linux" ]]; then
-  if command -v gem &>/dev/null; then
-	  GEM_HOME="$(gem env user_gemhome)"
-	  export GEM_HOME
-	  add_path_if_exists "$GEM_HOME/bin"
-  fi
+	if command -v gem &>/dev/null; then
+		GEM_HOME="$(gem env user_gemhome)"
+		export GEM_HOME
+		add_path_if_exists "$GEM_HOME/bin"
+	fi
 fi
 
 add_software 'flutter/bin'
@@ -236,12 +236,12 @@ export HISTFILESIZE=100000
 export SAVEHIST=100000
 
 if [ -n "$ZSH_VERSION" ]; then
-    setopt SHARE_HISTORY
-    setopt APPEND_HISTORY
-    setopt INC_APPEND_HISTORY
+	setopt SHARE_HISTORY
+	setopt APPEND_HISTORY
+	setopt INC_APPEND_HISTORY
 elif [ -n "$BASH_VERSION" ]; then
-    shopt -s histappend
-    export PROMPT_COMMAND="history -a; history -r; $PROMPT_COMMAND"
+	shopt -s histappend
+	export PROMPT_COMMAND="history -a; history -r; $PROMPT_COMMAND"
 fi
 # --
 
