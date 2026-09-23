@@ -6,7 +6,6 @@ modules:
       - pacman:wayland-protocols
       - pacman:libinput
       - pacman:polkit
-      - pacman:uwsm
       - pacman:xdg-desktop-portal
       - pacman:xdg-desktop-portal-wlr
       - pacman:xorg-xwayland
@@ -19,6 +18,13 @@ modules:
       - pacman:xdg-desktop-portal-gtk
       - pacman:xdg-desktop-portal-hyprland
     config: ~/.config/hypr
+
+  # session env ($PATH, etc); uwsm overrides the systemd user manager's
+  - name: uwsm
+    default: false
+    install:
+      - pacman:uwsm
+    config: ~/.config/uwsm
 
   - name: waybar
     default: false
