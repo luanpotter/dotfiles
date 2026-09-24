@@ -11,9 +11,15 @@ local smw = require("smw")
 
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 hl.monitor({
+    output   = "eDP-1",
+    mode     = "preferred",
+    position = "0x0",
+    scale    = "1",
+})
+hl.monitor({
     output   = "",
     mode     = "preferred",
-    position = "auto",
+    position = "auto-left",
     scale    = "1",
 })
 
