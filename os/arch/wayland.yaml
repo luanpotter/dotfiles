@@ -17,6 +17,10 @@ modules:
       - pacman:hyprpaper
       - pacman:xdg-desktop-portal-gtk
       - pacman:xdg-desktop-portal-hyprland
+      # screenshot: hyprshot -> satty + hyprpicker
+      - pacman:hyprshot
+      - pacman:satty
+      - pacman:hyprpicker
     config: ~/.config/hypr
 
   # session env ($PATH, etc); uwsm overrides the systemd user manager's

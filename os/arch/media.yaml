@@ -3,7 +3,6 @@ modules:
     install:
       - pacman:audacity
       - pacman:vlc
-      - pacman:flameshot
       # TODO: pinta
       - pacman:imagemagick
       # TODO: kenku-fm for playing ambient ttrpg music

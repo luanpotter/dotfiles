@@ -311,6 +311,15 @@ hl.bind(mainMod .. " + SHIFT + G", smw.grab_rogue_windows())
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
+-- Screenshot with region select + freeze + followups
+local screenshot = table.concat({
+    "hyprshot -z -m region --raw |",
+    "satty --filename - --early-exit --copy-command wl-copy",
+    "--output-filename ~/pictures/screenshots/%Y-%m-%d_%H-%M-%S.png",
+}, " ")
+hl.bind("CTRL + SHIFT + X", hl.dsp.exec_cmd(screenshot))
+hl.bind("Print",            hl.dsp.exec_cmd(screenshot))
+
 -- Laptop multimedia keys for volume and LCD brightness
 -- These use raw_dsp_exec to skip uwsm: see CGROUP SCOPES above.
 hl.bind("XF86AudioRaiseVolume", raw_dsp_exec("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
