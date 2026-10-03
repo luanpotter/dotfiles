@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 
-# step_manage shows all modules with their enabled/disabled status
-# and lets the user toggle them via gum. Writes overrides to env.yaml.
+# step_manage allows viewing and editing module statuses.
 step_manage() {
 	# manifest is intentionally ignored; this step reads raw os/ YAMLs directly.
-	log_info "manage: listing all modules"
-
-	if ! check_cmd gum; then
-		log_error "manage: gum is required for the TUI"
+	if ! check_cmd fzf; then
+		log_error "manage: fzf is required for the TUI"
 		return 1
 	fi
 
@@ -33,94 +30,66 @@ step_manage() {
 		defaults[$name]="$default"
 	done < <(yq -r -s '[.[] | (.modules // [])[] | [.name, (if .default == false then "false" else "true" end)]] | .[] | @tsv' "${files[@]}")
 
-	# read current env.yaml overrides
-	local -A overrides=()
-	while IFS=$'\t' read -r name val; do
-		[[ -n "$name" ]] || continue
-		overrides[$name]="$val"
-	done < <(yq -r '.modules // {} | to_entries[] | [.key, (.value | tostring)] | @tsv' "$ENV_FILE")
+	_ensure_env
+	local header="Tab: mark · Enter: toggle marked (or current) · Esc: done"
 
-	# resolve effective status for each module
-	local -a enabled_names=()
-	local -a display_lines=()
-	for name in "${names[@]}"; do
-		local status
-		if [[ -n "${overrides[$name]+x}" ]]; then
-			if [[ "${overrides[$name]}" == "true" ]]; then
-				status="enabled (override)"
-			else
-				status="disabled (override)"
+	while true; do
+		# re-read env.yaml overrides each round, so the list reflects the last save
+		local -A overrides=()
+		while IFS=$'\t' read -r name val; do
+			[[ -n "$name" ]] || continue
+			overrides[$name]="$val"
+		done < <(yq -r '.modules // {} | to_entries[] | [.key, (.value | tostring)] | @tsv' "$ENV_FILE")
+
+		# one line per module: "[x] name  (default|override)"
+		local -A enabled=()
+		local -a lines=()
+		for name in "${names[@]}"; do
+			local state="${defaults[$name]}" origin="default"
+			if [[ -n "${overrides[$name]+x}" ]]; then
+				state="${overrides[$name]}"
+				origin="override"
 			fi
-		elif [[ "${defaults[$name]}" == "false" ]]; then
-			status="disabled (default)"
-		else
-			status="enabled"
-		fi
-
-		display_lines+=("$name [$status]")
-		# track currently enabled for preselection
-		if [[ "$status" == enabled* ]]; then
-			enabled_names+=("$name")
-		fi
-	done
-
-	# show current status
-	log_info "manage: ${#names[@]} module(s) found"
-	printf '%s\n' "${display_lines[@]}" >&2
-
-	echo >&2
-	if ! ui confirm "Edit module selection?"; then
-		return 0
-	fi
-
-	# build gum choose args with preselected items
-	local -a gum_args=(--no-limit --header "Toggle modules (space to select/deselect)")
-	for name in "${enabled_names[@]}"; do
-		gum_args+=(--selected "$name")
-	done
-
-	local -a selected=()
-	while IFS= read -r name; do
-		[[ -n "$name" ]] && selected+=("$name")
-	done < <(printf '%s\n' "${names[@]}" | ui choose "${gum_args[@]}")
-
-	# build new overrides: compare selection against defaults
-	local -A new_overrides=()
-	for name in "${names[@]}"; do
-		local is_selected=false
-		for s in "${selected[@]}"; do
-			if [[ "$s" == "$name" ]]; then
-				is_selected=true
-				break
+			enabled[$name]="$state"
+			local box="[ ]"
+			if [[ "$state" == true ]]; then
+				box="[x]"
 			fi
+			lines+=("$(printf '%s %-20s (%s)' "$box" "$name" "$origin")")
 		done
 
-		local default_enabled=true
-		[[ "${defaults[$name]}" == "false" ]] && default_enabled=false
-
-		# only write override if it differs from the default
-		if [[ "$is_selected" == true && "$default_enabled" == false ]]; then
-			new_overrides[$name]=true
-		elif [[ "$is_selected" == false && "$default_enabled" == true ]]; then
-			new_overrides[$name]=false
+		# Esc / Ctrl+C (130) just leave: every toggle is already saved
+		local picked rc=0
+		picked=$(printf '%s\n' "${lines[@]}" | _ui_fzf --multi --header "$header") || rc=$?
+		if [[ $rc -eq 130 ]]; then
+			break
+		elif [[ $rc -ne 0 ]]; then
+			continue
 		fi
-		# if selection matches default, no override needed
+
+		# flip each picked module; drop the override when it lands on the default
+		local tmp
+		tmp=$(yq -y '.' "$ENV_FILE")
+		local line
+		while IFS= read -r line; do
+			[[ -n "$line" ]] || continue
+			# lines are "[x] name ..." / "[ ] name ...": skip the 4-char box
+			local name="${line:4}"
+			name="${name%% *}"
+			local new=true label=enabled
+			if [[ "${enabled[$name]}" == true ]]; then
+				new=false
+				label=disabled
+			fi
+			if [[ "$new" == "${defaults[$name]}" ]]; then
+				tmp=$(printf '%s\n' "$tmp" | yq -y "del(.modules.\"$name\")")
+			else
+				tmp=$(printf '%s\n' "$tmp" | yq -y ".modules.\"$name\" = $new")
+			fi
+			log_ok "manage: $name → $label"
+		done <<<"$picked"
+		env_write "$tmp"
 	done
 
-	# write overrides to env.yaml (built in memory, written once)
-	_ensure_env
-	local tmp
-	tmp=$(yq -y '.modules = {}' "$ENV_FILE")
-
-	for name in "${!new_overrides[@]}"; do
-		tmp=$(printf '%s\n' "$tmp" | yq -y ".modules.\"$name\" = ${new_overrides[$name]}")
-	done
-	env_write "$tmp"
-
-	local override_count=${#new_overrides[@]}
-	if [[ $override_count -eq 0 ]]; then
-		log_ok "manage: all modules at default, no overrides needed"
-	else
-		log_ok "manage: wrote $override_count override(s) to env.yaml"
-	fi
+	log_ok "manage: done"
 }

@@ -54,7 +54,7 @@ step_bootstrap() {
 	case "$DOTFILES_PLATFORM" in
 	arch)
 		local -a missing=()
-		for pkg in yq gum; do
+		for pkg in yq fzf; do
 			if ! pacman -Qi "$pkg" &>/dev/null; then
 				missing+=("$pkg")
 			fi
@@ -67,6 +67,7 @@ step_bootstrap() {
 	debian)
 		local -a missing=()
 		dpkg -s yq &>/dev/null || missing+=(yq)
+		dpkg -s fzf &>/dev/null || missing+=(fzf)
 		if [[ ${#missing[@]} -gt 0 ]]; then
 			log_info "bootstrap: installing ${missing[*]}"
 			run_cmd sudo apt-get update >&2 || return 1
@@ -80,7 +81,7 @@ step_bootstrap() {
 		fi
 		local -a missing=()
 		brew list python-yq &>/dev/null 2>&1 || missing+=(python-yq)
-		brew list gum &>/dev/null 2>&1 || missing+=(gum)
+		brew list fzf &>/dev/null 2>&1 || missing+=(fzf)
 		if [[ ${#missing[@]} -gt 0 ]]; then
 			log_info "bootstrap: brewing ${missing[*]}"
 			run_cmd brew install "${missing[@]}" >&2 || return 1

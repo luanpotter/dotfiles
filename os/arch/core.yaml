@@ -1,4 +1,4 @@
-bootstrap: [git, base-devel, yq, gum]
+bootstrap: [git, base-devel, yq, fzf]
 
 modules:
   - name: system

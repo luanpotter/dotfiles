@@ -55,7 +55,7 @@ step_exec() {
 		# interactive confirmation (unless --yes)
 		if [[ "$AUTO_YES" != true ]]; then
 			printf '\n%s\n' "$exec_block" >&2
-			if ! ui confirm "Run exec for '$name'?"; then
+			if ! ui_confirm "Run exec for '$name'?" y; then
 				log_warn "exec: skipped '$name' (won't ask again for this hash)"
 				env_set_hash "$name" "$hash"
 				continue

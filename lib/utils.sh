@@ -55,15 +55,48 @@ abort_run() {
 	exit 130
 }
 
-# gum wrapper: gum reads Ctrl+C itself (exit 130) so the shell never sees
-# SIGINT; treat it as aborting the run, not as "no" / empty selection.
-ui() {
+# -- ui: plain prompts via read, pickers via fzf
+# Prompts read from /dev/tty so they work inside pipes and $(...).
+
+# ui_confirm PROMPT [y|n] - y/n question; second arg is the Enter default
+ui_confirm() {
+	local prompt="$1" default="${2:-n}" hint="[y/N]" reply
+	if [[ "$default" == y ]]; then
+		hint="[Y/n]"
+	fi
+	read -rp "$prompt $hint " reply </dev/tty
+	reply="${reply:-$default}"
+	[[ "$reply" == [yY]* ]]
+}
+
+# ui_input PROMPT - prints one line of free text
+ui_input() {
+	local reply
+	read -rp "$1: " reply </dev/tty
+	printf '%s\n' "$reply"
+}
+
+# _ui_fzf ARGS... - fzf with shared styling; items on stdin, picks on stdout.
+# fzf owns the terminal, so Ctrl+C/Esc reach it as keys (exit 130), not SIGINT.
+_ui_fzf() {
+	fzf --height=40% --layout=reverse --border "$@"
+}
+
+# ui_choose HEADER [fzf args...] - pick from stdin; Ctrl+C/Esc aborts the run
+ui_choose() {
+	local header="$1"
+	shift
 	local rc=0
-	gum "$@" || rc=$?
+	_ui_fzf --header "$header" "$@" || rc=$?
 	if [[ $rc -eq 130 ]]; then
 		abort_run
 	fi
 	return "$rc"
+}
+
+# ui_pager - page stdin
+ui_pager() {
+	"${PAGER:-less}"
 }
 
 # -- command presence check
