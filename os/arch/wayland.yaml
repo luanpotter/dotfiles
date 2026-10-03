@@ -21,6 +21,7 @@ modules:
       - pacman:hyprshot
       - pacman:satty
       - pacman:hyprpicker
+      - pacman:hyprpolkitagent
     config: ~/.config/hypr
 
   # session env ($PATH, etc); uwsm overrides the systemd user manager's
