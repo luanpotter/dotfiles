@@ -6,6 +6,7 @@ export JAVA_14=~/softwares/java/jdk-14.0.1
 _clear_path() {
 	remove_from_path $JAVA_8/bin
 	remove_from_path $JAVA_11/bin
+	remove_from_path $JAVA_14/bin
 }
 
 _to_java_n() {

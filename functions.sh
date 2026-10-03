@@ -65,10 +65,6 @@ most_used() {
 	' | grep -v "./" | column -c3 -s ' ' -t | sort -nr | nl | head -n "$size"
 }
 
-my_ip() {
-	ip addr | grep -a wlp2s0 | sed -n '2s/.*inet \([0-9.]*\).*/\1/p'
-}
-
 to_mp3() {
 	ffmpeg -i "$1" -vn -ab 128k -ar 44100 -y "$2"
 }
@@ -88,13 +84,6 @@ xc() {
 	fi
 }
 # --
-
-## -- mkp projects aliases
-# TODO: this needs a lot of love (or just be removed)
-alias mkp-java8='to_java8 && m archetype:generate -DarchetypeGroupId=xyz.luan.generator -DarchetypeArtifactId=xyz-generator -DarchetypeVersion=0.3.0'
-alias mkp-java11='to_java11 && m archetype:generate -DarchetypeGroupId=xyz.luan.generator -DarchetypeArtifactId=xyz-generator -DarchetypeVersion=0.3.0 -Djava-version=11'
-alias mkp-js='n init'
-## --
 
 # colored ls on all systems
 export CLICOLOR=1
@@ -119,7 +108,7 @@ alias path='realpath'
 alias kts='kotlinc -script'
 
 # TODO: reconsider these
-alias lock='xscreensaver-command -l'
+alias lock='hyprlock'
 alias sus='sudo systemctl suspend'
 alias off='sudo halt -p'
 
@@ -132,7 +121,7 @@ alias vfunc='v ~/projects/dotfiles/functions.sh'
 alias vgit='v ~/projects/dotfiles/inc/fn-git.sh'
 alias vvim='v ~/.vimrc'
 alias vway='v ~/.config/hypr/hyprland.lua'
-alias vterm='v ~/.config/alacritty/alacritty.yml'
+alias vterm='v ~/.config/ghostty/config'
 
 alias mci='mvn clean install'
 alias mcint='mci -Dmaven.test.skip'
@@ -211,7 +200,6 @@ fi
 
 add_software 'flutter/bin'
 add_software 'google-cloud-sdk/bin'
-add_software 'node-v10.12.0-linux-x64/bin'
 
 android="$HOME/softwares/android/Android"
 if [ -d "$android" ]; then
@@ -245,7 +233,6 @@ fi
 
 # -- imports
 src ~/projects/dotfiles/inc/fn-git.sh
-src ~/projects/dotfiles/inc/net.sh
 if [[ "$platform" == "macos" ]]; then
 	src ~/projects/dotfiles/inc/sed-fix.sh
 fi

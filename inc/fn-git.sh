@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# NOTE: this require some aliases defined on the git-setup.sh file
+# NOTE: this requires some git aliases (co, pushf) set by os/commons/git.yaml
 
 if [ -n "$ZSH_VERSION" ]; then
 	# TODO: reconsider this, at some point it was causing issues
-	# test -f ~/softwares/scripts/.git-completion.zsh && . $_
+	# test -f ~/bin/scripts/.git-completion.zsh && . $_
 	true
 else
-	test -f ~/softwares/scripts/.git-completion.bash && . "$_"
+	test -f ~/bin/scripts/.git-completion.bash && . "$_"
 fi
 
 alias gcm='git commit -m '
