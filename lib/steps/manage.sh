@@ -58,13 +58,17 @@ step_manage() {
 			lines+=("$(printf '%s %-20s (%s)' "$box" "$name" "$origin")")
 		done
 
-		# Esc / Ctrl+C just leave: every toggle is already saved
+		# Esc / Ctrl+C just leave: every toggle is already saved.
+		# Exit 1 = Enter with no match, reopen; anything else is an fzf error.
 		local picked rc=0
 		picked=$(printf '%s\n' "${lines[@]}" | _ui_fzf --multi --header "$header") || rc=$?
 		if [[ $rc -eq $UI_BACK || $rc -eq 130 ]]; then
 			break
-		elif [[ $rc -ne 0 ]]; then
+		elif [[ $rc -eq 1 ]]; then
 			continue
+		elif [[ $rc -ne 0 ]]; then
+			log_error "manage: fzf failed (exit $rc)"
+			return "$rc"
 		fi
 
 		# flip each picked module; drop the override when it lands on the default
