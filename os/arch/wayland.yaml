@@ -35,4 +35,6 @@ modules:
     default: false
     install:
       - pacman:quickshell
+      # brightness block
+      - pacman:brightnessctl
     config: ~/.config/quickshell

@@ -46,7 +46,7 @@ PanelWindow {
         monitor: Hyprland.monitorFor(bar.screen)
     }
 
-    // right: audio, network, time
+    // right: brightness, audio, network, time
     RowLayout {
         anchors {
             right: parent.right
@@ -55,6 +55,7 @@ PanelWindow {
         }
         spacing: 0
 
+        BrightnessItem {}
         AudioItem {}
         NetworkItem {}
         ClockItem {}

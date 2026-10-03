@@ -17,55 +17,16 @@ RowLayout {
         color: Theme.muted
     }
 
-    // click or drag anywhere on the row's height to set, scroll to nudge
-    Item {
-        id: slider
-
-        readonly property real value: Math.min(1, root.audio?.volume ?? 0)
-
-        function setFrom(x) {
+    LevelBar {
+        value: root.audio?.volume ?? 0
+        active: !(root.audio?.muted ?? false)
+        onMoved: value => {
             if (root.audio)
-                root.audio.volume = Math.max(0, Math.min(1, x / width));
+                root.audio.volume = value;
         }
-
-        Layout.preferredWidth: 180
-        Layout.preferredHeight: 18
-
-        Rectangle {
-            anchors.verticalCenter: parent.verticalCenter
-            width: parent.width
-            height: 4
-            color: Theme.faint
-
-            Rectangle {
-                width: slider.value * parent.width
-                height: parent.height
-                color: root.audio?.muted ? Theme.dim : Theme.accent
-            }
-        }
-
-        Rectangle {
-            anchors.verticalCenter: parent.verticalCenter
-            x: slider.value * (parent.width - width)
-            width: 4
-            height: 12
-            color: drag.pressed || drag.containsMouse ? Theme.fg : Theme.muted
-        }
-
-        MouseArea {
-            id: drag
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onPressed: mouse => slider.setFrom(mouse.x)
-            onPositionChanged: mouse => {
-                if (pressed)
-                    slider.setFrom(mouse.x);
-            }
-            onWheel: wheel => {
-                if (root.audio)
-                    root.audio.volume = Math.max(0, Math.min(1, root.audio.volume + (wheel.angleDelta.y > 0 ? 0.05 : -0.05)));
-            }
+        onNudged: dir => {
+            if (root.audio)
+                root.audio.volume = Math.max(0, Math.min(1, root.audio.volume + dir * 0.05));
         }
     }
 
