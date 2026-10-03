@@ -30,6 +30,13 @@ modules:
       - pacman:uwsm
     config: ~/.config/uwsm
 
+  # experimenting to replace waybar
+  - name: quickshell
+    default: false
+    install:
+      - pacman:quickshell
+    config: ~/.config/quickshell
+
   - name: waybar
     default: false
     install:
