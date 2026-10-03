@@ -219,7 +219,7 @@ _audit_run_import() {
 
 	local -a selected=()
 	local target_file="" picked rc
-	local step=packages
+	local step="packages"
 	while true; do
 		rc=0
 		case "$step" in
@@ -227,12 +227,12 @@ _audit_run_import() {
 			picked=$(_audit_select_packages "Select packages to import" "${unmanaged[@]}") || rc=$?
 			[[ $rc -ne 0 ]] && return "$rc"
 			mapfile -t selected <<<"$picked"
-			step=file
+			step="file"
 			;;
 		file)
 			picked=$(_audit_yaml_target) || rc=$?
 			if [[ $rc -eq $UI_BACK ]]; then
-				step=packages
+				step="packages"
 				continue
 			fi
 			[[ $rc -ne 0 ]] && return "$rc"
@@ -243,14 +243,14 @@ _audit_run_import() {
 			else
 				target_file="$picked"
 			fi
-			step=grouping
+			step="grouping"
 			;;
 		grouping)
 			picked=$(printf '%s\n' \
 				"One module for all selections" \
 				"Separate module per package (name = package)" | ui_choose "Group packages") || rc=$?
 			if [[ $rc -eq $UI_BACK ]]; then
-				step=file
+				step="file"
 				continue
 			fi
 			[[ $rc -ne 0 ]] && return "$rc"
@@ -264,7 +264,7 @@ _audit_run_import() {
 				log_ok "audit: added ${#selected[@]} separate module(s) to $target_file"
 				return 0
 			fi
-			step=module
+			step="module"
 			;;
 		module)
 			local -a module_names=()
@@ -276,7 +276,7 @@ _audit_run_import() {
 			local target_module
 			target_module=$(printf '%s\n' "${module_names[@]}" | ui_choose "Select module") || rc=$?
 			if [[ $rc -eq $UI_BACK ]]; then
-				step=grouping
+				step="grouping"
 				continue
 			fi
 			[[ $rc -ne 0 ]] && return "$rc"
