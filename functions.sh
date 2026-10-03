@@ -108,7 +108,6 @@ alias path='realpath'
 alias kts='kotlinc -script'
 
 # TODO: reconsider these
-alias lock='hyprlock'
 alias sus='sudo systemctl suspend'
 alias off='sudo halt -p'
 
