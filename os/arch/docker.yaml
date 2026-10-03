@@ -1,0 +1,9 @@
+modules:
+  - name: docker
+    install:
+      - pacman:docker
+      - pacman:docker-buildx
+    # docker group = run docker without sudo
+    exec: |
+      sudo systemctl enable --now docker
+      sudo usermod -aG docker "$USER"
