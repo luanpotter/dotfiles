@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# local IPv4 of whichever interface currently routes to the internet
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	ipconfig getifaddr "$(route -n get default | awk '/interface:/ { print $2 }')"
+else
+	ip -4 route get 1.1.1.1 | awk '{ for (i = 1; i < NF; i++) if ($i == "src") { print $(i + 1); exit } }'
+fi
