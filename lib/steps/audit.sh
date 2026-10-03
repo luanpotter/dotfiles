@@ -225,6 +225,10 @@ _audit_run_import() {
 		case "$step" in
 		packages)
 			picked=$(_audit_select_packages "Select packages to import" "${unmanaged[@]}") || rc=$?
+			if [[ $rc -eq $UI_BACK ]]; then
+				AUDIT_WENT_BACK=true
+				return 0
+			fi
 			[[ $rc -ne 0 ]] && return "$rc"
 			mapfile -t selected <<<"$picked"
 			step="file"
@@ -317,12 +321,16 @@ _audit_run_uninstall() {
 	shift
 	local -a unmanaged=("$@")
 
-	# Esc returns $UI_BACK to the caller; answering no reopens the picker
+	# Esc sets AUDIT_WENT_BACK for the caller; answering no reopens the picker
 	local -a selected=()
 	local picked rc
 	while true; do
 		rc=0
 		picked=$(_audit_select_packages "Select packages to uninstall" "${unmanaged[@]}") || rc=$?
+		if [[ $rc -eq $UI_BACK ]]; then
+			AUDIT_WENT_BACK=true
+			return 0
+		fi
 		[[ $rc -ne 0 ]] && return "$rc"
 		mapfile -t selected <<<"$picked"
 
@@ -508,13 +516,15 @@ step_audit() {
 			fi
 			[[ $rc -ne 0 ]] && return "$rc"
 
-			# wizards return $UI_BACK when backed out of their first screen
+			# wizards set AUDIT_WENT_BACK when backed out of their first screen;
+			# called plainly (no `|| rc=$?`) so set -e still stops on real failures
+			AUDIT_WENT_BACK=false
 			case "$action" in
 			Import*)
-				_audit_run_import "$chosen_mgr" "$fmt_fn" "${chosen_pkgs[@]}" || rc=$?
+				_audit_run_import "$chosen_mgr" "$fmt_fn" "${chosen_pkgs[@]}"
 				;;
 			Uninstall*)
-				_audit_run_uninstall "$uninstall_fn" "${chosen_pkgs[@]}" || rc=$?
+				_audit_run_uninstall "$uninstall_fn" "${chosen_pkgs[@]}"
 				;;
 			List*)
 				printf '%s\n' "${chosen_pkgs[@]}" | ui_pager
@@ -524,8 +534,8 @@ step_audit() {
 				return 0
 				;;
 			esac
-			[[ $rc -eq $UI_BACK ]] && continue
-			return "$rc"
+			[[ "$AUDIT_WENT_BACK" == true ]] && continue
+			return 0
 		done
 	done
 }
