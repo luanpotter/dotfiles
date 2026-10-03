@@ -130,9 +130,7 @@ alias vbash='v ~/.bashrc'
 alias vzsh='v ~/.zshrc'
 alias vfunc='v ~/projects/dotfiles/functions.sh'
 alias vgit='v ~/projects/dotfiles/inc/fn-git.sh'
-alias vmonitors='v ~/projects/dotfiles/inc/monitors.sh'
 alias vvim='v ~/.vimrc'
-alias vrc='v ~/.config/awesome/rc.lua'
 alias vway='v ~/.config/hypr/hyprland.lua'
 alias vterm='v ~/.config/alacritty/alacritty.yml'
 
@@ -247,7 +245,6 @@ fi
 
 # -- imports
 src ~/projects/dotfiles/inc/fn-git.sh
-src ~/projects/dotfiles/inc/monitors.sh
 src ~/projects/dotfiles/inc/net.sh
 if [[ "$platform" == "macos" ]]; then
 	src ~/projects/dotfiles/inc/sed-fix.sh

@@ -49,12 +49,11 @@ modules:
       - pacman:wl-clipboard
     config: ~/.config/rofi
 
-  - name: lightdm
+  - name: sddm
     install:
-      - pacman:lightdm
-      - pacman:lightdm-mini-greeter
+      - pacman:sddm
     exec: |
-      sudo systemctl enable lightdm
+      sudo systemctl enable sddm
 
   - name: fonts
     exec: |

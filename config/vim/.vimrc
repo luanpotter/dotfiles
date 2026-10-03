@@ -45,7 +45,7 @@ if has('mac') || has('macunix')
   set clipboard+=unnamed
 elseif has('clipboard')
   set clipboard=unnamedplus
-elseif has('unix') && executable('xclip')
+elseif has('unix') && executable('wl-copy')
   function! s:CopyYankToClipboard() abort
     if v:event.operator !=# 'y'
       return
@@ -56,7 +56,7 @@ elseif has('unix') && executable('xclip')
       let l:text .= "\n"
     endif
 
-    call system('xclip -selection clipboard -in -silent', l:text)
+    call system('wl-copy -t text/plain', l:text)
   endfunction
 
   augroup clipboard_yank
