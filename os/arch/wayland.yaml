@@ -22,6 +22,8 @@ modules:
       - pacman:satty
       - pacman:hyprpicker
       - pacman:hyprpolkitagent
+      # permission popups (ecosystem.enforce_permissions)
+      - pacman:hyprland-guiutils
     config: ~/.config/hypr
 
   # session env ($PATH, etc); uwsm overrides the systemd user manager's

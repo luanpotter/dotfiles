@@ -102,10 +102,10 @@ hl.config({
 })
 
 -- grim is what hyprshot captures with
-hl.permission("/usr/(bin|local/bin)/grim", "screencopy", "allow")
-hl.permission("/usr/(bin|local/bin)/hyprpicker", "screencopy", "allow")
+hl.permission({ binary = "/usr/(bin|local/bin)/grim",       type = "screencopy", mode = "allow" })
+hl.permission({ binary = "/usr/(bin|local/bin)/hyprpicker", type = "screencopy", mode = "allow" })
 -- browser / app screen sharing; the portal shows its own picker per request
-hl.permission("/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", "screencopy", "allow")
+hl.permission({ binary = "/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", type = "screencopy", mode = "allow" })
 
 
 -----------------------
