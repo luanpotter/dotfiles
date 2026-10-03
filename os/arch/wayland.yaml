@@ -37,3 +37,10 @@ modules:
       - pacman:otf-font-awesome
       - pacman:otf-droid-nerd
     config: ~/.config/waybar
+
+  # calendar popup on waybar clock click
+  - name: gsimplecal
+    default: false
+    install:
+      - pacman:gsimplecal
+    config: ~/.config/gsimplecal

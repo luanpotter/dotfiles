@@ -392,3 +392,11 @@ hl.window_rule({
     move  = "20 monitor_h-120",
     float = true,
 })
+
+-- open small calendar when clicking the waybar clock, right below
+hl.window_rule({
+    name  = "gsimplecal-popup",
+    match = { class = "^gsimplecal$" },
+    move  = "monitor_w-window_w-10 30",
+    float = true,
+})

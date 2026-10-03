@@ -125,8 +125,10 @@
     },
     "clock": {
         // "timezone": "America/New_York",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+        "format": "{:%a · %Y-%m-%d · %H:%M}",
+        "tooltip": false,
+        // gsimplecal toggles itself: clicking again closes it
+        "on-click": "GTK_THEME=Adwaita:dark gsimplecal"
     },
     "cpu": {
         "format": "{usage}% ",
