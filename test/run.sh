@@ -41,21 +41,38 @@ if [[ "${1:-}" == --assert ]]; then
 		cd ~/dotfiles
 
 		echo "==> Stage: dry-run (idempotency check)"
-		./update.sh --yes --dry-run --verbose
+		# a second run right after the build must find nothing left to do
+		dry_run_out=$(./update.sh --yes --dry-run --verbose 2>&1)
+		printf "%s\n" "$dry_run_out"
+		if grep -q "update needed" <<<"$dry_run_out"; then
+			echo "FAIL: dry-run after a full update still has pending items"
+			exit 1
+		fi
+		echo "PASS: second run is a no-op"
 
 		echo "==> Stage: assertions"
 
-		# 1. yq must be available
-		command -v yq >/dev/null || { echo "FAIL: yq not found"; exit 1; }
-		echo "PASS: yq available"
+		# 1. bootstrap tools must be available
+		for tool in yq fzf; do
+			command -v "$tool" >/dev/null || { echo "FAIL: $tool not found"; exit 1; }
+		done
+		echo "PASS: yq and fzf available"
 
-		# 2. Config symlink check (vim is in commons)
+		# 2. machine-local state lives outside the repo, written atomically
+		env_file="${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/env.yaml"
+		[[ -f "$env_file" ]] || { echo "FAIL: $env_file not created"; exit 1; }
+		[[ ! -e ~/dotfiles/env.yaml ]] || { echo "FAIL: env.yaml written inside the repo"; exit 1; }
+		leftovers=("$env_file".*)
+		[[ ! -e "${leftovers[0]}" ]] || { echo "FAIL: temp files left next to env.yaml: ${leftovers[*]}"; exit 1; }
+		echo "PASS: env.yaml in ~/.config/dotfiles, no temp leftovers"
+
+		# 3. Config symlink check (vim is in commons)
 		if [[ -e ~/dotfiles/config/vim ]]; then
 			[[ -L ~/.vimrc ]] || { echo "FAIL: ~/.vimrc not linked"; exit 1; }
 			echo "PASS: vim config symlinked"
 		fi
 
-		# 3. Shell integration: up alias from functions.sh
+		# 4. Shell integration: up alias from functions.sh
 		bash -ic "source ~/dotfiles/functions.sh && type up" >/dev/null || { echo "FAIL: up alias not defined"; exit 1; }
 		echo "PASS: up alias defined"
 
