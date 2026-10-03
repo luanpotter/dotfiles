@@ -94,15 +94,18 @@ hl.env("HYPRCURSOR_SIZE", "24")
 -- Please note permission changes here require a Hyprland restart and are not applied on-the-fly
 -- for security reasons
 
--- hl.config({
---   ecosystem = {
---     enforce_permissions = true,
---   },
--- })
+-- Screen capture is gated: anything not allowed below gets an allow/deny prompt.
+hl.config({
+    ecosystem = {
+        enforce_permissions = true,
+    },
+})
 
--- hl.permission("/usr/(bin|local/bin)/grim", "screencopy", "allow")
--- hl.permission("/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", "screencopy", "allow")
--- hl.permission("/usr/(bin|local/bin)/hyprpm", "plugin", "allow")
+-- grim is what hyprshot captures with
+hl.permission("/usr/(bin|local/bin)/grim", "screencopy", "allow")
+hl.permission("/usr/(bin|local/bin)/hyprpicker", "screencopy", "allow")
+-- browser / app screen sharing; the portal shows its own picker per request
+hl.permission("/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", "screencopy", "allow")
 
 
 -----------------------
