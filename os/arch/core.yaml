@@ -49,10 +49,15 @@ modules:
       - pacman:wl-clipboard
     config: ~/.config/rofi
 
+  # must be copied, not symlinked: the greeter runs as the sddm user,
+  # which can't read into home folder for resolving the links.
   - name: sddm
     install:
       - pacman:sddm
     exec: |
+      sudo install -Dm644 "$DOTFILES_DIR/config/sddm/sddm.conf" /etc/sddm.conf.d/dotfiles.conf
+      sudo rm -rf /usr/share/sddm/themes/dotfiles
+      sudo cp -r "$DOTFILES_DIR/config/sddm/theme" /usr/share/sddm/themes/dotfiles
       sudo systemctl enable sddm
 
   - name: fonts
