@@ -14,6 +14,4 @@ modules:
     install:
       - pacman:awesome
       - pacman:acpi
-      # X11 screenshot (superceded by hyprshot in wayland)
-      - pacman:flameshot
     config: ~/.config/awesome
