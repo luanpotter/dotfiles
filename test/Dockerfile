@@ -14,9 +14,10 @@ RUN apt-get update \
 	&& useradd -m -s /bin/bash test \
 	&& echo 'test ALL=(ALL) NOPASSWD:ALL' >/etc/sudoers.d/test
 
-WORKDIR /home/test/dotfiles
+# same path as a real checkout: functions.sh and the up alias assume ~/projects/dotfiles
+WORKDIR /home/test/projects/dotfiles
 
 COPY --chown=test:test . .
-RUN chown test:test /home/test/dotfiles
+RUN chown test:test /home/test/projects /home/test/projects/dotfiles
 USER test
 RUN ./update.sh --yes
