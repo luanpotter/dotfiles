@@ -78,8 +78,10 @@ ui_input() {
 
 # _ui_fzf ARGS... - fzf with shared styling; items on stdin, picks on stdout.
 # fzf owns the terminal, so Ctrl+C/Esc reach it as keys (exit 130), not SIGINT.
+# Tab toggles in place (fzf's default also moves the cursor down).
 _ui_fzf() {
-	fzf --height=40% --layout=reverse --border "$@"
+	fzf --height=40% --layout=reverse --border \
+		--bind 'tab:toggle,btab:toggle' "$@"
 }
 
 # ui_choose HEADER [fzf args...] - pick from stdin; Ctrl+C/Esc aborts the run
