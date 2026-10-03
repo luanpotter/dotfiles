@@ -107,6 +107,9 @@ hl.permission({ binary = "/usr/(bin|local/bin)/hyprpicker", type = "screencopy",
 -- browser / app screen sharing; the portal shows its own picker per request
 hl.permission({ binary = "/usr/(lib|libexec|lib64)/xdg-desktop-portal-hyprland", type = "screencopy", mode = "allow" })
 
+-- no plugins (smw.lua replaces split-monitor-workspaces), so refuse all loads
+hl.permission({ binary = ".*", type = "plugin", mode = "deny" })
+
 
 -----------------------
 ---- LOOK AND FEEL ----
