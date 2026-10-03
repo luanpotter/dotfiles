@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mapfile -t queue < <(git status --porcelain | awk '/^.[MARCD]/ || /^\?\?/ { sub(/^.../, ""); print }')
+mapfile -t queue < <(git status --porcelain --untracked-files=all | awk '/^.[MARCD]/ || /^\?\?/ { sub(/^.../, ""); print }')
 
 view() {
 	local file="$1" left="${#queue[@]}"
@@ -100,24 +100,39 @@ function! DpToggle()
   call DpUpdateBars()
 endfunction
 
+function! DpExit(code)
+  let dirty = filter(getbufinfo({'bufmodified': 1}), 'v:val.name !=# fnamemodify(g:dp_diff, ":p")')
+  if !empty(dirty)
+    let choice = confirm('Unsaved changes in ' . g:dp_file . '. Save?', "&Yes\n&No\n&Cancel", 3)
+    if choice == 1
+      wall
+    elseif choice != 2
+      return
+    endif
+  endif
+  execute 'cq ' . a:code
+endfunction
+
+set hidden
+
 augroup dp
   autocmd!
   autocmd BufEnter * if expand('%') ==# g:dp_diff | setlocal readonly nomodifiable | else | setlocal noreadonly modifiable | endif | call DpUpdateBars()
   autocmd FileType * call DpUpdateBars()
 augroup END
 
-setlocal filetype=diff
+setlocal filetype=diff readonly nomodifiable
 call DpUpdateBars()
 
-nnoremap <silent> <CR>    :cq 10<CR>
-nnoremap <silent> <BS>    :cq 20<CR>
-nnoremap <silent> <Tab>   :cq 30<CR>
-nnoremap <silent> q       :cq 40<CR>
+nnoremap <silent> <CR>    :call DpExit(10)<CR>
+nnoremap <silent> <BS>    :call DpExit(20)<CR>
+nnoremap <silent> <Tab>   :call DpExit(30)<CR>
+nnoremap <silent> q       :call DpExit(40)<CR>
 nnoremap <silent> <Space> :call DpToggle()<CR>
 VIMSCRIPT
 
 	DP_DIFF="$diff_tmp" DP_FILE="$file" DP_LEFT="$left" \
-		vim -R -n -N -u NONE -S "$script_tmp" "$diff_tmp"
+		vim -n -N -u NONE -S "$script_tmp" "$diff_tmp"
 	local rc=$?
 	rm -f "$diff_tmp" "$script_tmp"
 	return $rc
