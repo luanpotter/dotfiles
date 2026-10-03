@@ -17,3 +17,7 @@ modules:
       done
 
       # ... (etc)
+
+  # points XDG_DOWNLOAD_DIR (used by firefox, chromium, etc) at ~/downloads
+  - name: user-dirs
+    config: ~/.config/user-dirs.dirs

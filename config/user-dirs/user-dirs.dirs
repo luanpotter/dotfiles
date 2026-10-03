@@ -1,0 +1,12 @@
+# XDG user dirs, read by browsers, file pickers, etc. See user-dirs.dirs(5).
+#
+# Pinned here so xdg-user-dirs-update doesn't default to ~/Downloads and
+# friends. Pointing a dir at "$HOME/" disables it.
+XDG_DOWNLOAD_DIR="$HOME/downloads"
+XDG_DESKTOP_DIR="$HOME/"
+XDG_DOCUMENTS_DIR="$HOME/"
+XDG_MUSIC_DIR="$HOME/"
+XDG_PICTURES_DIR="$HOME/pictures"
+XDG_PUBLICSHARE_DIR="$HOME/"
+XDG_TEMPLATES_DIR="$HOME/"
+XDG_VIDEOS_DIR="$HOME/"
