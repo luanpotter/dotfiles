@@ -69,7 +69,7 @@ step_manage() {
 	printf '%s\n' "${display_lines[@]}" >&2
 
 	echo >&2
-	if ! gum confirm "Edit module selection?"; then
+	if ! ui confirm "Edit module selection?"; then
 		return 0
 	fi
 
@@ -82,7 +82,7 @@ step_manage() {
 	local -a selected=()
 	while IFS= read -r name; do
 		[[ -n "$name" ]] && selected+=("$name")
-	done < <(printf '%s\n' "${names[@]}" | gum choose "${gum_args[@]}")
+	done < <(printf '%s\n' "${names[@]}" | ui choose "${gum_args[@]}")
 
 	# build new overrides: compare selection against defaults
 	local -A new_overrides=()

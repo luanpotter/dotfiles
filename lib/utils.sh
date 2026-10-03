@@ -39,6 +39,33 @@ run_cmd() {
 	fi
 }
 
+# -- interrupt handling
+# update.sh traps INT with on_interrupt: one message, exit 130.
+on_interrupt() {
+	trap - INT
+	printf '\n' >&2
+	log_warn "interrupted"
+	exit 130
+}
+
+# Ends the whole run from anywhere, including $(...) subshells (which don't
+# inherit traps): $$ is always the main script, so its trap fires once.
+abort_run() {
+	kill -INT "$$"
+	exit 130
+}
+
+# gum wrapper: gum reads Ctrl+C itself (exit 130) so the shell never sees
+# SIGINT; treat it as aborting the run, not as "no" / empty selection.
+ui() {
+	local rc=0
+	gum "$@" || rc=$?
+	if [[ $rc -eq 130 ]]; then
+		abort_run
+	fi
+	return "$rc"
+}
+
 # -- command presence check
 # Returns 0 if the given command exists in PATH.
 check_cmd() {

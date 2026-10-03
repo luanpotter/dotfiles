@@ -123,7 +123,7 @@ _audit_leaf_filter_apt() {
 
 _audit_choose_action() {
 	local header="$1"
-	gum choose --header "$header" \
+	ui choose --header "$header" \
 		"Import — add packages to a YAML module" \
 		"Uninstall — remove packages from system" \
 		"List — show all unmanaged packages" \
@@ -133,7 +133,7 @@ _audit_choose_action() {
 _audit_select_packages() {
 	local header="$1"
 	shift
-	printf '%s\n' "$@" | gum filter --no-limit --header "$header"
+	printf '%s\n' "$@" | ui filter --no-limit --header "$header"
 }
 
 _audit_yaml_target() {
@@ -144,13 +144,13 @@ _audit_yaml_target() {
 		yaml_choices+=("${f#"$DOTFILES_DIR/"}")
 	done
 	shopt -u nullglob globstar
-	printf '%s\n' "${yaml_choices[@]}" | gum filter --header "Select target YAML file"
+	printf '%s\n' "${yaml_choices[@]}" | ui filter --header "Select target YAML file"
 }
 
 _audit_create_yaml_file() {
 	local placeholder="$1"
 	local rel
-	if ! rel=$(gum input --placeholder "$placeholder"); then
+	if ! rel=$(ui input --placeholder "$placeholder"); then
 		return 0
 	fi
 	rel="${rel/#\//}"
@@ -241,7 +241,7 @@ _audit_run_import() {
 	fi
 
 	local grouping
-	grouping="$(gum choose \
+	grouping="$(ui choose \
 		"One module for all selections" \
 		"Separate module per package (name = package)")" || return 0
 
@@ -263,11 +263,11 @@ _audit_run_import() {
 	module_names+=("[new module]")
 
 	local target_module
-	target_module=$(printf '%s\n' "${module_names[@]}" | gum filter --header "Select module")
+	target_module=$(printf '%s\n' "${module_names[@]}" | ui filter --header "Select module")
 	[[ -z "$target_module" ]] && return 0
 
 	if [[ "$target_module" == "[new module]" ]]; then
-		target_module=$(gum input --placeholder "module name")
+		target_module=$(ui input --placeholder "module name")
 		[[ -z "$target_module" ]] && return 0
 		local -a entries=()
 		for pkg in "${selected[@]}"; do
@@ -308,7 +308,7 @@ _audit_run_uninstall() {
 	fi
 
 	log_warn "audit: will uninstall ${selected[*]}"
-	if gum confirm "Uninstall ${#selected[@]} package(s)?"; then
+	if ui confirm "Uninstall ${#selected[@]} package(s)?"; then
 		"$uninstall_fn" "${selected[@]}"
 		log_ok "audit: uninstalled ${#selected[@]} package(s)"
 	else
@@ -438,7 +438,7 @@ step_audit() {
 	if [[ ${#audit_managers[@]} -eq 1 ]]; then
 		chosen_mgr="${audit_managers[0]}"
 	else
-		chosen_mgr=$(printf '%s\n' "${audit_managers[@]}" | gum filter --header "Select manager to audit")
+		chosen_mgr=$(printf '%s\n' "${audit_managers[@]}" | ui filter --header "Select manager to audit")
 		[[ -z "$chosen_mgr" ]] && return 0
 	fi
 
@@ -485,7 +485,7 @@ step_audit() {
 		_audit_run_uninstall "$uninstall_fn" "${chosen_pkgs[@]}"
 		;;
 	List*)
-		printf '%s\n' "${chosen_pkgs[@]}" | gum pager
+		printf '%s\n' "${chosen_pkgs[@]}" | ui pager
 		;;
 	Done) ;;
 	esac

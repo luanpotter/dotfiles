@@ -12,6 +12,8 @@ for f in "$LIB/steps/"*.sh; do
 	source "$f"
 done
 
+trap on_interrupt INT
+
 usage() {
 	cat <<EOF
 Usage: ./update.sh [OPTIONS]
