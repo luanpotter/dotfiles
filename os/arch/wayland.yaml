@@ -33,6 +33,11 @@ modules:
       - pacman:uwsm
     config: ~/.config/uwsm
 
+  # XDG_DOWNLOAD_DIR etc (used by firefox, chromium, file pickers)
+  - name: user-dirs
+    default: false
+    config: ~/.config/user-dirs.dirs
+
   # top bar
   - name: quickshell
     default: false

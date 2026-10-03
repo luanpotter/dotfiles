@@ -11,13 +11,10 @@ modules:
         ~/bin
         ~/bin/local_scripts
         ~/downloads
+        ~/pictures
       )
       for dir in "${dirs[@]}"; do
         mkdir -p "$dir"
       done
 
       # ... (etc)
-
-  # points XDG_DOWNLOAD_DIR (used by firefox, chromium, etc) at ~/downloads
-  - name: user-dirs
-    config: ~/.config/user-dirs.dirs
