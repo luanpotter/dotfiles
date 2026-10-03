@@ -58,10 +58,10 @@ step_manage() {
 			lines+=("$(printf '%s %-20s (%s)' "$box" "$name" "$origin")")
 		done
 
-		# Esc / Ctrl+C (130) just leave: every toggle is already saved
+		# Esc / Ctrl+C just leave: every toggle is already saved
 		local picked rc=0
 		picked=$(printf '%s\n' "${lines[@]}" | _ui_fzf --multi --header "$header") || rc=$?
-		if [[ $rc -eq 130 ]]; then
+		if [[ $rc -eq $UI_BACK || $rc -eq 130 ]]; then
 			break
 		elif [[ $rc -ne 0 ]]; then
 			continue

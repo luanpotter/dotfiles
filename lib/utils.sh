@@ -76,24 +76,35 @@ ui_input() {
 	printf '%s\n' "$reply"
 }
 
+# exit code for "Esc: go back one step" in pickers
+UI_BACK=3
+
 # _ui_fzf ARGS... - fzf with shared styling; items on stdin, picks on stdout.
-# fzf owns the terminal, so Ctrl+C/Esc reach it as keys (exit 130), not SIGINT.
+# fzf owns the terminal, so Ctrl+C/Esc reach it as keys, not SIGINT:
+# Ctrl+C exits 130, Esc exits $UI_BACK (needs fzf >= 0.38 for become).
 # Tab toggles in place (fzf's default also moves the cursor down).
 _ui_fzf() {
 	fzf --height=40% --layout=reverse --border \
-		--bind 'tab:toggle,btab:toggle' "$@"
+		--bind "tab:toggle,btab:toggle,esc:become(exit $UI_BACK)" "$@"
 }
 
-# ui_choose HEADER [fzf args...] - pick from stdin; Ctrl+C/Esc aborts the run
+# ui_choose HEADER [fzf args...] - pick from stdin.
+# Returns $UI_BACK on Esc; Ctrl+C aborts the run.
 ui_choose() {
 	local header="$1"
 	shift
-	local rc=0
-	_ui_fzf --header "$header" "$@" || rc=$?
-	if [[ $rc -eq 130 ]]; then
-		abort_run
-	fi
-	return "$rc"
+	# keep the items so the picker can reopen after an Enter with no match (exit 1)
+	local items rc
+	items=$(cat)
+	while true; do
+		rc=0
+		printf '%s\n' "$items" | _ui_fzf --header "$header · Esc: back" "$@" || rc=$?
+		case "$rc" in
+		1) continue ;;
+		130) abort_run ;;
+		*) return "$rc" ;;
+		esac
+	done
 }
 
 # ui_pager - page stdin

@@ -211,71 +211,93 @@ _audit_import_to_yaml() {
 	log_ok "audit: added $# package(s) to module '$target_module' in $target_file"
 }
 
+# Import wizard: packages -> file -> grouping -> module; esc goes back a step.
 _audit_run_import() {
 	local mgr="$1" entry_fmt_fn="$2"
 	shift 2
 	local -a unmanaged=("$@")
 
 	local -a selected=()
-	while IFS= read -r pkg; do
-		[[ -n "$pkg" ]] && selected+=("$pkg")
-	done < <(_audit_select_packages "Select packages to import" "${unmanaged[@]}")
+	local target_file="" picked rc
+	local step=packages
+	while true; do
+		rc=0
+		case "$step" in
+		packages)
+			picked=$(_audit_select_packages "Select packages to import" "${unmanaged[@]}") || rc=$?
+			[[ $rc -ne 0 ]] && return "$rc"
+			mapfile -t selected <<<"$picked"
+			step=file
+			;;
+		file)
+			picked=$(_audit_yaml_target) || rc=$?
+			if [[ $rc -eq $UI_BACK ]]; then
+				step=packages
+				continue
+			fi
+			[[ $rc -ne 0 ]] && return "$rc"
+			if [[ "$picked" == "[+] Create new YAML under os/" ]]; then
+				# empty or invalid path: stay on the file picker
+				target_file=$(_audit_create_yaml_file "relative path under os/, e.g. ${DOTFILES_PLATFORM}/misc.yaml (empty to go back)") || continue
+				[[ -z "$target_file" ]] && continue
+			else
+				target_file="$picked"
+			fi
+			step=grouping
+			;;
+		grouping)
+			picked=$(printf '%s\n' \
+				"One module for all selections" \
+				"Separate module per package (name = package)" | ui_choose "Group packages") || rc=$?
+			if [[ $rc -eq $UI_BACK ]]; then
+				step=file
+				continue
+			fi
+			[[ $rc -ne 0 ]] && return "$rc"
+			if [[ "$picked" == Separate* ]]; then
+				local pkg
+				for pkg in "${selected[@]}"; do
+					local ent
+					ent=$("$entry_fmt_fn" "$pkg")
+					_audit_append_module_block "$target_file" "$pkg" "$ent"
+				done
+				log_ok "audit: added ${#selected[@]} separate module(s) to $target_file"
+				return 0
+			fi
+			step=module
+			;;
+		module)
+			local -a module_names=()
+			while IFS= read -r name; do
+				[[ -n "$name" ]] && module_names+=("$name")
+			done < <(_audit_yaml_module_names_get "$DOTFILES_DIR/$target_file")
+			module_names+=("[new module]")
 
-	if [[ ${#selected[@]} -eq 0 ]]; then
-		log_info "audit: no packages selected"
-		return 0
-	fi
+			local target_module
+			target_module=$(printf '%s\n' "${module_names[@]}" | ui_choose "Select module") || rc=$?
+			if [[ $rc -eq $UI_BACK ]]; then
+				step=grouping
+				continue
+			fi
+			[[ $rc -ne 0 ]] && return "$rc"
 
-	local target_pick
-	target_pick=$(_audit_yaml_target)
-	[[ -z "$target_pick" ]] && return 0
-
-	local target_file=""
-	if [[ "$target_pick" == "[+] Create new YAML under os/" ]]; then
-		target_file=$(_audit_create_yaml_file "relative path under os/, e.g. ${DOTFILES_PLATFORM}/misc.yaml")
-		[[ -z "$target_file" ]] && return 0
-	else
-		target_file="$target_pick"
-	fi
-
-	local grouping
-	grouping="$(printf '%s\n' \
-		"One module for all selections" \
-		"Separate module per package (name = package)" | ui_choose "Group packages")" || return 0
-
-	if [[ "$grouping" == Separate* ]]; then
-		local pkg
-		for pkg in "${selected[@]}"; do
-			local ent
-			ent=$("$entry_fmt_fn" "$pkg")
-			_audit_append_module_block "$target_file" "$pkg" "$ent"
-		done
-		log_ok "audit: added ${#selected[@]} separate module(s) to $target_file"
-		return 0
-	fi
-
-	local -a module_names=()
-	while IFS= read -r name; do
-		[[ -n "$name" ]] && module_names+=("$name")
-	done < <(_audit_yaml_module_names_get "$DOTFILES_DIR/$target_file")
-	module_names+=("[new module]")
-
-	local target_module
-	target_module=$(printf '%s\n' "${module_names[@]}" | ui_choose "Select module")
-	[[ -z "$target_module" ]] && return 0
-
-	if [[ "$target_module" == "[new module]" ]]; then
-		target_module=$(ui_input "module name")
-		[[ -z "$target_module" ]] && return 0
-		local -a entries=()
-		for pkg in "${selected[@]}"; do
-			entries+=("$("$entry_fmt_fn" "$pkg")")
-		done
-		_audit_append_module_block "$target_file" "$target_module" "${entries[@]}"
-		log_ok "audit: created module '$target_module' in $target_file with ${#selected[@]} package(s)"
-	else
-		_audit_import_to_yaml "$target_file" "$target_module" "$entry_fmt_fn" "${selected[@]}"
-	fi
+			if [[ "$target_module" == "[new module]" ]]; then
+				# empty name: back to the module picker
+				target_module=$(ui_input "module name (empty to go back)")
+				[[ -z "$target_module" ]] && continue
+				local -a entries=()
+				for pkg in "${selected[@]}"; do
+					entries+=("$("$entry_fmt_fn" "$pkg")")
+				done
+				_audit_append_module_block "$target_file" "$target_module" "${entries[@]}"
+				log_ok "audit: created module '$target_module' in $target_file with ${#selected[@]} package(s)"
+			else
+				_audit_import_to_yaml "$target_file" "$target_module" "$entry_fmt_fn" "${selected[@]}"
+			fi
+			return 0
+			;;
+		esac
+	done
 }
 
 _audit_uninstall_pacman() {
@@ -295,23 +317,22 @@ _audit_run_uninstall() {
 	shift
 	local -a unmanaged=("$@")
 
+	# Esc returns $UI_BACK to the caller; answering no reopens the picker
 	local -a selected=()
-	while IFS= read -r pkg; do
-		[[ -n "$pkg" ]] && selected+=("$pkg")
-	done < <(_audit_select_packages "Select packages to uninstall" "${unmanaged[@]}")
+	local picked rc
+	while true; do
+		rc=0
+		picked=$(_audit_select_packages "Select packages to uninstall" "${unmanaged[@]}") || rc=$?
+		[[ $rc -ne 0 ]] && return "$rc"
+		mapfile -t selected <<<"$picked"
 
-	if [[ ${#selected[@]} -eq 0 ]]; then
-		log_info "audit: no packages selected"
-		return 0
-	fi
-
-	log_warn "audit: will uninstall ${selected[*]}"
-	if ui_confirm "Uninstall ${#selected[@]} package(s)?"; then
-		"$uninstall_fn" "${selected[@]}"
-		log_ok "audit: uninstalled ${#selected[@]} package(s)"
-	else
-		log_info "audit: cancelled"
-	fi
+		log_warn "audit: will uninstall ${selected[*]}"
+		if ui_confirm "Uninstall ${#selected[@]} package(s)?"; then
+			"$uninstall_fn" "${selected[@]}"
+			log_ok "audit: uninstalled ${#selected[@]} package(s)"
+			return 0
+		fi
+	done
 }
 
 # -- main audit flow
@@ -431,60 +452,80 @@ step_audit() {
 		return 0
 	fi
 
-	# interactive: choose manager, then action
-	local chosen_mgr
-	if [[ ${#audit_managers[@]} -eq 1 ]]; then
-		chosen_mgr="${audit_managers[0]}"
-	else
-		chosen_mgr=$(printf '%s\n' "${audit_managers[@]}" | ui_choose "Select manager to audit")
-		[[ -z "$chosen_mgr" ]] && return 0
-	fi
-
-	local -a chosen_pkgs=()
-	local i=0
-	while [[ $i -lt ${#audit_unmanaged[@]} ]]; do
-		local mgr="${audit_unmanaged[i]}"
-		i=$((i + 1))
-		local -a pkgs=()
-		while [[ $i -lt ${#audit_unmanaged[@]} && "${audit_unmanaged[i]}" != @(pacman|apt|brew|snap) ]]; do
-			pkgs+=("${audit_unmanaged[i]}")
-			i=$((i + 1))
-		done
-		if [[ "$mgr" == "$chosen_mgr" ]]; then
-			chosen_pkgs=("${pkgs[@]}")
-			break
+	# interactive: manager menu -> action menu -> import/uninstall wizard.
+	# Esc steps back one menu; Esc on the first menu (or Done) exits.
+	local chosen_mgr rc
+	while true; do
+		rc=0
+		if [[ ${#audit_managers[@]} -eq 1 ]]; then
+			chosen_mgr="${audit_managers[0]}"
+		else
+			chosen_mgr=$(printf '%s\n' "${audit_managers[@]}" | ui_choose "Select manager to audit") || rc=$?
+			[[ $rc -eq $UI_BACK ]] && return 0
+			[[ $rc -ne 0 ]] && return "$rc"
 		fi
+
+		local -a chosen_pkgs=()
+		local i=0
+		while [[ $i -lt ${#audit_unmanaged[@]} ]]; do
+			local mgr="${audit_unmanaged[i]}"
+			i=$((i + 1))
+			local -a pkgs=()
+			while [[ $i -lt ${#audit_unmanaged[@]} && "${audit_unmanaged[i]}" != @(pacman|apt|brew|snap) ]]; do
+				pkgs+=("${audit_unmanaged[i]}")
+				i=$((i + 1))
+			done
+			if [[ "$mgr" == "$chosen_mgr" ]]; then
+				chosen_pkgs=("${pkgs[@]}")
+				break
+			fi
+		done
+
+		local fmt_fn="" uninstall_fn=""
+		case "$chosen_mgr" in
+		pacman)
+			fmt_fn="_audit_entry_format_pacman"
+			uninstall_fn="_audit_uninstall_pacman"
+			;;
+		apt)
+			fmt_fn="_audit_entry_format_apt"
+			uninstall_fn="_audit_uninstall_apt"
+			;;
+		brew)
+			fmt_fn="_audit_entry_format_brew"
+			uninstall_fn="_audit_uninstall_brew"
+			;;
+		esac
+
+		# action menu: Esc goes back to the manager menu (or exits if there's only one)
+		while true; do
+			local action
+			rc=0
+			action=$(_audit_choose_action "Unmanaged $chosen_mgr packages — what would you like to do?") || rc=$?
+			if [[ $rc -eq $UI_BACK ]]; then
+				[[ ${#audit_managers[@]} -eq 1 ]] && return 0
+				break
+			fi
+			[[ $rc -ne 0 ]] && return "$rc"
+
+			# wizards return $UI_BACK when backed out of their first screen
+			case "$action" in
+			Import*)
+				_audit_run_import "$chosen_mgr" "$fmt_fn" "${chosen_pkgs[@]}" || rc=$?
+				;;
+			Uninstall*)
+				_audit_run_uninstall "$uninstall_fn" "${chosen_pkgs[@]}" || rc=$?
+				;;
+			List*)
+				printf '%s\n' "${chosen_pkgs[@]}" | ui_pager
+				continue
+				;;
+			Done)
+				return 0
+				;;
+			esac
+			[[ $rc -eq $UI_BACK ]] && continue
+			return "$rc"
+		done
 	done
-
-	local action
-	action=$(_audit_choose_action "Unmanaged $chosen_mgr packages — what would you like to do?") || return 0
-
-	local fmt_fn="" uninstall_fn=""
-	case "$chosen_mgr" in
-	pacman)
-		fmt_fn="_audit_entry_format_pacman"
-		uninstall_fn="_audit_uninstall_pacman"
-		;;
-	apt)
-		fmt_fn="_audit_entry_format_apt"
-		uninstall_fn="_audit_uninstall_apt"
-		;;
-	brew)
-		fmt_fn="_audit_entry_format_brew"
-		uninstall_fn="_audit_uninstall_brew"
-		;;
-	esac
-
-	case "$action" in
-	Import*)
-		_audit_run_import "$chosen_mgr" "$fmt_fn" "${chosen_pkgs[@]}"
-		;;
-	Uninstall*)
-		_audit_run_uninstall "$uninstall_fn" "${chosen_pkgs[@]}"
-		;;
-	List*)
-		printf '%s\n' "${chosen_pkgs[@]}" | ui_pager
-		;;
-	Done) ;;
-	esac
 }
