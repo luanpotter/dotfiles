@@ -107,16 +107,15 @@ step_manage() {
 		# if selection matches default, no override needed
 	done
 
-	# write overrides to env.yaml
+	# write overrides to env.yaml (built in memory, written once)
 	_ensure_env
 	local tmp
 	tmp=$(yq -y '.modules = {}' "$ENV_FILE")
-	printf '%s\n' "$tmp" >"$ENV_FILE"
 
 	for name in "${!new_overrides[@]}"; do
-		tmp=$(yq -y ".modules.\"$name\" = ${new_overrides[$name]}" "$ENV_FILE")
-		printf '%s\n' "$tmp" >"$ENV_FILE"
+		tmp=$(printf '%s\n' "$tmp" | yq -y ".modules.\"$name\" = ${new_overrides[$name]}")
 	done
+	env_write "$tmp"
 
 	local override_count=${#new_overrides[@]}
 	if [[ $override_count -eq 0 ]]; then

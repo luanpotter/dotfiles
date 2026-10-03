@@ -13,7 +13,8 @@ AUTO_YES="${AUTO_YES:-false}"
 FORCE_EXEC="${FORCE_EXEC:-false}"
 VERBOSE="${VERBOSE:-false}"
 
-ENV_FILE="$DOTFILES_DIR/env.yaml"
+# local state (module overrides, exec hashes)
+ENV_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/dotfiles/env.yaml"
 
 # -- colors
 _RED='\033[0;31m'
@@ -70,7 +71,24 @@ dotfiles_manager_supported() {
 # Ensures env.yaml exists with valid YAML structure
 _ensure_env() {
 	if [[ ! -f "$ENV_FILE" ]]; then
-		printf 'modules:\nexec:\n' >"$ENV_FILE"
+		mkdir -p "$(dirname "$ENV_FILE")"
+		env_write $'modules:\nexec:'
+	fi
+}
+
+# atomic replace of env.yaml, avoid concurrency or interruption corruptions.
+env_write() {
+	local content="$1"
+	if [[ -z "$content" ]]; then
+		log_error "env: refusing to write empty env.yaml"
+		return 1
+	fi
+	local tmp
+	tmp=$(mktemp "$ENV_FILE.XXXXXX")
+	if ! printf '%s\n' "$content" >"$tmp" || ! mv -f "$tmp" "$ENV_FILE"; then
+		rm -f "$tmp"
+		log_error "env: failed to write env.yaml"
+		return 1
 	fi
 }
 
@@ -87,7 +105,7 @@ env_set_hash() {
 	_ensure_env
 	local tmp
 	tmp=$(yq -y ".exec.\"$module\" = \"$hash\"" "$ENV_FILE")
-	printf '%s\n' "$tmp" >"$ENV_FILE"
+	env_write "$tmp"
 }
 
 # -- manifest merge
