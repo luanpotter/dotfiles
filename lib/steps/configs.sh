@@ -27,6 +27,11 @@ step_configs() {
 		local name="${names[$i]}"
 		local target="${targets[$i]}"
 
+		if ! module_installs_here "$manifest" "$name"; then
+			log_verbose "configs: $name installs nothing on $DOTFILES_PLATFORM, skipping"
+			continue
+		fi
+
 		# expand ~ to $HOME
 		target="${target/#\~/$HOME}"
 

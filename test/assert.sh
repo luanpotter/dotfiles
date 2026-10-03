@@ -63,6 +63,15 @@ stage "configs: every config target links into the repo"
 while IFS=$'\t' read -r name target; do
 	[[ -n "$name" ]] || continue
 	target="${target/#\~/$HOME}"
+	# same skip rule as step_configs: nothing installed here, nothing linked
+	if ! module_installs_here "$manifest" "$name"; then
+		if [[ -e "$target" || -L "$target" ]]; then
+			fail "config $name: installs nothing on $DOTFILES_PLATFORM but $target exists"
+		else
+			pass "config $name skipped (installs nothing on $DOTFILES_PLATFORM)"
+		fi
+		continue
+	fi
 	source_path="$DOTFILES_DIR/config/$name"
 	# the engine skips modules with no config/<name>; nothing to check
 	[[ -e "$source_path" ]] || continue
