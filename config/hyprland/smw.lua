@@ -1,9 +1,8 @@
 -- smw.lua — per-monitor workspaces for Hyprland (AwesomeWM-style).
 -- Each monitor gets its own independent 1..N workspaces, namespaced by a
 -- 1-based monitor index: monitor 1 -> "m1:1".."m1:9", monitor 2 -> "m2:1".."m2:9".
--- The "m" prefix prevents waybar's std::stoi from misparsing the workspace ID
--- from the name (which causes duplicate buttons). Referenced via Hyprland's
--- `name:` prefix (e.g. focus "name:m2:3").
+-- quickshell/Workspaces.qml parses this "m<monitor>:<n>" format, so keep them
+-- in sync. Referenced via Hyprland's `name:` prefix (e.g. focus "name:m2:3").
 --
 -- Inspired by / reimplemented from
 -- https://github.com/zjeffer/split-monitor-workspaces (BSD-3-Clause,

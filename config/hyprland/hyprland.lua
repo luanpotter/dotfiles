@@ -2,7 +2,7 @@
 
 package.path = package.path .. ";./?.lua"
 
--- Per-monitor workspaces (like Awesome): each monitor gets its own 1-9.
+-- Per-monitor workspaces: each monitor gets its own.
 local smw = require("smw")
 
 ------------------
@@ -288,7 +288,7 @@ hl.bind(mainMod .. " + K", smw.focus("down"))
 hl.bind(mainMod .. " + L", smw.focus("up"))
 hl.bind(mainMod .. " + I", smw.focus("right"))
 
--- Shift focus to the next monitor (like Awesome's super+o)
+-- Shift focus to the next monitor
 hl.bind(mainMod .. " + O", hl.dsp.focus({ monitor = "+1" }))
 -- Move the active window to the active workspace on the next monitor
 hl.bind(mainMod .. " + SHIFT + O", smw.move_to_other_monitor())
@@ -390,13 +390,5 @@ hl.window_rule({
     match = { class = "hyprland-run" },
 
     move  = "20 monitor_h-120",
-    float = true,
-})
-
--- open small calendar when clicking the waybar clock, right below
-hl.window_rule({
-    name  = "gsimplecal-popup",
-    match = { class = "^gsimplecal$" },
-    move  = "monitor_w-window_w-10 30",
     float = true,
 })
