@@ -27,6 +27,11 @@ step_exec() {
 			log_error "exec: failed to read exec block name from manifest"
 			return 1
 		fi
+		if ! module_installs_here "$manifest" "$name"; then
+			log_verbose "exec: $name installs nothing on $DOTFILES_PLATFORM, skipping"
+			continue
+		fi
+
 		local exec_block
 		if ! exec_block="$(printf '%s\n' "$manifest" | yq -r "[ .modules[] | select(.exec) ] | .[$i].exec")"; then
 			log_error "exec: failed to read exec block '$name' from manifest"

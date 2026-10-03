@@ -140,6 +140,22 @@ dotfiles_manager_supported() {
 	return 1
 }
 
+# Returns 0 if module NAME has something to install on DOTFILES_PLATFORM:
+# no install list at all, or at least one entry with a supported manager.
+# Used to skip exec blocks for modules that only apply to other platforms.
+module_installs_here() {
+	local manifest="$1" name="$2"
+	local -a entries=()
+	mapfile -t entries < <(printf '%s\n' "$manifest" |
+		yq -r ".modules[] | select(.name == \"$name\") | .install // [] | .[]")
+	[[ ${#entries[@]} -eq 0 ]] && return 0
+	local entry
+	for entry in "${entries[@]}"; do
+		dotfiles_manager_supported "${entry%%:*}" && return 0
+	done
+	return 1
+}
+
 # -- env file helpers
 # Ensures env.yaml exists with valid YAML structure
 _ensure_env() {
@@ -211,11 +227,14 @@ merge_manifests() {
 	# merge all files, then filter modules by platform, enabled/disabled state
 	# Resolution: env mismatch → skip; env.yaml override → module default → enabled
 	local filter_merge filter_select
-	read -r -d '' filter_merge <<'YQ'
+	filter_merge=$(
+		cat <<'YQ'
 (reduce .[] as $item ({}; . * ($item | del(.modules)))) +
 {modules: [.[] | (.modules // [])[]]}
 YQ
-	read -r -d '' filter_select <<'YQ'
+	)
+	filter_select=$(
+		cat <<'YQ'
 .modules = [.modules[] | select(
     if .env != null and .env != $platform then false
     else
@@ -227,6 +246,7 @@ YQ
     end
 ) | del(.default, .env)]
 YQ
+	)
 	yq -s "$filter_merge" "${files[@]}" | yq --argjson env "$(yq '.modules // {}' "$ENV_FILE")" \
 		--arg platform "$DOTFILES_PLATFORM" "$filter_select"
 }

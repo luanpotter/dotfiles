@@ -107,6 +107,11 @@ fi
 stage "exec: every exec block ran and recorded its current hash"
 while IFS= read -r name; do
 	[[ -n "$name" ]] || continue
+	# same skip rule as step_exec: nothing to install here, nothing to run
+	if ! module_installs_here "$manifest" "$name"; then
+		pass "exec $name skipped (installs nothing on $DOTFILES_PLATFORM)"
+		continue
+	fi
 	# hash exactly as step_exec does
 	exec_block=$(printf '%s\n' "$manifest" | yq -r ".modules[] | select(.name == \"$name\") | .exec")
 	want=$(printf '%s' "$exec_block" | sha256sum | cut -d' ' -f1)

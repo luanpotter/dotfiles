@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# ensure steps inside $() fail just like set -e
+shopt -s inherit_errexit
 
 # -- load lib
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
