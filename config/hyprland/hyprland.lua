@@ -329,12 +329,6 @@ hl.bind("XF86AudioMicMute",     raw_dsp_exec("wpctl set-mute @DEFAULT_AUDIO_SOUR
 hl.bind("XF86MonBrightnessUp",  raw_dsp_exec("brightnessctl -e4 -n2 set 5%+"),                  { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown",raw_dsp_exec("brightnessctl -e4 -n2 set 5%-"),                  { locked = true, repeating = true })
 
--- Requires playerctl
-hl.bind("XF86AudioNext",  raw_dsp_exec("playerctl next"),       { locked = true })
-hl.bind("XF86AudioPause", raw_dsp_exec("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPlay",  raw_dsp_exec("playerctl play-pause"), { locked = true })
-hl.bind("XF86AudioPrev",  raw_dsp_exec("playerctl previous"),   { locked = true })
-
 
 --------------------------------
 ---- WINDOWS AND WORKSPACES ----
