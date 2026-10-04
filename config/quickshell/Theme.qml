@@ -2,24 +2,31 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 
 // Palette and metrics shared by every widget.
-// Square corners and the cyan accent match the Hyprland borders.
+// Colors live in colors.json so hyprland.lua can read them too.
 Singleton {
-    readonly property color bg:      "#e60c0d10"
-    readonly property color surface: "#f5111216"
-    readonly property color border:  "#1affffff"
-    readonly property color hover:   "#0fffffff"
+    property FileView colorsFile: FileView {
+        path: Quickshell.shellDir + "/colors.json"
+        blockLoading: true
+    }
+    readonly property var colors: JSON.parse(colorsFile.text())
 
-    readonly property color fg:    "#c9ccd3"
-    readonly property color muted: "#80858f"
-    readonly property color dim:   "#4b4f58"
-    readonly property color faint: "#262930"
+    readonly property color bg:      colors.bg
+    readonly property color surface: colors.surface
+    readonly property color border:  colors.border
+    readonly property color hover:   colors.hover
 
-    readonly property color accent: "#33ccff"
-    readonly property color good:   "#00ff99"
-    readonly property color warn:   "#ffb454"
-    readonly property color bad:    "#ff5c6c"
+    readonly property color fg:    colors.fg
+    readonly property color muted: colors.muted
+    readonly property color dim:   colors.dim
+    readonly property color faint: colors.faint
+
+    readonly property color accent: colors.accent
+    readonly property color good:   colors.good
+    readonly property color warn:   colors.warn
+    readonly property color bad:    colors.bad
 
     readonly property string font: "monospace"
     readonly property int fontSize: 12

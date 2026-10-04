@@ -1,0 +1,16 @@
+{
+    "bg":      "#e60c0d10",
+    "surface": "#f5111216",
+    "border":  "#1affffff",
+    "hover":   "#0fffffff",
+
+    "fg":    "#c9ccd3",
+    "muted": "#80858f",
+    "dim":   "#4b4f58",
+    "faint": "#262930",
+
+    "accent": "#33ccff",
+    "good":   "#00ff99",
+    "warn":   "#ffb454",
+    "bad":    "#ff5c6c"
+}

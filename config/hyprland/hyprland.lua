@@ -115,6 +115,15 @@ hl.permission({ binary = ".*", type = "plugin", mode = "deny" })
 ---- LOOK AND FEEL ----
 -----------------------
 
+-- Palette shared with the quickshell bar. Flat JSON, so a pattern is enough.
+-- Only use the 6-digit entries here: Qt's 8-digit form is #AARRGGBB.
+local colors = {}
+local colorsFile = assert(io.open(os.getenv("HOME") .. "/.config/quickshell/colors.json"))
+for key, hex in colorsFile:read("a"):gmatch('"(%w+)"%s*:%s*"#(%x+)"') do
+    colors[key] = hex
+end
+colorsFile:close()
+
 -- Refer to https://wiki.hypr.land/Configuring/Basics/Variables/
 hl.config({
     general = {
@@ -124,7 +133,7 @@ hl.config({
         border_size = 2,
 
         col = {
-            active_border   = { colors = {"rgba(33ccffee)", "rgba(00ff99ee)"}, angle = 45 },
+            active_border   = "rgba(" .. colors.accent .. "ee)",
             inactive_border = "rgba(595959aa)",
         },
 
