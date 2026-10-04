@@ -1,9 +1,10 @@
-# Adds ~/bin to PATH for the graphical session (launcher, wayland, etc).
+# Adds ~/bin and the dotfiles scripts to PATH for the graphical session
+# (launcher, wayland, etc), matching add_software in functions.sh.
 #
 # Sourced by uwsm while preparing the session env (/usr/lib/uwsm/prepare-env.sh),
 # after /etc/profile and ~/.profile. uwsm rebuilds PATH from that profile chain
 # starting from empty, so it discards other sources. See uwsm(1).
-export PATH="$HOME/bin:$PATH"
+export PATH="$HOME/bin/local_scripts:$HOME/bin/scripts:$HOME/bin:$PATH"
 
 # allow for accent composition w/o an input compositor (for GTK apps)
 export GTK_IM_MODULE=simple
