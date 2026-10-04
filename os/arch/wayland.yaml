@@ -37,7 +37,7 @@ modules:
     default: false
     config: ~/.config/user-dirs.dirs
 
-  # top bar and wallpaper
+  # top bar, wallpaper, lock screen, and launcher
   - name: quickshell
     default: false
     install:
@@ -46,4 +46,8 @@ modules:
       - pacman:qt6-svg
       # brightness block
       - pacman:brightnessctl
+      # launcher: calc (qalc), emoji list + search keywords
+      - pacman:libqalculate
+      - pacman:unicode-emoji
+      - pacman:unicode-cldr-annotations
     config: ~/.config/quickshell

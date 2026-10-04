@@ -40,15 +40,6 @@ modules:
       - pacman:unzip
       - pacman:unrar
 
-  - name: rofi
-    install:
-      - pacman:rofi
-      - pacman:rofi-calc
-      - pacman:rofi-emoji
-      # rofi-emoji copies using the wayland clipboard
-      - pacman:wl-clipboard
-    config: ~/.config/rofi
-
   # must be copied, not symlinked: the greeter runs as the sddm user,
   # which can't read into home folder for resolving the links.
   # The screen design is shared with the quickshell wallpaper, so those
@@ -71,7 +62,7 @@ modules:
 
   - name: fonts
     install:
-      # color emoji (rofi-emoji, browsers, terminals)
+      # color emoji (launcher, browsers, terminals)
       - pacman:noto-fonts-emoji
     exec: |
       sudo bash -O globstar -O nullglob -c "cp $DOTFILES_DIR/fonts/**/*.{ttf,otf} /usr/share/fonts/" 2>/dev/null || true

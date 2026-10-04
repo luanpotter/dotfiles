@@ -32,19 +32,6 @@ hl.monitor({
 local terminal    = "ghostty -e tmux"
 local fileManager = "dolphin"
 
--- rofi needs the `run` mode rather than `drun`: `-run-command` is the only
--- launch hook rofi exposes so we can scope launched apps cgroups
-local rofiSearch = os.getenv("HOME") .. "/.config/rofi/rofi-web-search.py"
-local rofiModes  = "run,search:" .. rofiSearch .. ",calc,window,emoji,filebrowser"
--- these are out of combi to avoid noise, can still be tabbed into
-local rofiCombi  = "run,search,window,emoji,filebrowser"
-local menu       = table.concat({
-    "rofi -show combi",
-    "-modes combi," .. rofiModes,
-    "-combi-modes " .. rofiCombi,
-    "-run-command 'systemd-run --user --scope --quiet --collect --slice=app.slice -- {cmd}'",
-}, " ")
-
 
 ----------------------
 ---- CGROUP SCOPES ----
@@ -298,7 +285,7 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 -- Initialize per-monitor workspaces
 smw.setup()
 
-hl.bind(mainMod .. " + R", raw_dsp_exec(menu))
+hl.bind(mainMod .. " + R", hl.dsp.global("quickshell:launcher"))
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))

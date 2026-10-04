@@ -30,4 +30,6 @@ ShellRoot {
     }
 
     Lock {}
+
+    Launcher {}
 }

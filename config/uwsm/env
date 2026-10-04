@@ -1,4 +1,4 @@
-# Adds ~/bin to PATH for the graphical session (rofi, wayland, etc).
+# Adds ~/bin to PATH for the graphical session (launcher, wayland, etc).
 #
 # Sourced by uwsm while preparing the session env (/usr/lib/uwsm/prepare-env.sh),
 # after /etc/profile and ~/.profile. uwsm rebuilds PATH from that profile chain
