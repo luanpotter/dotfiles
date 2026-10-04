@@ -34,17 +34,18 @@ BarItem {
             ].filter(row => row)
 
             RowLayout {
+                id: row
                 required property var modelData
                 spacing: 16
 
                 Txt {
                     Layout.preferredWidth: 64
-                    text: modelData[0]
+                    text: row.modelData[0]
                     color: Theme.muted
                 }
 
                 Txt {
-                    text: modelData[1]
+                    text: row.modelData[1]
                 }
             }
         }

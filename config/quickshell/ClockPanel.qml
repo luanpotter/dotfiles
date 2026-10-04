@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -107,19 +109,20 @@ ColumnLayout {
         spacing: 2
 
         delegate: Item {
+            id: cell
             required property var model
             implicitWidth: 28
             implicitHeight: 22
 
             Rectangle {
                 anchors.fill: parent
-                color: model.today ? Theme.accent : "transparent"
+                color: cell.model.today ? Theme.accent : "transparent"
             }
 
             Txt {
                 anchors.centerIn: parent
-                text: model.day
-                color: model.today ? "#0c0d10" : model.month === grid.month ? Theme.fg : Theme.dim
+                text: cell.model.day
+                color: cell.model.today ? "#0c0d10" : cell.model.month === grid.month ? Theme.fg : Theme.dim
             }
         }
     }
