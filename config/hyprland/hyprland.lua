@@ -31,6 +31,8 @@ hl.monitor({
 -- Set programs that you use
 local terminal    = "ghostty -e tmux"
 local fileManager = "dolphin"
+-- vim on one persistent scratch file
+local scratch     = "ghostty -e vim " .. os.getenv("HOME") .. "/scratch.md"
 
 
 ----------------------
@@ -290,7 +292,7 @@ hl.bind(mainMod .. " + R", hl.dsp.global("quickshell:launcher"))
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
-hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(scratch))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + space", hl.dsp.layout("togglesplit"))
 
