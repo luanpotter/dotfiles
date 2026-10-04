@@ -4,5 +4,6 @@ Description=Minimalist sddm theme from my dotfiles
 Type=sddm-theme
 Version=1.0
 MainScript=Main.qml
+ConfigFile=theme.conf
 Theme-Id=dotfiles
 QtVersion=6

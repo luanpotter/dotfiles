@@ -1,27 +1,24 @@
 import QtQuick
 
-// Palette mirrored from config/quickshell/Theme.qml
-Rectangle {
+// Same screen as the quickshell wallpaper: Backdrop.qml and arch.svg are
+// copied in at install, and theme.conf (read via `config`) is generated
+// from colors.json. See os/arch/core.yaml.
+Item {
     id: root
 
-    readonly property color surface: "#111216"
-    readonly property color border:  "#1affffff"
-    readonly property color fg:      "#c9ccd3"
-    readonly property color muted:   "#80858f"
-    readonly property color dim:     "#4b4f58"
-    readonly property color accent:  "#33ccff"
-    readonly property color warn:    "#ffb454"
-    readonly property color bad:     "#ff5c6c"
+    readonly property color surface: config.surface
+    readonly property color border:  config.border
+    readonly property color fg:      config.fg
+    readonly property color accent:  config.accent
+    readonly property color warn:    config.warn
+    readonly property color bad:     config.bad
     readonly property string font:   "monospace"
-    readonly property string sep:    `<font color="${dim}"> · </font>`
 
     property string firstUser: ""
     readonly property string user: userModel.lastUser || firstUser
     property bool failed: false
     property bool busy: false
     property date now: new Date()
-
-    color: "#0c0d10"
 
     Repeater {
         model: userModel
@@ -58,30 +55,11 @@ Rectangle {
         sddm.login(user, password.text, sessionModel.lastIndex);
     }
 
-    Column {
-        anchors.centerIn: parent
-        spacing: 0
-
-        Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.formatDateTime(root.now, "HH:mm")
-            color: root.fg
-            font.family: root.font
-            font.pixelSize: 96
-            font.weight: Font.Light
-        }
-
-        Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.formatDateTime(root.now, "ddd").toLowerCase() + root.sep
-                + Qt.formatDateTime(root.now, "yyyy-MM-dd")
-            textFormat: Text.StyledText
-            color: root.muted
-            font.family: root.font
-            font.pixelSize: 14
-        }
-
-        Item { width: 1; height: 48 }
+    Backdrop {
+        anchors.fill: parent
+        colors: config
+        now: root.now
+        font: root.font
 
         Rectangle {
             id: field

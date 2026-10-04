@@ -1,8 +1,8 @@
 {
-    "bg":      "#e60c0d10",
-    "surface": "#f5111216",
-    "border":  "#1affffff",
-    "hover":   "#0fffffff",
+    "bg":      "#0c0d10",
+    "surface": "#111216",
+    "border":  "#252628",
+    "hover":   "#1a1b1e",
 
     "fg":    "#c9ccd3",
     "muted": "#80858f",

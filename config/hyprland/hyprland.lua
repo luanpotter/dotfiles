@@ -115,7 +115,7 @@ hl.permission({ binary = ".*", type = "plugin", mode = "deny" })
 -----------------------
 
 -- Palette shared with the quickshell bar. Flat JSON, so a pattern is enough.
--- Only use the 6-digit entries here: Qt's 8-digit form is #AARRGGBB.
+-- All entries are opaque 6-digit hex (Qt reads 8-digit as #AARRGGBB, Hyprland as RRGGBBAA).
 local colors = {}
 local colorsFile = assert(io.open(os.getenv("HOME") .. "/.config/quickshell/colors.json"))
 for key, hex in colorsFile:read("a"):gmatch('"(%w+)"%s*:%s*"#(%x+)"') do

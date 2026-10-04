@@ -9,6 +9,9 @@ Rectangle {
     required property date now
     property string font: "monospace"
 
+    // optional additional content under the date (e.g. for lockscreen)
+    default property alias content: slot.data
+
     readonly property int logoSize: Math.round(height * 0.3)
 
     color: colors.bg
@@ -57,9 +60,15 @@ Rectangle {
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
             text: Qt.formatDateTime(root.now, "dddd · yyyy-MM-dd")
-            color: root.colors.faint
+            color: root.colors.dim
             font.family: root.font
             font.pixelSize: root.logoSize * 0.06
+        }
+
+        Column {
+            id: slot
+            anchors.horizontalCenter: parent.horizontalCenter
+            topPadding: 32
         }
     }
 }

@@ -51,13 +51,22 @@ modules:
 
   # must be copied, not symlinked: the greeter runs as the sddm user,
   # which can't read into home folder for resolving the links.
+  # The screen design is shared with the quickshell wallpaper, so those
+  # files are copied in too, and colors.json becomes the theme.conf.
   - name: sddm
     install:
       - pacman:sddm
+      # Backdrop logo (arch.svg)
+      - pacman:qt6-svg
     exec: |
+      theme=/usr/share/sddm/themes/dotfiles
+      qs="$DOTFILES_DIR/config/quickshell"
       sudo install -Dm644 "$DOTFILES_DIR/config/sddm/sddm.conf" /etc/sddm.conf.d/dotfiles.conf
-      sudo rm -rf /usr/share/sddm/themes/dotfiles
-      sudo cp -r "$DOTFILES_DIR/config/sddm/theme" /usr/share/sddm/themes/dotfiles
+      sudo rm -rf "$theme"
+      sudo cp -r "$DOTFILES_DIR/config/sddm/theme" "$theme"
+      sudo cp "$qs/Backdrop.qml" "$qs/arch.svg" "$theme/"
+      jq -r '"[General]", (to_entries[] | "\(.key)=\"\(.value)\"")' "$qs/colors.json" |
+        sudo tee "$theme/theme.conf" >/dev/null
       sudo systemctl enable sddm
 
   - name: fonts
