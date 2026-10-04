@@ -3,19 +3,15 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
-import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
 
 // Smart launcher/SUPER+R. Lives in the running shell so no startup cost.
-// Default: apps + commands; :emoji, =calc, ?web.
+// Default: apps + commands; :emoji, =calc, ?web; modules in each Launcher* file.
 Scope {
     id: root
 
     property bool open: false
-    property var commands: []
-    property var emojis: []
-    property string calcResult: ""
     property var results: []
     property int selected: 0
 
@@ -24,7 +20,7 @@ Scope {
     function toggle() {
         open = !open;
         if (open) {
-            commandsProc.running = true; // refresh in the background
+            apps.refreshCommands(); // refresh in the background
         } else {
             input.text = "";
         }
@@ -41,175 +37,46 @@ Scope {
         onPressed: root.toggle()
     }
 
-    // ---- data sources ----
+    // ---- modes ----
 
-    // executables on $PATH, minus shell builtins and keywords
-    Process {
-        id: commandsProc
-        running: true
-        command: ["bash", "-c", "compgen -c | sort -u | comm -23 - <(compgen -bk | sort -u)"]
-        stdout: StdioCollector {
-            onStreamFinished: root.commands = text.split("\n").filter(c => c.length > 0)
-        }
+    LauncherApps {
+        id: apps
     }
 
-    // emoji list from Unicode (unicode-emoji) with search keywords from CLDR
-    FileView {
-        id: emojiTest
-        path: "/usr/share/unicode/emoji/emoji-test.txt"
-        onLoaded: root.buildEmojis()
+    LauncherSymbols {
+        id: symbols
+        limit: root.maxRows
     }
 
-    FileView {
-        id: emojiAnnotations
-        path: "/usr/share/unicode/cldr/common/annotations/en.xml"
-        onLoaded: root.buildEmojis()
+    LauncherCalc {
+        id: calc
+        onFinished: root.refresh()
     }
 
-    // CLDR keys usually omit the U+FE0F variation selector
-    function emojiKey(emoji) {
-        return emoji.replace(/️/g, "");
+    LauncherWeb {
+        id: web
     }
-
-    function buildEmojis() {
-        if (!emojiTest.loaded || !emojiAnnotations.loaded)
-            return;
-
-        // <annotation cp="🔥">af | burn | fire | flame</annotation>; the
-        // type="tts" variants (just the name again) don't match this pattern
-        // (exec loops: Qt's JS engine has no String.matchAll)
-        const keywords = new Map();
-        const annotationRe = /<annotation cp="([^"]+)">([^<]*)<\/annotation>/g;
-        const annotations = emojiAnnotations.text();
-        let m;
-        while ((m = annotationRe.exec(annotations)) !== null)
-            keywords.set(emojiKey(m[1]), m[2].replace(/&amp;/g, "&"));
-
-        // 1F525 ; fully-qualified # 🔥 E0.6 fire
-        const list = [];
-        const emojiRe = /; fully-qualified\s+# (\S+) E[\d.]+ (.+)$/gm;
-        const test = emojiTest.text();
-        while ((m = emojiRe.exec(test)) !== null) {
-            const [, emoji, name] = m;
-            if (!name.includes("skin tone"))
-                list.push({ emoji, name, keywords: keywords.get(emojiKey(emoji)) ?? "" });
-        }
-        root.emojis = list;
-    }
-
-    Process {
-        id: calcProc
-        stdout: StdioCollector {
-            onStreamFinished: {
-                root.calcResult = text.trim();
-                root.refresh();
-            }
-        }
-    }
-
-    Timer {
-        id: calcDebounce
-        interval: 60
-        onTriggered: {
-            calcProc.command = ["qalc", "-t", root.query.slice(1)];
-            calcProc.running = true;
-        }
-    }
-
-    // ---- matching ----
 
     readonly property string query: input.text
 
-    // lower is better; -1 = no match
-    function score(name, q) {
-        const n = name.toLowerCase();
-        if (n === q)
-            return 0;
-        if (n.startsWith(q))
-            return 1;
-        const i = n.indexOf(q);
-        if (i > 0 && /[\s\-_.]/.test(n[i - 1]))
-            return 2;
-        if (i > 0)
-            return 3;
-        let j = 0;
-        for (const c of n)
-            if (c === q[j] && ++j === q.length)
-                return 4;
-        return -1;
-    }
-
-    // best of the name score and the keyword score (keywords rank lower)
-    function scoreWithKeywords(name, keywords, q) {
-        const s = score(name, q);
-        const k = keywords ? score(keywords, q) : -1;
-        if (k < 0)
-            return s;
-        return s < 0 ? k + 2 : Math.min(s, k + 2);
-    }
-
-    function ranked(items, q, nameOf, keywordsOf) {
-        const out = [];
-        for (const item of items) {
-            const s = scoreWithKeywords(nameOf(item), keywordsOf(item), q);
-            if (s >= 0)
-                out.push({ item, s });
-        }
-        out.sort((a, b) => a.s - b.s || nameOf(a.item).length - nameOf(b.item).length);
-        return out;
-    }
-
-    function webRow(q) {
-        return { label: `search "${q}"`, detail: "web", run: () => Global.run(["xdg-open", "https://duckduckgo.com/?q=" + encodeURIComponent(q)]) };
-    }
-
-    function urlRow(q) {
-        if (/\s/.test(q) || !/^(https?:\/\/)?[\w-]+(\.[\w-]+)+(\/\S*)?$/.test(q))
-            return null;
-        const url = /^https?:\/\//.test(q) ? q : "https://" + q;
-        return { label: url, detail: "open", run: () => Global.run(["xdg-open", url]) };
-    }
-
     function refresh() {
         const text = query;
-        const rows = [];
+        let rows = [];
 
         if (text.startsWith(":")) {
-            const q = text.slice(1).trim().toLowerCase();
-            if (q)
-                for (const { item } of ranked(emojis, q, e => e.name, e => e.keywords).slice(0, maxRows))
-                    rows.push({ label: item.name, glyph: item.emoji, detail: "emoji", run: () => Quickshell.execDetached(["wl-copy", item.emoji]) });
+            rows = symbols.rows(text.slice(1));
         } else if (text.startsWith("=")) {
-            if (text.length > 1 && calcResult)
-                rows.push({ label: calcResult, detail: "copy", run: () => Quickshell.execDetached(["wl-copy", calcResult.replace(/^= /, "")]) });
+            rows = calc.rows(text.slice(1));
         } else if (text.startsWith("?")) {
-            const q = text.slice(1).trim();
-            if (q)
-                rows.push(webRow(q));
+            rows = web.rows(text.slice(1));
         } else {
-            const q = text.trim().toLowerCase();
+            const q = text.trim();
             if (q) {
-                const url = urlRow(text.trim());
+                const url = web.urlRow(q);
                 if (url)
                     rows.push(url);
-
-                // typed a full command line: offer to run it as-is
-                if (/\s/.test(text.trim()))
-                    rows.push(commandRow(text.trim(), "run"));
-
-                const apps = DesktopEntries.applications.values.filter(a => !a.noDisplay);
-                const appHits = ranked(apps, q, a => a.name, a => [a.genericName].concat(Array.from(a.keywords ?? [])).join(" "));
-                const cmdHits = ranked(commands, q, c => c, () => "");
-
-                // merge, apps winning ties against commands
-                let a = 0, c = 0;
-                while (rows.length < maxRows - 1 && (a < appHits.length || c < cmdHits.length)) {
-                    if (c >= cmdHits.length || (a < appHits.length && appHits[a].s <= cmdHits[c].s))
-                        rows.push(appRow(appHits[a++].item));
-                    else
-                        rows.push(commandRow(cmdHits[c++].item, "cmd"));
-                }
-                rows.push(webRow(text.trim()));
+                rows = rows.concat(apps.rows(q, maxRows - 1 - rows.length));
+                rows.push(web.searchRow(q));
             }
         }
 
@@ -217,26 +84,26 @@ Scope {
         selected = 0;
     }
 
-    function appRow(app) {
-        return { label: app.name, icon: app.icon, detail: "app", run: () => Global.run([app.id + ".desktop"]) };
-    }
-
-    function commandRow(cmd, detail) {
-        return {
-            label: cmd,
-            detail: detail,
-            run: () => Global.run(["sh", "-c", cmd]),
-            runInTerminal: () => Global.term(["sh", "-c", cmd])
-        };
-    }
+    // search after the typed character is drawn; fast typing collapses into
+    // one search (Qt.callLater dedupes)
+    property bool searchPending: false
 
     onQueryChanged: {
         if (query.startsWith("=") && query.length > 1)
-            calcDebounce.restart();
+            calc.update(query.slice(1));
+        searchPending = true;
+        Qt.callLater(runSearch);
+    }
+
+    function runSearch() {
+        if (!searchPending)
+            return;
+        searchPending = false;
         refresh();
     }
 
     function activate(inTerminal) {
+        runSearch(); // Enter right after typing: don't act on stale results
         const row = results[selected];
         if (!row)
             return;
@@ -369,15 +236,18 @@ Scope {
                     topPadding: root.results.length ? 4 : 0
                     bottomPadding: root.results.length ? 4 : 0
 
+                    // fixed rows that update in place, rather than rebuilding
+                    // (and re-rendering emoji) on every keystroke
                     Repeater {
-                        model: root.results
+                        model: root.maxRows
 
                         Rectangle {
                             id: row
-                            required property var modelData
                             required property int index
+                            readonly property var modelData: root.results[index] ?? {}
                             readonly property bool current: index === root.selected
 
+                            visible: index < root.results.length
                             width: parent.width
                             height: 24
                             color: current ? Theme.hover : "transparent"
@@ -403,7 +273,9 @@ Scope {
                                 }
                                 visible: !!row.modelData.glyph
                                 text: row.modelData.glyph ?? ""
-                                font.family: "Noto Color Emoji" // fonts module, os/arch/core.yaml
+                                color: row.current ? Theme.accent : Theme.fg
+                                // emoji font from the fonts module (os/arch/core.yaml)
+                                font.family: row.modelData.emoji ? "Noto Color Emoji" : Theme.font
                                 font.pixelSize: 14
                             }
 
@@ -415,7 +287,7 @@ Scope {
                                     rightMargin: 12
                                     verticalCenter: parent.verticalCenter
                                 }
-                                text: row.modelData.label
+                                text: row.modelData.label ?? ""
                                 elide: Text.ElideRight
                                 color: row.current ? Theme.accent : Theme.fg
                                 font.family: Theme.font
@@ -429,7 +301,7 @@ Scope {
                                     rightMargin: 10
                                     verticalCenter: parent.verticalCenter
                                 }
-                                text: row.modelData.detail
+                                text: row.modelData.detail ?? ""
                                 color: Theme.dim
                                 font.family: Theme.font
                                 font.pixelSize: Theme.fontSize

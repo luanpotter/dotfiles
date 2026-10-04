@@ -21,7 +21,8 @@ fi
 # (quickshell registers them itself at runtime)
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
-cp "$ROOT"/config/quickshell/*.qml "$tmp/"
+# .js too: QML imports those by relative path
+find "$ROOT/config/quickshell" -maxdepth 1 \( -name '*.qml' -o -name '*.js' \) -exec cp {} "$tmp/" \;
 {
 	echo "module shell"
 	for f in "$tmp"/*.qml; do
