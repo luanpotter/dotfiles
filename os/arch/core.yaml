@@ -7,6 +7,9 @@ modules:
       - pacman:linux-headers
       - pacman:linux-firmware
       - pacman:base
+    # updates /boot to match the system's systemd-boot
+    exec: |
+      sudo systemctl enable systemd-boot-update.service
 
   - name: compat
     install:
@@ -37,6 +40,7 @@ modules:
   - name: network
     install:
       - pacman:networkmanager
+      - pacman:wpa_supplicant # wifi
     exec: |
       sudo systemctl enable NetworkManager
 
