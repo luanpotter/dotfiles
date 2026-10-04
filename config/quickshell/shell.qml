@@ -10,4 +10,10 @@ ShellRoot {
 
         Bar {}
     }
+
+    Variants {
+        model: Quickshell.screens
+
+        Wallpaper {}
+    }
 }

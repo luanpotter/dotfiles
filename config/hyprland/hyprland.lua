@@ -71,8 +71,7 @@ local function exec_bg(cmd) return raw_exec("uwsm app -s b -- " .. cmd) end
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 hl.on("hyprland.start", function ()
   exec_bg("/usr/lib/hyprpolkitagent/hyprpolkitagent")
-  exec_bg("qs")
-  exec_bg("hyprpaper")
+  exec_bg("qs") -- top bar & wallpaper
 end)
 
 
@@ -234,8 +233,9 @@ hl.config({
 
 hl.config({
     misc = {
-        force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
-        disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
+        -- quickshell draws the wallpaper; plain black if it's not running
+        force_default_wallpaper = 0,
+        disable_hyprland_logo   = true,
         disable_splash_rendering = true, -- no randomized splash text
     },
 })
