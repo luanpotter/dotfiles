@@ -1,21 +1,23 @@
-/*******************************************************************************
- * ROFI SQUARED THEME USING THE EVERFOREST PALETTE
- * User                 : LR-Tech
- * Theme Repo           : https://github.com/lr-tech/rofi-themes-collection
- *******************************************************************************/
+/* Styled like the quickshell bar and its dropdowns: square, 1px border,
+ * monospace 12, compact rows; the selected row looks like a hovered
+ * MenuRow (hover bg, accent text). Palette copied by hand from
+ * config/quickshell/colors.json: rasi can't read JSON. */
 
 * {
-    font:   "FiraCode Nerd Font Medium 12";
+    font:   "monospace 12";
 
-    bg0:     #2B3339;
-    bg1:     #323D43;
-    fg0:     #D3C6AA;
-
-    accent-color:     #A7C080;
-    urgent-color:     #DBBC7F;
+    bg:         #0c0d10;
+    surface:    #111216;
+    border-col: #252628;
+    hover:      #1a1b1e;
+    fg:         #c9ccd3;
+    muted:      #80858f;
+    dim:        #4b4f58;
+    accent:     #33ccff;
+    warn:       #ffb454;
 
     background-color:   transparent;
-    text-color:         @fg0;
+    text-color:         @fg;
 
     margin:     0;
     padding:    0;
@@ -24,16 +26,20 @@
 
 window {
     location:   center;
-    width:      480;
+    width:      560;
 
-    background-color:   @bg0;
+    background-color:   @bg;
+    border:             1px;
+    border-color:       @border-col;
 }
 
 inputbar {
-    spacing:    8px;
-    padding:    8px;
+    spacing:    10px;
+    padding:    8px 10px;
 
-    background-color:   @bg1;
+    background-color:   @surface;
+    border:             0 0 1px 0;
+    border-color:       @border-col;
 }
 
 prompt, entry, element-icon, element-text {
@@ -41,55 +47,96 @@ prompt, entry, element-icon, element-text {
 }
 
 prompt {
-    text-color: @accent-color;
+    text-color: @accent;
+}
+
+entry {
+    placeholder:        "search";
+    placeholder-color:  @dim;
+    cursor-color:       @accent;
 }
 
 textbox {
-    padding:            8px;
-    background-color:   @bg1;
+    padding:            8px 10px;
+    text-color:         @muted;
+}
+
+/* the default theme draws dashed separators here; the inputbar's solid
+ * bottom border is the only separator we want */
+message {
+    border: 0;
 }
 
 listview {
     padding:    4px 0;
-    lines:      8;
+    lines:      10;
     columns:    1;
+    border:     0;
 
     fixed-height:   false;
+    scrollbar:      false;
 }
 
 element {
-    padding:    8px;
-    spacing:    8px;
+    padding:    4px 10px;
+    spacing:    10px;
+}
+
+/* rofi's built-in default theme is light and gives rows their own
+ * backgrounds; clear them so the window bg shows through */
+element normal normal, element normal urgent, element normal active,
+element alternate normal, element alternate urgent, element alternate active {
+    background-color: transparent;
 }
 
 element normal normal {
-    text-color: @fg0;
+    text-color: @fg;
 }
 
 element normal urgent {
-    text-color: @urgent-color;
+    text-color: @warn;
 }
 
 element normal active {
-    text-color: @accent-color;
+    text-color: @accent;
 }
 
-element selected {
-    text-color: @bg0;
+element alternate normal {
+    text-color: @fg;
 }
 
-element selected normal, element selected active {
-    background-color:   @accent-color;
+element alternate urgent {
+    text-color: @warn;
 }
 
-element selected urgent {
-    background-color:   @urgent-color;
+element alternate active {
+    text-color: @accent;
+}
+
+element selected normal, element selected active, element selected urgent {
+    background-color:   @hover;
+    text-color:         @accent;
 }
 
 element-icon {
-    size:   0.8em;
+    size:   1em;
 }
 
 element-text {
-    text-color: inherit;
+    text-color:         inherit;
+    highlight:          bold;
+}
+
+mode-switcher, sidebar {
+    border:         1px 0 0 0;
+    border-color:   @border-col;
+}
+
+button {
+    padding:    4px 10px;
+    text-color: @dim;
+}
+
+button selected {
+    text-color: @accent;
 }
