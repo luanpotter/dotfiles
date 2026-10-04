@@ -237,6 +237,8 @@ hl.config({
         force_default_wallpaper = 0,
         disable_hyprland_logo   = true,
         disable_splash_rendering = true, -- no randomized splash text
+        -- if quickshell dies while locked, a restarted qs can take the lock over
+        allow_session_lock_restore = true,
     },
 })
 
@@ -296,6 +298,11 @@ hl.bind(mainMod .. " + space", hl.dsp.layout("togglesplit"))
 
 -- Cycle keyboard layout
 hl.bind(mainMod .. " + SHIFT + space", raw_dsp_exec("hyprctl switchxkblayout all next"))
+
+-- Reload hyprland
+hl.bind(mainMod .. " + SHIFT + R", raw_dsp_exec("qs ipc call shell reload"))
+-- Lock screen
+hl.bind(mainMod .. " + SHIFT + L", raw_dsp_exec("qs ipc call lock lock"))
 
 -- Move focus with mainMod + jkli
 -- Stays within the current monitor (does not cross to other monitors)

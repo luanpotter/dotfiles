@@ -13,8 +13,9 @@ BarItem {
 
         Repeater {
             model: [
-                // also reloads this shell, so colors.json changes reach both
-                { label: "reload", cmd: ["hyprctl", "reload"], reloadShell: true },
+                // keybinds live in hyprland.lua
+                { label: "reload", cmd: ["qs", "ipc", "call", "shell", "reload"], shortcut: "super+shift+r" },
+                { label: "lock", cmd: ["qs", "ipc", "call", "lock", "lock"], shortcut: "super+shift+l" },
                 { label: "suspend", cmd: ["systemctl", "suspend"] },
                 { label: "log out", cmd: ["uwsm", "stop"] },
                 { label: "reboot", cmd: ["systemctl", "reboot"] },
@@ -23,13 +24,12 @@ BarItem {
 
             MenuRow {
                 required property var modelData
-                implicitWidth: 140
+                implicitWidth: 180
                 text: modelData.label
+                detail: modelData.shortcut ?? ""
                 onClicked: {
                     Global.openDropdown.visible = false;
                     Quickshell.execDetached(modelData.cmd);
-                    if (modelData.reloadShell)
-                        Quickshell.reload(false);
                 }
             }
         }
