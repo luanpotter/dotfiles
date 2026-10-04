@@ -16,8 +16,10 @@ modules:
       - pacman:qt5-wayland
       - pacman:xdg-desktop-portal-gtk
       - pacman:xdg-desktop-portal-hyprland
-      # screenshot: hyprshot -> satty + hyprpicker
+      # screenshot: hyprshot (hyprpicker freeze, slurp region, grim capture) -> satty
       - pacman:hyprshot
+      - pacman:grim
+      - pacman:slurp
       - pacman:satty
       - pacman:hyprpicker
       - pacman:hyprpolkitagent
