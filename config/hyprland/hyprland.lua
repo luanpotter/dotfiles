@@ -202,9 +202,19 @@ hl.animation({ leaf = "workspacesOut", enabled = true,  speed = 1.94, bezier = "
 hl.animation({ leaf = "zoomFactor",    enabled = true,  speed = 7,    bezier = "quick" })
 
 -- Ref https://wiki.hypr.land/Configuring/Basics/Workspace-Rules/
--- smart gaps - drop gaps for single window
+-- smart gaps and borders - drop for single window
 hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
 hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
+hl.window_rule({
+    name        = "smart-borders",
+    match       = { float = false, workspace = "w[tv1]" },
+    border_size = 0,
+})
+hl.window_rule({
+    name        = "smart-borders-fullscreen",
+    match       = { float = false, workspace = "f[1]" },
+    border_size = 0,
+})
 
 -- See https://wiki.hypr.land/Configuring/Layouts/Dwindle-Layout/ for more
 hl.config({
