@@ -4,6 +4,16 @@ modules:
       - pacman:tmux
       - apt:tmux
     config: ~/.config/tmux
+    # tpm + the plugins listed in tmux.conf (git comes from bootstrap).
+    # install_plugins reads the plugin path from a running server, so a
+    # throwaway detached session provides one; sourcing tmux.conf covers an
+    # already-running server started with an older config.
+    exec: |
+      [ -d ~/.tmux/plugins/tpm ] || git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+      tmux new-session -d -s tpm-install
+      tmux source-file ~/.config/tmux/tmux.conf
+      ~/.tmux/plugins/tpm/bin/install_plugins
+      tmux kill-session -t tpm-install
 
   - name: ghostty
     install:
