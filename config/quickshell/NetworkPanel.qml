@@ -33,7 +33,7 @@ ColumnLayout {
         when: root.wifi !== null
         target: root.wifi
         property: "scannerEnabled"
-        value: root.QsWindow.window?.visible ?? false
+        value: (root.QsWindow.window as QsWindow)?.visible ?? false
     }
 
     MenuRow {

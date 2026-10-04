@@ -34,7 +34,7 @@ ColumnLayout {
     Connections {
         target: root.QsWindow.window
         function onVisibleChanged() {
-            if (root.QsWindow.window.visible)
+            if ((root.QsWindow.window as QsWindow)?.visible)
                 root.goToday();
         }
     }
