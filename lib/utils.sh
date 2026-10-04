@@ -254,6 +254,17 @@ def enabled:
 ) | del(.default, .env, .parent)]
 YQ
 	)
-	yq -s "$filter_merge" "${files[@]}" | yq --argjson env "$(yq '.modules // {}' "$ENV_FILE")" \
+	local merged
+	merged=$(yq -s "$filter_merge" "${files[@]}") || return 1
+
+	# a sub-module's state comes from its parent, so its own default would be ignored
+	local invalid
+	invalid=$(printf '%s\n' "$merged" | yq -r '.modules[] | select(.parent != null and has("default")) | .name')
+	if [[ -n "$invalid" ]]; then
+		log_error "manifest: parent and default are exclusive, remove default from: ${invalid//$'\n'/, }"
+		return 1
+	fi
+
+	printf '%s\n' "$merged" | yq --argjson env "$(yq '.modules // {}' "$ENV_FILE")" \
 		--arg platform "$DOTFILES_PLATFORM" "$filter_select"
 }
