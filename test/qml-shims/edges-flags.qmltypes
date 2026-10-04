@@ -1,0 +1,7 @@
+        Enum {
+            name: "Flags"
+            alias: "Enum"
+            isFlag: true
+            type: "quint8"
+            values: ["None", "Top", "Left", "Right", "Bottom"]
+        }

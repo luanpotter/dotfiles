@@ -14,3 +14,14 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y shfmt
       - name: Run lint (shellcheck + shfmt)
         run: test/lint.sh
+
+  # Ubuntu has no Qt 6 / quickshell, so lint.sh skips QML there; lint it on Arch
+  qml:
+    runs-on: ubuntu-latest
+    container: archlinux:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install qmllint and quickshell's type info
+        run: pacman -Syu --noconfirm qt6-declarative quickshell
+      - name: Lint QML
+        run: test/lint-qml.sh

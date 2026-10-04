@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Formats and lints every bash script in the repository.
+# Formats and lints every bash script in the repository, then the QML
+# (test/lint-qml.sh, skipped where qmllint isn't installed).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -52,3 +53,5 @@ else
 fi
 
 echo "==> All shell scripts passed lint"
+
+"$ROOT/test/lint-qml.sh"
