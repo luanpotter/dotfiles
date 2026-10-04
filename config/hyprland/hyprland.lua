@@ -29,7 +29,7 @@ hl.monitor({
 ---------------------
 
 -- Set programs that you use
-local terminal    = "ghostty"
+local terminal    = "ghostty -e tmux"
 local fileManager = "dolphin"
 
 -- rofi needs the `run` mode rather than `drun`: `-run-command` is the only

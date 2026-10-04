@@ -1,6 +1,10 @@
 # theme and style
 macos-titlebar-style = hidden
 
+# linux (gtk, ignored on macos): no header bar or window buttons under
+# hyprland; tabs come from tmux instead
+gtk-titlebar = false
+
 ## remap macos "command" keys to "control" commands on tmux
 
 # new tab
@@ -37,6 +41,24 @@ keybind = cmd+digit_6=text:\x02\x35
 keybind = cmd+digit_7=text:\x02\x36
 keybind = cmd+digit_8=text:\x02\x37
 keybind = cmd+digit_9=text:\x02\x38
+
+# same with ctrl on linux; ctrl+t/w already go to tmux (see tmux.conf)
+keybind = ctrl+digit_1=text:\x02\x30
+keybind = ctrl+digit_2=text:\x02\x31
+keybind = ctrl+digit_3=text:\x02\x32
+keybind = ctrl+digit_4=text:\x02\x33
+keybind = ctrl+digit_5=text:\x02\x34
+keybind = ctrl+digit_6=text:\x02\x35
+keybind = ctrl+digit_7=text:\x02\x36
+keybind = ctrl+digit_8=text:\x02\x37
+keybind = ctrl+digit_9=text:\x02\x38
+
+# delete previous word: sends alt+backspace, since ctrl+w closes the tmux window
+keybind = ctrl+backspace=text:\x1b\x7f
+
+# cycle tmux windows (prefix + p / n)
+keybind = ctrl+page_up=text:\x02p
+keybind = ctrl+page_down=text:\x02n
 
 keybind = performable:cmd+c=copy_to_clipboard
 keybind = performable:cmd+v=paste_from_clipboard
