@@ -7,7 +7,8 @@ import Quickshell.Wayland
 import Quickshell.Widgets
 
 // Smart launcher/SUPER+R. Lives in the running shell so no startup cost.
-// Default: apps + commands; :emoji, =calc, ?web; modules in each Launcher* file.
+// Default: apps + commands; :symbol, =calc, ?web, or #name for any mode;
+// modules in each Launcher* file.
 Scope {
     id: root
 
@@ -57,18 +58,71 @@ Scope {
         id: web
     }
 
+    // every mode is reachable as "#name query"; frequent ones also get a
+    // one-character prefix
+    readonly property var modes: [
+        {
+            name: "symbol",
+            prefix: ":",
+            item: symbols
+        },
+        {
+            name: "calc",
+            prefix: "=",
+            item: calc
+        },
+        {
+            name: "web",
+            prefix: "?",
+            item: web
+        },
+    ]
+
     readonly property string query: input.text
+
+    // {mode, arg} for a mode query; {picking} while typing a #name;
+    // {} for the default search
+    readonly property var parsed: parse(query)
+
+    function parse(text) {
+        if (text.startsWith("#")) {
+            const space = text.indexOf(" ");
+            const name = text.slice(1, space < 0 ? undefined : space);
+            const mode = modes.find(m => m.name === name);
+            if (mode && space >= 0)
+                return {
+                    mode: mode,
+                    arg: text.slice(space + 1)
+                };
+            return {
+                picking: name
+            };
+        }
+        const mode = modes.find(m => m.prefix && text.startsWith(m.prefix));
+        return mode ? {
+            mode: mode,
+            arg: text.slice(mode.prefix.length)
+        } : {};
+    }
+
+    // modes matching a partial #name; picking one completes it
+    function modeRows(name) {
+        return modes.filter(m => m.name.startsWith(name)).map(m => ({
+                    label: "#" + m.name,
+                    detail: m.prefix,
+                    keepOpen: true,
+                    run: () => input.text = "#" + m.name + " "
+                }));
+    }
 
     function refresh() {
         const text = query;
         let rows = [];
 
-        if (text.startsWith(":")) {
-            rows = symbols.rows(text.slice(1));
-        } else if (text.startsWith("=")) {
-            rows = calc.rows(text.slice(1));
-        } else if (text.startsWith("?")) {
-            rows = web.rows(text.slice(1));
+        if (parsed.mode) {
+            rows = parsed.mode.item.rows(parsed.arg);
+        } else if (parsed.picking !== undefined) {
+            rows = modeRows(parsed.picking);
         } else {
             const q = text.trim();
             if (q) {
@@ -89,8 +143,8 @@ Scope {
     property bool searchPending: false
 
     onQueryChanged: {
-        if (query.startsWith("=") && query.length > 1)
-            calc.update(query.slice(1));
+        if (parsed.mode?.item === calc && parsed.arg)
+            calc.update(parsed.arg);
         searchPending = true;
         Qt.callLater(runSearch);
     }
@@ -111,7 +165,8 @@ Scope {
             row.runInTerminal();
         else
             row.run();
-        close();
+        if (!row.keepOpen)
+            close();
     }
 
     // ---- window ----
@@ -175,9 +230,8 @@ Scope {
                             leftMargin: 10
                             verticalCenter: parent.verticalCenter
                         }
-                        text: root.query.startsWith(":") ? "emoji"
-                            : root.query.startsWith("=") ? "calc"
-                            : root.query.startsWith("?") ? "web" : "run"
+                        text: root.parsed.mode?.name
+                            ?? (root.parsed.picking !== undefined ? "mode" : "run")
                         color: Theme.accent
                         font.family: Theme.font
                         font.pixelSize: Theme.fontSize
@@ -201,7 +255,7 @@ Scope {
 
                         Text {
                             visible: !input.text
-                            text: ":emoji  =calc  ?web"
+                            text: ":symbol  =calc  ?web  #mode"
                             color: Theme.dim
                             font: input.font
                         }
