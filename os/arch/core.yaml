@@ -44,6 +44,11 @@ modules:
     exec: |
       sudo systemctl enable NetworkManager
 
+  - name: disk
+    install:
+      - pacman:snapper # btrfs snapshots
+      - pacman:smartmontools # drive health
+
   - name: compression
     install:
       - pacman:zip
