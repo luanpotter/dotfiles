@@ -246,8 +246,9 @@ hl.config({
 
 hl.config({
     input = {
+        -- cycled by scripts/toggle_keyboard_layout
         kb_layout  = "us,br",
-        kb_variant = "",
+        kb_variant = ",abnt2",
         kb_model   = "",
         kb_options = "",
         kb_rules   = "",

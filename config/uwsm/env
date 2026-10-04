@@ -4,3 +4,6 @@
 # after /etc/profile and ~/.profile. uwsm rebuilds PATH from that profile chain
 # starting from empty, so it discards other sources. See uwsm(1).
 export PATH="$HOME/bin:$PATH"
+
+# allow for accent composition w/o an input compositor (for GTK apps)
+export GTK_IM_MODULE=simple

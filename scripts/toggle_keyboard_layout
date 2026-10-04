@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# cycle to the next keyboard layout (kb_layout in config/hyprland/hyprland.lua)
+
+if ! command -v hyprctl >/dev/null; then
+	echo "toggle_keyboard_layout: needs Hyprland" >&2
+	exit 1
+fi
+
+exec hyprctl switchxkblayout all next
