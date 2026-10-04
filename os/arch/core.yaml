@@ -70,6 +70,9 @@ modules:
       sudo systemctl enable sddm
 
   - name: fonts
+    install:
+      # color emoji (rofi-emoji, browsers, terminals)
+      - pacman:noto-fonts-emoji
     exec: |
       sudo bash -O globstar -O nullglob -c "cp $DOTFILES_DIR/fonts/**/*.{ttf,otf} /usr/share/fonts/" 2>/dev/null || true
       fc-cache
