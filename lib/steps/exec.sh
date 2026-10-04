@@ -68,10 +68,11 @@ step_exec() {
 		fi
 
 		log_info "exec: running '$name'"
+		# block output goes to stderr: stdout is reserved for the pending count
 		(
 			set +u
 			eval "$exec_block"
-		)
+		) >&2
 		env_set_hash "$name" "$hash"
 	done
 
