@@ -1,6 +1,12 @@
 # theme and style
 macos-titlebar-style = hidden
 
+# no padding: hyprland gaps and borders already space the text from the
+# edges, and gaps_out in hyprland.lua is tuned assuming the grid fills
+# the window
+window-padding-x = 0
+window-padding-y = 0
+
 # linux (gtk, ignored on macos): no header bar or window buttons under
 # hyprland; tabs come from tmux instead
 gtk-titlebar = false
