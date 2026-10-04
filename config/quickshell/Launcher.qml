@@ -58,6 +58,10 @@ Scope {
         id: web
     }
 
+    LauncherExec {
+        id: exec
+    }
+
     // every mode is reachable as "#name query"; frequent ones also get a
     // one-character prefix
     readonly property var modes: [
@@ -75,6 +79,10 @@ Scope {
             name: "web",
             prefix: "?",
             item: web
+        },
+        {
+            name: "exec",
+            item: exec
         },
     ]
 
