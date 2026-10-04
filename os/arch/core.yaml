@@ -34,6 +34,12 @@ modules:
       - pacman:the_silver_searcher
       - pacman:jq
 
+  - name: network
+    install:
+      - pacman:networkmanager
+    exec: |
+      sudo systemctl enable NetworkManager
+
   - name: compression
     install:
       - pacman:zip
