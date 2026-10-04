@@ -16,19 +16,24 @@ modules:
       - pacman:qt5-wayland
       - pacman:xdg-desktop-portal-gtk
       - pacman:xdg-desktop-portal-hyprland
-      # screenshot: hyprshot (hyprpicker freeze, slurp region, grim capture) -> satty
-      - pacman:hyprshot
-      - pacman:grim
-      - pacman:slurp
-      - pacman:satty
-      - pacman:hyprpicker
       - pacman:hyprpolkitagent
       # permission popups (ecosystem.enforce_permissions)
       - pacman:hyprland-guiutils
     config: ~/.config/hypr
 
+  - name: hyprland-screenshot
+    parent: hyprland
+    install:
+      # hyprshot (hyprpicker freeze, slurp region, grim capture) -> satty
+      - pacman:hyprshot
+      - pacman:grim
+      - pacman:slurp
+      - pacman:satty
+      - pacman:hyprpicker
+
   # session env ($PATH, etc); uwsm overrides the systemd user manager's
   - name: uwsm
+    parent: hyprland
     default: false
     install:
       - pacman:uwsm
@@ -36,12 +41,13 @@ modules:
 
   # XDG_DOWNLOAD_DIR etc (used by firefox, chromium, file pickers)
   - name: user-dirs
+    parent: hyprland
     default: false
     config: ~/.config/user-dirs.dirs
 
   # top bar, wallpaper, lock screen, and launcher
   - name: quickshell
-    default: false
+    parent: hyprland
     install:
       - pacman:quickshell
       # wallpaper logo (arch.svg)

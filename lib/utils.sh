@@ -226,6 +226,7 @@ merge_manifests() {
 
 	# merge all files, then filter modules by platform, enabled/disabled state
 	# Resolution: env mismatch → skip; env.yaml override → module default → enabled
+	# A module with `parent` has no state of its own: it follows its parent's.
 	local filter_merge filter_select
 	filter_merge=$(
 		cat <<'YQ'
@@ -235,7 +236,7 @@ YQ
 	)
 	filter_select=$(
 		cat <<'YQ'
-.modules = [.modules[] | select(
+def enabled:
     if .env != null and .env != $platform then false
     else
         .name as $n |
@@ -243,8 +244,14 @@ YQ
         elif .default == false then false
         else true
         end
+    end;
+([.modules[] | select(.parent == null) | {key: .name, value: enabled}] | from_entries) as $state |
+.modules = [.modules[] | select(
+    if .parent == null then enabled
+    elif .env != null and .env != $platform then false
+    else $state[.parent] // false
     end
-) | del(.default, .env)]
+) | del(.default, .env, .parent)]
 YQ
 	)
 	yq -s "$filter_merge" "${files[@]}" | yq --argjson env "$(yq '.modules // {}' "$ENV_FILE")" \

@@ -21,14 +21,15 @@ step_manage() {
 	done
 	shopt -u nullglob globstar
 
-	# get all module names with their default field
+	# get all module names with their default field; sub-modules (with a parent) follow
+	# their parent's state, so they are not toggleable on their own
 	local -a names=()
 	local -A defaults=()
 	while IFS=$'\t' read -r name default; do
 		[[ -n "$name" ]] || continue
 		names+=("$name")
 		defaults[$name]="$default"
-	done < <(yq -r -s '[.[] | (.modules // [])[] | [.name, (if .default == false then "false" else "true" end)]] | .[] | @tsv' "${files[@]}")
+	done < <(yq -r -s '[.[] | (.modules // [])[] | select(.parent == null) | [.name, (if .default == false then "false" else "true" end)]] | .[] | @tsv' "${files[@]}")
 
 	_ensure_env
 	local header="Tab: mark · Enter: toggle marked (or current) · Esc: done"
