@@ -1,10 +1,6 @@
 # theme and style
 macos-titlebar-style = hidden
 
-# the grid rarely fills the window exactly; stretch the edge cells' colors
-# (tmux bar, vim header) into the leftover padding instead of plain bg
-window-padding-color = extend
-
 # linux (gtk, ignored on macos): no header bar or window buttons under
 # hyprland; tabs come from tmux instead
 gtk-titlebar = false
