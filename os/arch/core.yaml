@@ -64,7 +64,7 @@ modules:
       sudo install -Dm644 "$DOTFILES_DIR/config/sddm/sddm.conf" /etc/sddm.conf.d/dotfiles.conf
       sudo rm -rf "$theme"
       sudo cp -r "$DOTFILES_DIR/config/sddm/theme" "$theme"
-      sudo cp "$qs/Backdrop.qml" "$qs/arch.svg" "$theme/"
+      sudo cp "$qs/Backdrop.qml" "$qs/PasswordField.qml" "$qs/arch.svg" "$theme/"
       jq -r '"[General]", (to_entries[] | "\(.key)=\"\(.value)\"")' "$qs/colors.json" |
         sudo tee "$theme/theme.conf" >/dev/null
       sudo systemctl enable sddm
