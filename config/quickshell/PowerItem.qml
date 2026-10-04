@@ -13,7 +13,8 @@ BarItem {
 
         Repeater {
             model: [
-                { label: "reload hyprland", cmd: ["hyprctl", "reload"] },
+                // also reloads this shell, so colors.json changes reach both
+                { label: "reload", cmd: ["hyprctl", "reload"], reloadShell: true },
                 { label: "suspend", cmd: ["systemctl", "suspend"] },
                 { label: "log out", cmd: ["uwsm", "stop"] },
                 { label: "reboot", cmd: ["systemctl", "reboot"] },
@@ -27,6 +28,8 @@ BarItem {
                 onClicked: {
                     Global.openDropdown.visible = false;
                     Quickshell.execDetached(modelData.cmd);
+                    if (modelData.reloadShell)
+                        Quickshell.reload(false);
                 }
             }
         }
