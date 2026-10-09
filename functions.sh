@@ -187,6 +187,7 @@ add_software "local_scripts"
 add_path_if_exists "$HOME/.yarn/bin"
 add_path_if_exists "$HOME/.pub-cache/bin"
 add_path_if_exists "$HOME/.bun/bin"
+add_path_if_exists "$HOME/.local/bin"
 
 # ruby and gems
 if [[ "$platform" == "linux" ]]; then
