@@ -35,10 +35,15 @@ find "$ROOT/config/quickshell" -maxdepth 1 \( -name '*.qml' -o -name '*.js' \) -
 	done
 } >"$tmp/qmldir"
 
-# patched copy of quickshell's type info, for two upstream gaps (each patch
+# patched copy of quickshell's type info, for three upstream gaps (each patch
 # skips itself once fixed):
 # - Edges::Flags is never registered (missing Q_FLAG_NS)
 # - submodule qmldirs don't declare `depends Quickshell`
+# - since 0.3.2, module qmltypes stub other modules' types (PopupAnchor,
+#   UntypedObjectModel) as opaque, memberless components that shadow the real
+#   ones; only stubs with a real definition elsewhere are dropped
+# upstream fix for the missing type info, open as of 2026-10:
+# https://github.com/quickshell-mirror/quickshell/pull/1220
 qt_qml="$(cd "$(dirname "$qmllint")/../qml" 2>/dev/null && pwd || echo /usr/lib/qt6/qml)"
 qs_types="$qt_qml/Quickshell"
 if [[ -d "$qs_types" ]]; then
@@ -52,6 +57,15 @@ if [[ -d "$qs_types" ]]; then
 	while IFS= read -r qmldir; do
 		grep -q '^depends Quickshell$' "$qmldir" || echo "depends Quickshell" >>"$qmldir"
 	done < <(find "$tmp/imports/Quickshell" -mindepth 2 -name qmldir)
+	# real definitions are multi-line, so their name sits on its own line
+	while IFS= read -r name; do
+		echo "/^ *Component { isTypeOpaque: true; name: \"$name\";/d"
+	done < <(grep -rh '^        name: "' "$tmp/imports/Quickshell" --include='*.qmltypes' |
+		sed 's/^ *name: "\(.*\)"$/\1/' | sort -u) >"$tmp/drop-stubs.sed"
+	while IFS= read -r types; do
+		sed -f "$tmp/drop-stubs.sed" "$types" >"$types.tmp"
+		mv "$types.tmp" "$types"
+	done < <(find "$tmp/imports/Quickshell" -name '*.qmltypes')
 fi
 
 files=("$tmp"/*.qml)

@@ -25,8 +25,10 @@ PopupWindow {
     anchor.item: owner
     anchor.rect.width: owner.width
     anchor.rect.height: owner.height
-    anchor.edges: Edges.Bottom
-    anchor.gravity: Edges.Bottom
+    // valid, but the Qt 6.12 linter rejects it: quickshell's type info lacks
+    // Edges::Flags; see https://github.com/quickshell-mirror/quickshell/pull/1220
+    anchor.edges: Edges.Bottom // qmllint disable incompatible-type
+    anchor.gravity: Edges.Bottom // qmllint disable incompatible-type
 
     implicitWidth: body.implicitWidth + padding * 2
     implicitHeight: body.implicitHeight + padding * 2
