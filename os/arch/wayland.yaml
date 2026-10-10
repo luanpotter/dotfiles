@@ -45,7 +45,7 @@ modules:
     parent: hyprland
     config: ~/.config/user-dirs.dirs
 
-  # top bar, wallpaper, lock screen, and launcher
+  # top bar, wallpaper, lock screen
   - name: quickshell
     parent: hyprland
     install:
@@ -54,8 +54,14 @@ modules:
       - pacman:qt6-svg
       # brightness block
       - pacman:brightnessctl
-      # launcher: calc (qalc), emoji list + search keywords
+    config: ~/.config/quickshell
+
+  # qs launcher's specific dependencies
+  - name: launcher
+    parent: hyprland
+    install:
+      # calc (qalc)
       - pacman:libqalculate
+      # emoji list + search keywords
       - pacman:unicode-emoji
       - pacman:unicode-cldr-annotations
-    config: ~/.config/quickshell
