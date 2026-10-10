@@ -60,7 +60,9 @@ local function exec_bg(cmd) return raw_exec("uwsm app -s b -- " .. cmd) end
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 hl.on("hyprland.start", function ()
   exec_bg("/usr/lib/hyprpolkitagent/hyprpolkitagent")
-  exec_bg("qs") -- top bar & wallpaper
+  -- top bar, wallpaper, launcher, lock screen.
+  -- (drops a Qt harmless warnings whenever focus moves)
+  exec_bg("qs --log-rules qt.qpa.wayland.textinput=false")
 end)
 
 

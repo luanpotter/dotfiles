@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Dictionary lookup in GCIDE (GNU's edition of Webster's 1913).
+#   dict-def --build               download GCIDE and build the lookup files
+#                                  (the launcher module's exec runs this)
+#   dict-def WORD                  WORD's full entries, paged on a terminal
+#   dict-def --search QUERY LIMIT  the best headwords for QUERY as
+#                                  "Word<TAB>parts of speech<TAB>how the
+#                                  definition starts", for the launcher's #def
+# Built files, so a query only reads what it needs: the .tsv ones are keyed
+# and sorted by the lowercase word for `look`'s binary search.
+#   index.tsv    word<TAB>Word<TAB>parts of speech<TAB>definition start
+#   entries.tsv  word<TAB>paragraph<TAB>paragraph...; an empty paragraph
+#                separates the word's entries
+#   words.txt    the bare words, most common first, for fzf
+set -euo pipefail
+
+version=0.54
+dir="${XDG_DATA_HOME:-$HOME/.local/share}/dict-def"
+src="$dir/gcide-$version"
+# the awk programs next to this script (through the ~/bin/scripts link)
+lib="$(dirname "$(readlink -f "$0")")/_dict-def"
+
+# byte order and ASCII case everywhere, so the keys built by awk, sorted by
+# sort, lowercased by bash and searched by look all agree
+export LC_ALL=C
+
+case "${1:-}" in
+--build)
+	mkdir -p "$src"
+	curl -fsSL "https://ftp.gnu.org/gnu/gcide/gcide-$version.tar.xz" |
+		tar -xJ --strip-components=1 -C "$src"
+	awk -v out="$dir" -f "$lib/entities.awk" -f "$lib/build.awk" "$src"/CIDE.?
+	exit
+	;;
+--search)
+	if [[ $# -ne 3 || -z "$2" ]]; then
+		echo "Usage: dict-def --search QUERY LIMIT" >&2
+		exit 2
+	fi
+	# fzf over the bare words (most common first, its tiebreak), then only
+	# the shown ones are looked up for display. fzf exits 1 on no match and
+	# head cuts the pipe short, neither an error here.
+	fzf --filter "${2,,}" --tiebreak length,index <"$dir/words.txt" | head -n "$3" |
+		while read -r word; do
+			look -- "$word"$'\t' "$dir/index.tsv"
+		done | cut -f 2- || true
+	exit
+	;;
+-* | "")
+	echo "Usage: dict-def WORD | dict-def --search QUERY LIMIT | dict-def --build" >&2
+	exit 2
+	;;
+esac
+
+# on a terminal, wrapped and paged
+show() {
+	if [[ -t 1 ]]; then
+		fold -s -w "$(($(tput cols) < 100 ? $(tput cols) : 100))" | less
+	else
+		cat
+	fi
+}
+
+if ! line=$(look -- "${1,,}"$'\t' "$dir/entries.tsv"); then
+	echo "dict-def: no entry for \"$1\"" >&2
+	exit 1
+fi
+# one line per paragraph
+cut -f 2- <<<"$line" | tr '\t' '\n' | show

@@ -7,8 +7,8 @@ import Quickshell.Wayland
 import Quickshell.Widgets
 
 // Smart launcher/SUPER+R. Lives in the running shell so no startup cost.
-// Default: apps + commands; :symbol, =calc, ?web, or #name for any mode;
-// modules in each Launcher* file.
+// Default: apps + commands; :symbol, =calc, ?web, or #name for any mode
+// (extra modes: #exec, #def); modules in each Launcher* file.
 Scope {
     id: root
 
@@ -62,6 +62,12 @@ Scope {
         id: exec
     }
 
+    LauncherDict {
+        id: dict
+        limit: root.maxRows
+        onFinished: root.refresh()
+    }
+
     // every mode is reachable as "#name query"; frequent ones also get a
     // one-character prefix
     readonly property var modes: [
@@ -83,6 +89,10 @@ Scope {
         {
             name: "exec",
             item: exec
+        },
+        {
+            name: "def",
+            item: dict
         },
     ]
 
@@ -151,8 +161,13 @@ Scope {
     property bool searchPending: false
 
     onQueryChanged: {
-        if (parsed.mode?.item === calc && parsed.arg)
-            calc.update(parsed.arg);
+        // parsed afresh: the `parsed` binding may not have caught up with
+        // this change yet, which would send the previous query
+        const p = parse(query);
+        if (p.mode?.item === calc && p.arg)
+            calc.update(p.arg);
+        if (p.mode?.item === dict)
+            dict.update(p.arg);
         searchPending = true;
         Qt.callLater(runSearch);
     }

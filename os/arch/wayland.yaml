@@ -65,3 +65,6 @@ modules:
       # emoji list + search keywords
       - pacman:unicode-emoji
       - pacman:unicode-cldr-annotations
+    exec: |
+      # for #def: downloads GCIDE (Webster's 1913) and builds its lookup files
+      "$DOTFILES_DIR/scripts/dict-def" --build
