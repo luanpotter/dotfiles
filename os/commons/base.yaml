@@ -11,6 +11,7 @@ modules:
         ~/bin
         ~/bin/local_scripts
         ~/downloads
+        ~/notes
         ~/pictures
       )
       for dir in "${dirs[@]}"; do

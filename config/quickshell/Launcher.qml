@@ -8,7 +8,7 @@ import Quickshell.Widgets
 
 // Smart launcher/SUPER+R. Lives in the running shell so no startup cost.
 // Default: apps + commands; :symbol, =calc, ?web, or #name for any mode
-// (extra modes: #exec, #def); modules in each Launcher* file.
+// (extra modes: #exec, #def, #notes); modules in each Launcher* file.
 Scope {
     id: root
 
@@ -22,9 +22,21 @@ Scope {
         open = !open;
         if (open) {
             apps.refreshCommands(); // refresh in the background
+            notes.refresh();
         } else {
             input.text = "";
         }
+    }
+
+    // SUPER+N: open in (or switch to) notes mode; closes if already there
+    function toggleNotes() {
+        if (open && parsed.mode?.item === notes) {
+            close();
+            return;
+        }
+        if (!open)
+            toggle();
+        input.text = "#notes ";
     }
 
     function close() {
@@ -36,6 +48,12 @@ Scope {
         name: "launcher"
         description: "Open the launcher"
         onPressed: root.toggle()
+    }
+
+    GlobalShortcut {
+        name: "notes"
+        description: "Open the launcher on notes"
+        onPressed: root.toggleNotes()
     }
 
     // ---- modes ----
@@ -68,6 +86,12 @@ Scope {
         onFinished: root.refresh()
     }
 
+    LauncherNotes {
+        id: notes
+        limit: root.maxRows
+        onFinished: root.refresh()
+    }
+
     // every mode is reachable as "#name query"; frequent ones also get a
     // one-character prefix
     readonly property var modes: [
@@ -93,6 +117,10 @@ Scope {
         {
             name: "def",
             item: dict
+        },
+        {
+            name: "notes",
+            item: notes
         },
     ]
 

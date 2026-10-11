@@ -291,6 +291,7 @@ local mainMod = "SUPER" -- Sets "Windows" key as main modifier
 smw.setup()
 
 hl.bind(mainMod .. " + R", hl.dsp.global("quickshell:launcher"))
+hl.bind(mainMod .. " + N", hl.dsp.global("quickshell:notes"))
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
