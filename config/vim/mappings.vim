@@ -47,3 +47,7 @@ nmap <C-b> "+p
 " Half-page scrolling
 noremap <C-j> <C-d>
 noremap <C-k> <C-u>
+
+" WORD jumps
+noremap <C-h> B
+noremap <C-l> W
