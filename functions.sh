@@ -231,6 +231,19 @@ elif [ -n "$BASH_VERSION" ]; then
 fi
 # --
 
+# -- tmux cwd
+# report the shell's cwd to tmux (OSC 7) at each prompt, so ctrl+t opens new
+# tabs there instead of wherever a running script has cd'ed into
+if [ -n "$TMUX" ]; then
+	_tmux_report_cwd() { printf '\e]7;%s\a' "$PWD"; }
+	if [ -n "$ZSH_VERSION" ]; then
+		precmd_functions+=(_tmux_report_cwd)
+	elif [ -n "$BASH_VERSION" ]; then
+		export PROMPT_COMMAND="_tmux_report_cwd; $PROMPT_COMMAND"
+	fi
+fi
+# --
+
 # -- imports
 src ~/projects/dotfiles/inc/fn-git.sh
 if [[ "$platform" == "macos" ]]; then
