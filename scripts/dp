@@ -31,7 +31,7 @@ let g:dp_left = str2nr($DP_LEFT)
 function! DpUpdateBars()
   let mode = &filetype ==# 'diff' ? 'diff' : 'file'
   let &tabline    = ' ' . g:dp_file . '  (' . g:dp_left . ' left)  [' . mode . '] '
-  let &statusline = ' [Enter] add    [BS] skip    [Tab] defer    [Space] view    [q] quit '
+  let &statusline = ' [Enter] add    [S-Enter] back    [BS] skip    [Tab] defer    [Space] view    [q] quit '
 endfunction
 
 function! DpBuildLineMap()
@@ -115,6 +115,14 @@ endfunction
 
 set hidden
 
+" inside tmux vim doesn't ask for modified keys on its own, so shift+enter
+" would arrive as a plain enter; t_TE turns it back off on exit
+if !empty($TMUX)
+  let &t_TI = "\<Esc>[>4;2m"
+  let &t_TE = "\<Esc>[>4;m"
+  call echoraw(&t_TI)
+endif
+
 augroup dp
   autocmd!
   autocmd BufEnter * if expand('%') ==# g:dp_diff | setlocal readonly nomodifiable | else | setlocal noreadonly modifiable | endif | call DpUpdateBars()
@@ -125,6 +133,7 @@ setlocal filetype=diff readonly nomodifiable
 call DpUpdateBars()
 
 nnoremap <silent> <CR>    :call DpExit(10)<CR>
+nnoremap <silent> <S-CR>  :call DpExit(50)<CR>
 nnoremap <silent> <BS>    :call DpExit(20)<CR>
 nnoremap <silent> <Tab>   :call DpExit(30)<CR>
 nnoremap <silent> q       :call DpExit(40)<CR>
@@ -138,15 +147,50 @@ VIMSCRIPT
 	return $rc
 }
 
+# last few files seen and what was done to them, for going back
+hist_files=()
+hist_acts=()
+
+remember() {
+	hist_files+=("$1")
+	hist_acts+=("$2")
+	if [ ${#hist_files[@]} -gt 3 ]; then
+		hist_files=("${hist_files[@]:1}")
+		hist_acts=("${hist_acts[@]:1}")
+	fi
+}
+
+go_back() {
+	local n=${#hist_files[@]} prev act i
+	queue=("$1" "${queue[@]}")
+	[ "$n" -eq 0 ] && return
+	prev="${hist_files[n - 1]}"
+	act="${hist_acts[n - 1]}"
+	unset 'hist_files[n - 1]' 'hist_acts[n - 1]'
+	case $act in
+	add) git restore --staged -- "$prev" ;;
+	defer) # drop the copy that was pushed to the end
+		for ((i = ${#queue[@]} - 1; i >= 0; i--)); do
+			if [ "${queue[i]}" = "$prev" ]; then
+				queue=("${queue[@]:0:i}" "${queue[@]:i+1}")
+				break
+			fi
+		done
+		;;
+	esac
+	queue=("$prev" "${queue[@]}")
+}
+
 while [ ${#queue[@]} -gt 0 ]; do
 	file="${queue[0]}"
 	queue=("${queue[@]:1}")
 	view "$file"
 	case $? in
-	10) git add -- "$file" ;;
-	20) ;;
-	30) queue+=("$file") ;;
+	10) git add -- "$file" && remember "$file" add ;;
+	20) remember "$file" skip ;;
+	30) queue+=("$file") && remember "$file" defer ;;
 	40) exit 0 ;;
+	50) go_back "$file" ;;
 	*) queue=("$file" "${queue[@]}") ;; # crash / unknown exit: re-queue
 	esac
 done
