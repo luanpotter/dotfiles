@@ -139,11 +139,9 @@ autocmd FileType graphql setlocal expandtab tabstop=2 shiftwidth=2
 " gradle as groovy
 au BufNewFile,BufRead *.gradle setf groovy
 
-" Window moving
-nmap <C-h> <C-w>h
-nmap <C-j> <C-w>j
-nmap <C-k> <C-w>k
-nmap <C-l> <C-w>l
+" Half-page scrolling
+noremap <C-j> <C-d>
+noremap <C-k> <C-u>
 
 " Resize control
 nmap <left> :vertical resize -5<CR>
