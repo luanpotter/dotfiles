@@ -21,6 +21,30 @@ if [ -n "$ZSH_VERSION" ]; then
 
 	# restore reverse search (vi mode overrides this)
 	bindkey '^R' history-incremental-search-backward
+
+	# word movement and line start/end while typing. EDITOR=vim puts zsh in
+	# the vi keymap, where these are unbound (ctrl+a even inserts a literal
+	# ^A) and ctrl+arrows would fall through to normal mode. covers the
+	# ctrl+arrow, alt+arrow and "esc b"/"esc f" encodings terminals send.
+	for keymap in viins vicmd emacs; do
+		bindkey -M "$keymap" '^[[1;5D' backward-word
+		bindkey -M "$keymap" '^[[1;5C' forward-word
+		bindkey -M "$keymap" '^[[1;3D' backward-word
+		bindkey -M "$keymap" '^[[1;3C' forward-word
+		# home/end as sent by ghostty directly and as tmux re-encodes them
+		bindkey -M "$keymap" '^[[H' beginning-of-line
+		bindkey -M "$keymap" '^[[F' end-of-line
+		bindkey -M "$keymap" '^[[1~' beginning-of-line
+		bindkey -M "$keymap" '^[[4~' end-of-line
+	done
+	bindkey -M viins '^[b' backward-word
+	bindkey -M viins '^[f' forward-word
+	bindkey -M viins '^A' beginning-of-line
+	bindkey -M viins '^E' end-of-line
+	bindkey -M viins '^[^?' backward-kill-word
+	# vi mode's ^U only kills what was typed since entering insert mode
+	bindkey -M viins '^U' backward-kill-line
+	unset keymap
 fi
 # --
 

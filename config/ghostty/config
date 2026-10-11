@@ -62,6 +62,20 @@ keybind = ctrl+digit_9=text:\x02\x38
 # delete previous word: sends alt+backspace, since ctrl+w closes the tmux window
 keybind = ctrl+backspace=text:\x1b\x7f
 
+# arrows on macos: ghostty's macos defaults turn cmd+left/right/backspace into
+# ctrl-a/ctrl-e/ctrl-u and alt+left/right into "esc b"/"esc f". karabiner swaps
+# ctrl and cmd, so the key used as ctrl arrives here as cmd (see karabiner.json,
+# which sends ctrl+arrows to ghostty as cmd+arrows). cmd+arrows move by word
+# with the same bytes ctrl+arrows produce on linux, alt+arrows go to the start
+# and end of the line as home/end. same split for backspace: cmd deletes a
+# word (alt+backspace bytes), alt deletes to the start of the line (ctrl-u)
+keybind = cmd+arrow_left=text:\x1b[1;5D
+keybind = cmd+arrow_right=text:\x1b[1;5C
+keybind = cmd+backspace=text:\x1b\x7f
+keybind = alt+arrow_left=text:\x1b[H
+keybind = alt+arrow_right=text:\x1b[F
+keybind = alt+backspace=text:\x15
+
 # cycle tmux windows (prefix + p / n)
 keybind = ctrl+page_up=text:\x02p
 keybind = ctrl+page_down=text:\x02n
