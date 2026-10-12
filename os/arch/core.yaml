@@ -37,6 +37,12 @@ modules:
       - pacman:the_silver_searcher
       - pacman:jq
 
+  # one ssh-agent per login, at $XDG_RUNTIME_DIR/ssh-agent.socket
+  - name: ssh-agent
+    default: false
+    exec: |
+      systemctl --user enable ssh-agent.socket
+
   - name: network
     install:
       - pacman:networkmanager
