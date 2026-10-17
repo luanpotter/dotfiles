@@ -76,9 +76,11 @@ keybind = alt+arrow_left=text:\x1b[H
 keybind = alt+arrow_right=text:\x1b[F
 keybind = alt+backspace=text:\x15
 
-# cycle tmux windows (prefix + p / n)
+# cycle tmux windows (prefix + p / n). also bound on cmd for macos
 keybind = ctrl+page_up=text:\x02p
 keybind = ctrl+page_down=text:\x02n
+keybind = cmd+page_up=text:\x02p
+keybind = cmd+page_down=text:\x02n
 
 keybind = performable:cmd+c=copy_to_clipboard
 keybind = performable:cmd+v=paste_from_clipboard
