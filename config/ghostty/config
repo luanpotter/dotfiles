@@ -11,33 +11,43 @@ window-padding-y = 0
 # hyprland; tabs come from tmux instead
 gtk-titlebar = false
 
-## remap macos "command" keys to "control" commands on tmux
-
-# new tab
-keybind = cmd+t=ignore
-keybind = cmd+t=text:\x14
-
-# close tab
-keybind = cmd+w=ignore
-keybind = cmd+w=text:\x17
-
-# r-search
-keybind = cmd+r=ignore
-keybind = cmd+r=text:\x12
-
-# clear
-keybind = cmd+l=ignore
-keybind = cmd+l=text:\x0C
-
-# ctrl+c. copy moves to cmd+shift+c (see the clipboard section at the bottom),
-# since a performable cmd+c=copy_to_clipboard would replace this binding, not
-# fall back to it
-keybind = cmd+c=ignore
+## macos: the corner key is cmd (karabiner swaps cmd and ctrl, see
+## karabiner.json), so send the ctrl byte for every cmd+letter, the way the
+## same key does on linux. this overrides ghostty's macos defaults (cmd+j
+## scroll_to_selection, cmd+k clear_screen, cmd+t new_tab, ...) and the
+## cmd+h/m menu items. not bound: cmd+q (quit; ctrl+q is never needed),
+## cmd+v (paste, see the clipboard section at the bottom), and cmd+space /
+## cmd+tab, which macos takes before ghostty sees them. as on any legacy
+## terminal, ctrl+i, ctrl+m and ctrl+[ are the same bytes as tab, enter and esc
+keybind = cmd+a=text:\x01
+keybind = cmd+b=text:\x02
 keybind = cmd+c=text:\x03
-
-# ctrl+d
-keybind = cmd+d=ignore
 keybind = cmd+d=text:\x04
+keybind = cmd+e=text:\x05
+keybind = cmd+f=text:\x06
+keybind = cmd+g=text:\x07
+keybind = cmd+h=text:\x08
+keybind = cmd+i=text:\x09
+keybind = cmd+j=text:\x0a
+keybind = cmd+k=text:\x0b
+keybind = cmd+l=text:\x0c
+keybind = cmd+m=text:\x0d
+keybind = cmd+n=text:\x0e
+keybind = cmd+o=text:\x0f
+keybind = cmd+p=text:\x10
+keybind = cmd+r=text:\x12
+keybind = cmd+s=text:\x13
+keybind = cmd+t=text:\x14
+keybind = cmd+u=text:\x15
+keybind = cmd+w=text:\x17
+keybind = cmd+x=text:\x18
+keybind = cmd+y=text:\x19
+keybind = cmd+z=text:\x1a
+
+# ctrl+[ (esc), ctrl+] and ctrl+\ (sigquit)
+keybind = cmd+[=text:\x1b
+keybind = cmd+]=text:\x1d
+keybind = cmd+backslash=text:\x1c
 
 # tab switching with single keybind
 keybind = cmd+digit_1=text:\x02\x30
