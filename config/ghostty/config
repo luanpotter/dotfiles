@@ -29,7 +29,9 @@ keybind = cmd+r=text:\x12
 keybind = cmd+l=ignore
 keybind = cmd+l=text:\x0C
 
-# ctrl+c
+# ctrl+c. copy moves to cmd+shift+c (see the clipboard section at the bottom),
+# since a performable cmd+c=copy_to_clipboard would replace this binding, not
+# fall back to it
 keybind = cmd+c=ignore
 keybind = cmd+c=text:\x03
 
@@ -82,5 +84,8 @@ keybind = ctrl+page_down=text:\x02n
 keybind = cmd+page_up=text:\x02p
 keybind = cmd+page_down=text:\x02n
 
-keybind = performable:cmd+c=copy_to_clipboard
+# clipboard: cmd+shift+c/v on macos mirror ghostty's ctrl+shift+c/v defaults on
+# linux. cmd+v stays a plain paste since ctrl+v (literal-next) is never needed
+keybind = cmd+shift+c=copy_to_clipboard
+keybind = cmd+shift+v=paste_from_clipboard
 keybind = performable:cmd+v=paste_from_clipboard
