@@ -227,13 +227,7 @@ add_path_if_exists "$HOME/.local/bin"
 add_path_if_exists "$HOME/.cache/.bun/bin"
 
 # ruby and gems
-if [[ "$platform" == "linux" ]]; then
-	if command -v gem &>/dev/null; then
-		GEM_HOME="$(gem env user_gemhome)"
-		export GEM_HOME
-		add_path_if_exists "$GEM_HOME/bin"
-	fi
-fi
+src ~/projects/dotfiles/inc/ruby.sh
 
 add_software 'flutter/bin'
 add_software 'google-cloud-sdk/bin'
@@ -249,6 +243,12 @@ fi
 
 # -- nvm
 src ~/projects/dotfiles/inc/nvm.sh
+# --
+
+# -- jenv
+if command -v jenv &>/dev/null; then
+	src ~/projects/dotfiles/inc/jenv.sh
+fi
 # --
 
 # -- history
