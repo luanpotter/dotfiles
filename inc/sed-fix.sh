@@ -14,7 +14,7 @@ fi
 
 # Prefer GNU sed's unprefixed binaries
 if command -v brew >/dev/null 2>&1; then
-	HOMEBREW_PREFIX="$(brew --prefix 2>/dev/null)"
+	HOMEBREW_PREFIX="${HOMEBREW_PREFIX:-$(brew --prefix 2>/dev/null)}"
 	if [ -n "$HOMEBREW_PREFIX" ] && [ -x "$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin/sed" ]; then
 		PATH="$HOMEBREW_PREFIX/opt/gnu-sed/libexec/gnubin:$PATH"
 		export PATH

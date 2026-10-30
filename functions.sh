@@ -10,14 +10,17 @@ fi
 shopt -s globstar 2>/dev/null
 PS1='[\u@\h \W]\$ ' 2>/dev/null
 setopt PROMPT_SUBST 2>/dev/null
-(autoload -U colors && colors) 2>/dev/null
-export PROMPT="[%{\$fg[magenta]%}%n%{\$reset_color%}@%{\$fg[yellow]%}%m%{\$reset_color%}:%~]%(!.#.$) "
+export PROMPT="[%F{magenta}%n%f@%F{yellow}%m%f:%~]%(!.#.$) "
 
 # -- zsh settings
 if [ -n "$ZSH_VERSION" ]; then
 	# changes zsh autocomplete to work like bash's
 	setopt noautomenu
 	setopt nomenucomplete
+
+	# -C reuses ~/.zcompdump instead of rebuilding it each start (~0.5s).
+	# after installing new completions, run: rm ~/.zcompdump
+	autoload -Uz compinit && compinit -C
 
 	# restore reverse search (vi mode overrides this)
 	bindkey '^R' history-incremental-search-backward
