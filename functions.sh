@@ -56,7 +56,11 @@ if [[ "$platform" == "linux" ]]; then
 fi
 
 export XDG_CONFIG_HOME="$HOME/.config"
-export BROWSER=firefox
+if [[ "$platform" == "macos" ]]; then
+	export BROWSER="open -b org.mozilla.firefoxdeveloperedition %s"
+else
+	export BROWSER=firefox
+fi
 export GTK_THEME=Adwaita-dark
 
 # TODO(luan): re-consider this option
