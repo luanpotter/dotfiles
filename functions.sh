@@ -193,6 +193,14 @@ alias k='kubectl'
 alias pg='ps aux | grep'
 # --
 
+# -- imports
+# before path: brew's PATH entry must end up behind nvm's
+src ~/projects/dotfiles/inc/fn-git.sh
+if [[ "$platform" == "macos" ]]; then
+	src ~/projects/dotfiles/inc/sed-fix.sh
+fi
+# --
+
 # -- path
 add_path_if_exists() {
 	if [ -d "$1" ]; then
@@ -236,9 +244,7 @@ fi
 # --
 
 # -- nvm
-if [[ -f /usr/share/nvm/init-nvm.sh ]]; then
-	src /usr/share/nvm/init-nvm.sh
-fi
+src ~/projects/dotfiles/inc/nvm.sh
 # --
 
 # -- history
@@ -266,12 +272,5 @@ if [ -n "$TMUX" ]; then
 	elif [ -n "$BASH_VERSION" ]; then
 		export PROMPT_COMMAND="_tmux_report_cwd; $PROMPT_COMMAND"
 	fi
-fi
-# --
-
-# -- imports
-src ~/projects/dotfiles/inc/fn-git.sh
-if [[ "$platform" == "macos" ]]; then
-	src ~/projects/dotfiles/inc/sed-fix.sh
 fi
 # --
