@@ -201,9 +201,10 @@ alias pg='ps aux | grep'
 # --
 
 # -- imports
-# before path: brew's PATH entry must end up behind nvm's
 src ~/projects/dotfiles/inc/fn-git.sh
 if [[ "$platform" == "macos" ]]; then
+	# before path, so nvm's node ends up ahead of brew's
+	src ~/projects/dotfiles/inc/brew.sh
 	src ~/projects/dotfiles/inc/sed-fix.sh
 fi
 # --
@@ -232,6 +233,10 @@ add_path_if_exists "$HOME/.cache/.bun/bin"
 # ruby and gems
 src ~/projects/dotfiles/inc/ruby.sh
 
+# java: jenv's shims pick the JDK per call, no `jenv init` (slow) needed.
+# `jenv shell` is unavailable; after adding a JDK run: jenv rehash
+add_path_if_exists "$HOME/.jenv/shims"
+
 add_software 'flutter/bin'
 add_software 'google-cloud-sdk/bin'
 
@@ -246,12 +251,6 @@ fi
 
 # -- nvm
 src ~/projects/dotfiles/inc/nvm.sh
-# --
-
-# -- jenv
-if command -v jenv &>/dev/null; then
-	src ~/projects/dotfiles/inc/jenv.sh
-fi
 # --
 
 # -- history

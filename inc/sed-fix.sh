@@ -1,16 +1,7 @@
 #!/usr/bin/env bash
 
 # GNU sed for macOS: make `sed` behave like Linux/GNU sed.
-# Requires: brew install gnu-sed
-
-# Load Homebrew if not on PATH yet; shellenv always prepends, shadowing nvm
-if ! command -v brew >/dev/null 2>&1; then
-	if [ -x /opt/homebrew/bin/brew ]; then
-		eval "$(/opt/homebrew/bin/brew shellenv)"
-	elif [ -x /usr/local/bin/brew ]; then
-		eval "$(/usr/local/bin/brew shellenv)"
-	fi
-fi
+# Requires: brew install gnu-sed, and brew.sh sourced first
 
 # Prefer GNU sed's unprefixed binaries
 if command -v brew >/dev/null 2>&1; then
