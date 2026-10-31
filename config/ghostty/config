@@ -94,6 +94,11 @@ keybind = ctrl+page_down=text:\x02n
 keybind = cmd+page_up=text:\x02p
 keybind = cmd+page_down=text:\x02n
 
+# move tmux window left/right (see tmux.conf). macos only: the same bytes
+# ctrl+shift+page_up/down produce on linux
+keybind = cmd+shift+page_up=text:\x1b[5;6~
+keybind = cmd+shift+page_down=text:\x1b[6;6~
+
 # clipboard: cmd+shift+c/v on macos mirror ghostty's ctrl+shift+c/v defaults on
 # linux. cmd+v stays a plain paste since ctrl+v (literal-next) is never needed
 keybind = cmd+shift+c=copy_to_clipboard
