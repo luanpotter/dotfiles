@@ -23,6 +23,25 @@ elseif has('unix') && executable('wl-copy')
     autocmd!
     autocmd TextYankPost * call <SID>CopyYankToClipboard()
   augroup END
+
+  " Load the system clipboard into the unnamed register before pasting
+  function! s:PasteFromClipboard(cmd) abort
+    let l:text = system('wl-paste --no-newline -t text/plain')
+    if v:shell_error == 0
+      " A trailing newline means a linewise copy (see CopyYankToClipboard)
+      if l:text =~# "\n$"
+        call setreg('"', l:text[:-2], 'V')
+      else
+        call setreg('"', l:text, 'v')
+      endif
+    endif
+    return a:cmd
+  endfunction
+
+  nnoremap <expr> p <SID>PasteFromClipboard('p')
+  nnoremap <expr> P <SID>PasteFromClipboard('P')
+  xnoremap <expr> p <SID>PasteFromClipboard('p')
+  xnoremap <expr> P <SID>PasteFromClipboard('P')
 endif
 
 "" x will never copy
