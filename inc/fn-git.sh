@@ -59,6 +59,14 @@ function gbb() {
 	fi
 }
 
+# delete local branches whose upstream is merged/deleted
+function gprune() {
+	git fetch --prune
+	git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads |
+		awk '$2 == "[gone]" { print $1 }' |
+		xargs -r git branch -D # (-D since squashes don't count as merged)
+}
+
 # graphite
 function og_gt() {
 	command gt "$@"
