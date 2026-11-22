@@ -1,0 +1,120 @@
+{
+  "policies": {
+    "AIControls": {
+      "Translations": {
+        "Value": "available"
+      },
+      "PDFAltText": {
+        "Value": "blocked"
+      },
+      "SmartTabGroups": {
+        "Value": "blocked"
+      },
+      "LinkPreviewKeyPoints": {
+        "Value": "blocked"
+      },
+      "SidebarChatbot": {
+        "Value": "blocked"
+      },
+      "SmartWindow": {
+        "Value": "blocked"
+      }
+    },
+    "AppUpdateURL": "https://localhost",
+    "DisableAppUpdate": true,
+    "DisableDefaultBrowserAgent": true,
+    "DisableFeedbackCommands": true,
+    "DisableFirefoxStudies": true,
+    "DisableRemoteImprovements": true,
+    "DisableTelemetry": true,
+    "DontCheckDefaultBrowser": true,
+    "WebsiteFilter": {
+      "Block": [
+        "https://localhost/*"
+      ],
+      "Exceptions": [
+        "https://localhost/*"
+      ]
+    },
+    "EncryptedMediaExtensions": {
+      "Enabled": false
+    },
+    "ExtensionSettings": {
+      "*": {
+        "blocked_install_message": "LibreWolf does not allow installing Language Packs.",
+        "installation_mode": "allowed",
+        "allowed_types": [
+          "dictionary",
+          "extension",
+          "sitepermission",
+          "theme"
+        ]
+      },
+      "uBlock0@raymondhill.net": {
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi",
+        "installation_mode": "force_installed",
+        "private_browsing": true
+      },
+      "{446900e4-71c2-419f-a6a7-df9c091e268b}": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi",
+        "default_area": "navbar"
+      },
+      "gdpr@cavi.au.dk": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/consent-o-matic/latest.xpi"
+      },
+      "jid1-MnnxcxisBPnSXQ@jetpack": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/privacy-badger17/latest.xpi",
+        "private_browsing": true
+      },
+      "{3c078156-979c-498b-8990-85f7987dd929}": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/sidebery/latest.xpi",
+        "default_area": "menupanel"
+      },
+      "sponsorBlocker@ajay.app": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/sponsorblock/latest.xpi"
+      },
+      "{d7742d87-e61d-4b78-b8a1-b469842139fa}": {
+        "installation_mode": "force_installed",
+        "install_url": "https://addons.mozilla.org/firefox/downloads/latest/vimium-ff/latest.xpi",
+        "private_browsing": true
+      }
+    },
+    "FirefoxHome": {
+      "Weather": false,
+      "TopSites": false,
+      "SponsoredTopSites": false,
+      "Highlights": false,
+      "Stories": false,
+      "SponsoredStories": false
+    },
+    "FirefoxSuggest": {
+      "WebSuggestions": false,
+      "SponsoredSuggestions": false,
+      "ImproveSuggest": false
+    },
+    "HttpsOnlyMode": "enabled",
+    "LocalNetworkAccess": {
+      "Enabled": true,
+      "BlockTrackers": true,
+      "EnablePrompting": true
+    },
+    "NoDefaultBookmarks": true,
+    "OverridePostUpdatePage": "",
+    "SkipTermsOfUse": true,
+    "SupportMenu": {
+      "Title": "LibreWolf Issue Tracker",
+      "URL": "https://codeberg.org/librewolf/issues"
+    },
+    "UserMessaging": {
+      "UrlbarInterventions": false,
+      "SkipOnboarding": true,
+      "MoreFromMozilla": false,
+      "FirefoxLabs": false
+    }
+  }
+}

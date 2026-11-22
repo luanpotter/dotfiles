@@ -61,6 +61,8 @@ fi
 export XDG_CONFIG_HOME="$HOME/.config"
 if [[ "$platform" == "macos" ]]; then
 	export BROWSER="open -b org.mozilla.firefoxdeveloperedition %s"
+elif command -v librewolf >/dev/null; then
+	export BROWSER=librewolf
 else
 	export BROWSER=firefox
 fi

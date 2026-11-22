@@ -7,7 +7,33 @@ modules:
     install:
       - pacman:firefox
       - apt:firefox
+
+  - name: librewolf
+    install:
+      - pacman:librewolf
+    config: ~/.config/librewolf/librewolf/librewolf.overrides.cfg
     exec: |
+      src="$DOTFILES_DIR/config/librewolf"
+      sudo install -d /etc/librewolf/policies
+      sudo ln -sfn "$src/policies.json" /etc/librewolf/policies/policies.json
+
+      # pre-seed a profile at a fixed path, instead of a random hash
+      # note the copy, not link: LibreWolf rewrites profiles.ini itself
+      dir="$HOME/.config/librewolf/librewolf"
+      if [[ -d "$HOME/.librewolf" ]]; then
+        log_warn "librewolf: ~/.librewolf takes precedence over $dir, move it"
+      fi
+      if [[ ! -f "$dir/profiles.ini" ]]; then
+        mkdir -p "$dir/default"
+        cp "$src/profiles.ini" "$dir/profiles.ini"
+      fi
+      if [[ -d "$dir/default" && (-L "$dir/default/chrome" || ! -e "$dir/default/chrome") ]]; then
+        ln -sfn "$src/chrome" "$dir/default/chrome"
+      else
+        log_warn "librewolf: no $dir/default profile to link chrome/ into"
+      fi
+
+      # xdg-settings refuses to set it while $BROWSER (functions.sh) is set
       if check_cmd xdg-settings; then
-        xdg-settings set default-web-browser firefox.desktop
+        BROWSER='' xdg-settings set default-web-browser librewolf.desktop
       fi

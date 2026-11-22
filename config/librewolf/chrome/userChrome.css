@@ -1,0 +1,10 @@
+/** Browser UI styles. Linked in as <profile>/chrome by the librewolf. */
+
+/* tabs live in the Sidebery sidebar */
+#TabsToolbar { display: none !important; }
+#sidebar-box #sidebar-header { display: none !important; }
+/* the newer sidebar draws its own title and close button instead */
+#sidebar-panel-header { display: none !important; }
+
+/* square corners everywhere in the browser UI. */
+* { border-radius: 0 !important; }
